@@ -1,0 +1,120 @@
+\documentclass[a4paper,12pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+
+%Figure progressive enumeration
+\usepackage{chngcntr}
+\counterwithin{figure}{chapter}
+\counterwithin{table}{chapter}
+
+%package used to enumerate figures
+\usepackage[labelfont=bf]{caption}
+
+%hyperref for interactive PDF index
+\usepackage[bookmarks, colorlinks, breaklinks]{hyperref}
+\hypersetup{linkcolor=black, citecolor=black, filecolor=black, urlcolor=black}
+
+%Package required to use special symbols
+\usepackage{amsmath, amssymb}
+
+%Package required to use figures
+\usepackage{graphicx}
+%Include the bibliography in the table of contents
+\usepackage{tocbibind}
+
+%Package used to insert figures at the specified position
+\usepackage{float}
+
+
+%Our chapters must be called sections
+\addto\captionsenglish{\renewcommand{\chaptername}{Section}}
+
+\begin{document}
+
+	%Code for title page
+	\begin{titlepage}
+		\centering
+		\includegraphics[width=0.20\textwidth]{./pictures/logo_polimi.png}\par
+
+		{Politecnico di Milano \\ AA 2018-2019} \par
+		\vspace{1.5cm}
+
+		{Computer Science and Engineering}\par
+		\Large{Software Engineering II}\par
+		\vspace{1.0cm}
+
+		\includegraphics[width=1.00\textwidth]{./pictures/logo_trackme.png}\par
+		{\LARGE \textbf{Requirements Analysis and Specification Document} \par}
+		\vspace{1.0cm}
+		{\Large Stefano Bagarin\\ Alessandra Pasini\par}
+		\vspace{2cm}
+		\vfill
+
+		% Bottom of the page
+		{\large Document version: 1.0\par}
+		{\large \today \par}
+	\end{titlepage}
+
+	%Make the table of contents
+	\tableofcontents
+
+	%INTRODUCTION
+	\chapter{Introduction}
+	\label{ch:Introduction}
+
+	\section{Purpose}
+	%\input{il testo desiderato}
+
+	\section{Scope}
+
+	\section{Goals}
+
+	\section{Definitions, Acronyms and Abbreviations}
+
+	\section{References}
+
+	\section{Overview}
+
+	%Overall Description
+	\chapter{Overall Description}
+	\label{ch:Overall_Description}
+
+	\section{Product Perspective}
+
+	\section{Product Functions}
+
+	\section{User Characteristics}
+
+	\section{Constraints}
+
+	\section{Assumptions and Dependencies}
+
+	\section{Future Extensions}
+
+	\section{World and Machine model interpretation}
+
+	%Specific Requirements
+	\chapter{Specific Requirements}
+	\label{ch:Specific_Requirements}
+
+	\section{External Interface Requirements}
+
+	\section{Functional Requirements} 
+
+	\section{Performance Requirements} 
+
+	\section{Software System Attributes} 
+
+	%Alloy Model
+	\chapter{Alloy} 
+	\label{ch: alloy}
+
+	%Appendix
+	\appendix
+	\chapter{Appendix}
+
+
+
+\end{document}
