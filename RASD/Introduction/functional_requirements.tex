@@ -2,7 +2,7 @@
 
 \begin{itemize}
 
-	\item[${\textbf{[G1]}}$] {\textbf{Allows the user to register and to have a personal area to which he/she can access with a secure code.}
+	\item[${\textbf{[G1]}}$] {\textbf{Allows a person to register and to have a personal area to which he/she can access with his credentials.}
 		\begin{itemize}
 			\item[$\textbf{[R1]}$] {A person can register in the application by providing his personal data, a unique e-mail and a password.}
 			\item[$\textbf{[D1]}$] {The user has a device linked to his smartphone.}
@@ -11,14 +11,20 @@
 				\begin{itemize}
 					\item[$\textbf{[R3.1]}$] {A user can see his health parameters in his personal area.}
 					\item[$\textbf{[R3.2]}$] {A user can see the third parties subscribed to his data in his personal area.}
+					\item[$\textbf{[R3.3]}$] {A user can add weight and height in his personal area.}
 				\end{itemize}}
 		\end{itemize}}
 
 
-	\item[${\textbf{[G2]}}$] {\textbf{Allows the third party to register and to have a personal area to which it can access with a secure code.}
+	\item[${\textbf{[G2]}}$] {\textbf{Allows the third party to register and to have a personal area to which it can access with his credentials.}
 		\begin{itemize}
 			\item[$\textbf{[R4]}$] {A third party can register in the application by providing his third party data, a unique e-mail and a password.}
 			\item[$\textbf{[R5]}$] {A third party can log in by providing his e-mail and password.}
+			\item[$\textbf{[R6]}$] {Each third party has a personal area associated with his credentials.
+				\begin{itemize}
+					\item[$\textbf{[R6.1]}$] {A third party can see the data of users and groups of users obtained from his personal area.}
+					\item[$\textbf{[R6.2]}$] {A third party can require data to users or groups of users from his personal area.}
+				\end {itemize}}
 		\end{itemize}}
 
 
@@ -26,38 +32,45 @@
 		\begin{itemize}
 			\item[$\textbf{[D2]}$] {The user's smartphone can provide an accurate enough current location.}
 			\item[$\textbf{[D3]}$] {The user's device can provide accurate enough healt parameters.}
-			\item[$\textbf{[D4]}$] {The user's smartphone can provide constantly data to D4H.}
-			\item[$\textbf{[R6]}$] {A third party can require user's personal data by providing his fiscal code and the reason of the request.}
-			\item[$\textbf{[R7]}$] {A third party can require anonymized personal data of groups of users by providing a range of users.
+			\item[$\textbf{[D4]}$] {The user's smartphone can provide constantly data to \hbox{\emph{D4H}}.}
+			\item[$\textbf{[R7]}$] {A third party can require user's data by providing his fiscal code and the reason of the request.}
+			\item[$\textbf{[R8]}$] {A third party can require anonymized data of groups of users by providing constraints that define users.
 			\begin{itemize}
-				\item[$\textbf{[R7.1]}$] {The range of user to which require data can be specified by any combination of geographic coordinates and range of ages.}
+				\item[$\textbf{[R8.1]}$] {The group of user to which require data can be specified by any combination of geographic areas, range of ages, sex, range of weights and range of heights.}
 			\end{itemize}}
 		\end{itemize}}
 
 
 	\item[${\textbf{[G4]}}$] {\textbf{Allows the user to accept or not to let a third party to have access to his/her data.}
 		\begin{itemize}	
-			\item[$\textbf{[R8]}$] {A user is notified when a third party makes a request to have access to the user's personal data.}
+			\item[$\textbf{[R9]}$] {A user is notified when a third party makes a request to have access to the user's data.}
+			\item[$\textbf{[R10]}$] {A user can reply to a third party interested to his data from his personal area within 30 days.}
 		\end{itemize}}
 
 
 	\item[${\textbf{[G5]}}$] {\textbf{Allows third party to subscribe for new data.}
 		\begin{itemize}
-			\item[$\textbf{[R9]}$] {A user is notified when a third party decides to subscribe for his data.}
+			\item[$\textbf{[R11]}$] {After a request has been accepted, the third party can decide to subscribe to the data of that user or group of users.}
+			\item[$\textbf{[R12]}$] {A user is notified when a third party decides to subscribe for his data.}
+			\item[$\textbf{[R13]}$] {A user can stop the subscribe to his data by a third party in any moment from his personal area.}
 		\end{itemize}}
 
 
 	\item[${\textbf{[G6]}}$] {\textbf{Allows third party to obtain the required data if the request has been accepted, a notification if it has been refused.}
 		\begin{itemize}
-			\item[$\textbf{[R10]}$] {Third parties receive personal data of users through the given e-mail.}
+			\item[$\textbf{[R14]}$] {Third parties receive personal data of users through the given e-mail.}
 		\end{itemize}}
 
 
 	\item[${\textbf{[G7]}}$] {\textbf{Allows an unhealty user to receive quick help.}
 		\begin{itemize}
-			\item[$\textbf{[D5]}$] {There is an SOS service that has the capability to receive emergency calls by AutomatedSOS.}
-			\item[$\textbf{[R1]}$] {ASOS is able to contact the SOS service in case of the rise of an unhealty user in 5s.}
-			\item[$\textbf{[R2]}$] {ASOS is able to send to the SOS service the unhealty user's data.}
+			\item[$\textbf{[D5]}$] {There is an SOS service that has the capability to receive emergency calls by ASOS.
+				\begin{itemize}
+					\item[$\textbf{[D5.1]}$] {The SOS service has the capability to receive data about the unhealty user.}
+					\item[$\textbf{[D5.2]}$] {The SOS service has the capability to send assistance to the unhealty user.}
+				\end{itemize}}
+			\item[$\textbf{[R15]}$] {ASOS is able to contact the SOS service in case of the rise of an unhealty user in 5s.}
+			\item[$\textbf{[R16]}$] {ASOS is able to send to the SOS service the unhealty user's data and personal data.}
 		\end{itemize}}
 
 
