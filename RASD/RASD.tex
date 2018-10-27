@@ -21,6 +21,8 @@
 
 %Package required to use figures
 \usepackage{graphicx}
+\usepackage{subfig}
+
 %Include the bibliography in the table of contents
 \usepackage{tocbibind}
 
@@ -68,6 +70,7 @@
 	\input{./Introduction/purpose.tex}
 
 	\section{Scope}
+	\input{./Introduction/scope.tex}
 
 	\section{Goals}
 	\input{./Introduction/goals.tex}
@@ -77,7 +80,7 @@
 
 	\section{References}
 
-	\section{Overview}
+	\section{Document Structure}
 
 	%Overall Description
 	\chapter{Overall Description}
@@ -88,6 +91,7 @@
 	\section{Product Functions}
 
 	\section{User Characteristics}
+	\input{./Overall_Description/user_characteristics.tex}
 
 	\section{Constraints}
 
@@ -103,9 +107,13 @@
 	\label{ch:Specific_Requirements}
 
 	\section{External Interface Requirements}
+	\input{./Specific_Requirements/external_interfaces.tex}
 
 	\section{Functional Requirements} 
 	\input{./Introduction/functional_requirements.tex}
+
+	\section{Scenarios}
+
 
 	\section{Performance Requirements} 
 
