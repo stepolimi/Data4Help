@@ -9,19 +9,31 @@
 
 \renewcommand{\arraystretch}{1.5}
 
+\begin{figure}[h!]
+	\includegraphics[width=1.1\textwidth]{./pictures/usecase_diagram.png}\par
+	\caption{Figure 1: Use Case Diagram}
+\end{figure}
+
+\FloatBarrier
+
 \subsubsection{Sign up}
 \input{./Specific_Requirements/Use_Cases/signup.tex}
 
 \subsubsection{Login}
 \input{./Specific_Requirements/Use_Cases/login.tex}
 
-\subsubsection{Add settings}
+\subsubsection{Add settings details}
 \input{./Specific_Requirements/Use_Cases/add_settings.tex}
 
+\subsubsection{Monitor own parameters}
+\input{./Specific_Requirements/Use_Cases/monitor_par.tex}
+
 \subsubsection{Receive a third party's data request}
+In the figure 3.21 there are three use cases which derives from this abstract one; their difference is given by the last step of the event flow and the exit condition. Because of this reason we have chosen to compress them in just one table.
 \input{./Specific_Requirements/Use_Cases/receive_notification.tex}
 
 \subsubsection{Receive a notification (third party)}
+In the figure 3.21 there are three use cases which derives from this abstract one; their difference is given by the last step of the event flow and the exit condition. Because of this reason we have chosen to compress them in just one table.
 \input{./Specific_Requirements/Use_Cases/3p_receive_notification.tex}
 
 \subsubsection{Subscribe to \textit{ASOS}}
@@ -30,5 +42,5 @@
 \subsubsection{Data request}
 \input{./Specific_Requirements/Use_Cases/request_data.tex}
 
-\subsubsection{Monitor parameters}
+\subsubsection{Monitor users' parameters}
 \input{./Specific_Requirements/Use_Cases/monitor_param.tex}
