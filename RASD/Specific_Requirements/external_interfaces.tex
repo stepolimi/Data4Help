@@ -5,8 +5,11 @@
 \input{./Specific_Requirements/Interfaces/3p_interface.tex}
 
 \subsection{Hardware Interface}
+This is a software application whose main function is to collect data from single user, share them with third parties and give a medical service.\\
+The app for users requires using a smartphone that can access to internet, that can exploit GPS services to track their location and give it to the SOS service in case of unhealty users and bluetooth to connect the smartphone to the device which will collect health parameters.
+All sensors needed to collect and share health parameters are already installed on the device.\\
+The app for third parties only requires a smartphone or a computer which has access to the internet in oder to communicate with the system servers.
 
-This is a software application whose main function is to collect data from single user, share them with third parties and give a medical service. It requires using a smartphone that can exploit GPS services to track the location and give it to the SOS service in case of unhealty users and bluetooth to connect the smartphone to the device which will collect health parameters.
 
 \subsection{Software Interfaces}
 The server side of the app needs the following software products:
@@ -16,5 +19,7 @@ The server side of the app needs the following software products:
 	https://dev.mysql.com/downloads/mysql/5.7.html}).
 \end{itemize}It is also necessary a software that will be able to automatically connect the server to the informative system of E112, the european emergency number(USA and some other states have a software which automatically redirect the E112 call to their emercency centers). By a research this software is provided only by some automobilistic houses like BMW and Volvo and by a new device called eCall that has been introduced in Europe as mandatory on vehicle of classes M1 and N1 since the 31-03-2018.
 
+
 \subsection{Communication Interface}
+Users and third parties communicate with the server via \textit{HTTPS} protocol.
 A safe and stable communication must be always guarantee between the server and the SOS service everytime that a user becomese an unhealthy one; this is necessary in order to guarantee a really high performance and to send the correct data.
