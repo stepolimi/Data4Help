@@ -1,0 +1,160 @@
+open util/boolean
+
+--SIGNATURES
+
+some sig ThirdParty{
+	requests : set DataRequest, 
+}
+
+--data request can be of two different types
+abstract sig DataRequest{
+	accepted: one Bool,
+}
+
+--each single user request must be related to a user and a reason
+sig SingleUserRequest extends DataRequest{
+	user : User, 
+	reason: Reason,
+}
+
+--each group users request must be related to a group of users and a set of constraints
+sig GroupUsersRequest extends DataRequest{
+	groupOfUsers : one GroupOfUsers,
+	constraints : one Constraints,
+}
+
+sig User{
+	age : Int,  
+	weight : Int,
+	height : Int,
+	male: one Bool,
+	female: one Bool,
+	geoPosition : GeoPosition,
+	healthParam : HealthParam,
+}{
+	age >0 weight >0 height >0  male!= female
+}
+
+sig GroupOfUsers{
+	users : set User 
+}
+
+--all possible bounds that can define a group of users
+sig Constraints{
+	minAge : lone Int,		
+	maxAge : lone Int,			
+	minWeight : lone Int,
+	maxWeight : lone Int,
+	minHeight : lone Int,
+	maxHeight : lone Int,
+	male : one Bool,
+	female : one Bool,
+	geoPosition : lone GeoPosition,
+}{
+	0 < minAge minAge <= maxAge 
+	0 < minWeight minWeight <= maxWeight
+	0 < minHeight minHeight <= maxHeight
+}
+
+sig GeoPosition{}
+sig Reason {}
+sig HealthParam{}
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+--FACT
+
+-- data requests do not exist whitout ThirdParty
+fact noDataRequestsWithoutThirdParty{
+	all r: DataRequest {one tp: ThirdParty | r in tp.requests}
+}
+
+--no GroupUsersRequest with the same group of users
+fact groupUsersRequestsHaveDifferentGroups{
+	no r1, r2 : GroupUsersRequest | r1 != r2 and r1.groupOfUsers = r2.groupOfUsers and r1.constraints = r2.constraints
+}
+
+--no constraints without a group of data request
+fact noConstWithoutGroupOfDataRequest{
+	all c: Constraints {one gur: GroupUsersRequest | c in gur.constraints}
+}
+
+--no GroupOfUsers without a request of group of data
+fact noConstWithoutGroupOfDataRequest{
+	all gou: GroupOfUsers {one gur: GroupUsersRequest | gou in gur.groupOfUsers}
+}
+
+--no Reason without a SingleUserRequest
+fact noReasonWithoutSingleUserRequest{
+	all r: Reason {one sur: SingleUserRequest | r in sur.reason}
+}
+
+--no health parameter without a user
+fact noReasonWithoutSingleUserRequest{
+	all hp: HealthParam {one u: User | hp in u.healthParam}
+}
+
+--no data request is related to two or more different third parties
+fact groupUsersRequestsHaveDifferentGroups{
+	no tp1, tp2 : ThirdParty| tp1 != tp2 and { no dr:  DataRequest | dr in tp1.requests and dr in tp2.requests}
+}
+
+--a user is in the GroupOfUsers of a Data Request if he/she respects all data request's constraints
+fact userInGroup{
+	all u: User | all gur: GroupUsersRequest | all gou: GroupOfUsers |  (gur.groupOfUsers = gou and u in gou.users)  implies 
+	(u.age >= gur.constraints.minAge and u.age <= gur.constraints.maxAge and u.weight >= gur.constraints.minWeight
+	and u.weight <= gur.constraints.maxWeight and u.height >= gur.constraints.minHeight and u.height <= gur.constraints.maxHeight
+	and u.male = gur.constraints.male and u.female = gur.constraints.female and u.geoPosition = gur.constraints.geoPosition)
+}
+
+--a data request of a group of users is accepted iff the number of users in the group is >= 1000
+fact groupUsersRequestIsAccepted{
+	all gur :  GroupUsersRequest | gur.accepted = True <=> #gur.groupOfUsers.users >= 1000
+}
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+--PRED
+
+--add a new data request to the set of requests in ThirdParty	
+pred addDataRequest [tp : ThirdParty, re : DataRequest]{
+	tp.requests = tp.requests + re
+}
+
+--creation of a new SingleUserRequest
+pred createNewSingleUserRequest [tp: ThirdParty, sur : SingleUserRequest, u: User, r: Reason]{
+	addDataRequest [tp, sur]
+	sur.user = u
+	sur.reason = r
+}
+
+--creation of a new GroupUsersRequest
+pred createNewGroupUsersRequest [tp: ThirdParty, gur: GroupUsersRequest, gou: GroupOfUsers,  c: Constraints]{
+	gur.groupOfUsers = gou
+	gur.constraints = c
+}
+
+pred show {}
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+--ASSERT
+
+assert allUsersInAGroupOfDataRequestRespectTheConstraints{
+	all gur : GroupUsersRequest | all u: User | u in gur.groupOfUsers.users implies( 
+	(u.age >= gur.constraints.minAge or no gur.constraints.minAge) and ( u.age <= gur.constraints.maxAge
+	or no gur.constraints.maxAge) and (u.weight >= gur.constraints.minWeight or no gur.constraints.minWeight )  and 
+	(u.weight <= gur.constraints.maxWeight or no gur.constraints.maxWeight) and (u.height >= gur.constraints.minHeight 
+	or no gur.constraints.minHeight) and (u.height <= gur.constraints.maxHeight or no  gur.constraints.maxHeight)  and
+	(u.male = gur.constraints.male or u.female = gur.constraints.female) and (u.geoPosition = gur.constraints.geoPosition
+	or no  gur.constraints.geoPosition))
+}
+
+assert groupOfDataRequestHasMoreThanOneThousand{
+	all gur : GroupUsersRequest | gur.accepted = True implies #gur.groupOfUsers.users >= 1000
+}
+
+check  groupOfDataRequestHasMoreThanOneThousand
+check allUsersInAGroupOfDataRequestRespectTheConstraints
+run createNewGroupUsersRequest
+run createNewSingleUserRequest
+run addDataRequest
+run show for 5
+
