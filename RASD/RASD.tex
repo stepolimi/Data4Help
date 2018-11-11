@@ -9,6 +9,11 @@
 \counterwithin{figure}{chapter}
 \counterwithin{table}{chapter}
 
+%package used for alloy
+\usepackage[dvipsnames]{xcolor}
+\usepackage{listings}
+\usepackage{alloy-style}
+
 %package used to enumerate figures
 \usepackage[labelfont=bf]{caption}
 
@@ -131,6 +136,7 @@
 
 	\section{Alloy Model}
 	\input{./Alloy_Appendix/alloy_model.tex}
+	\lstinputlisting[language=alloy]{./Alloy_Appendix/alloy.tex}
 
 	%Appendix
 	\appendix
