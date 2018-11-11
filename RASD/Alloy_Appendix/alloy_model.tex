@@ -3,9 +3,9 @@ It has been choise to model the data requests' use case because, in our opinion,
 The following contraints are insert in the model:\\
 \begin{itemize}
 	\item data requests do not exist without a third party;
-	\item a group of users doesn't exist if a data of a users' group request hasn't been done by a third party;
+	\item a group of users doesn't exist if a users’ group request hasn't been done by a third party;
 	\item each parameter retaled to a request can exist only if there's a request related to it;
 	\item a user is in a group of users only if it respects all data requests' constraints.
-	\item a group of users' request is accepted if and only if the number of users respecting all request's constraints is equal or grater 		than 1000.
-	\item there are no constraints which define when and how a single data request is accepted, it depends from an undefined user 		choise.
-\end{itemize}To obtain a possible world the amount of users that must be in a request of a group of users has been drastically decremented.
+	\item a group of users' request is accepted if and only if the number of users respecting all request's constraints is equal or 			greater than 1000.
+	\item there are no constraints which define when and how a single data request is accepted, it depends from a user choice.
+\end{itemize}To obtain a possible world with an accepted GroupUsersRequest  the amount of users that must be in this type of request has been drastically decremented from 1000 to 2.
