@@ -1,0 +1,11 @@
+In this section is given the alloy model of data requests, which can be both request of data of a single user or request of data of a users' group.\\
+It has been choise to model the data requests' use case because, in our opinion, it rappresent one of the most crucial and important activities that can be done throght \textit{trackMe}'s system and because it needs to follow a few constraints which could be open to interpretation if explained by using natural language only.\\
+The following contraints are insert in the model:\\
+\begin{itemize}
+	\item data requests do not exist without a third party;
+	\item a group of users doesn't exist if a data of a users' group request hasn't been done by a third party;
+	\item each parameter retaled to a request can exist only if there's a request related to it;
+	\item a user is in a group of users only if it respects all data requests' constraints.
+	\item a group of users' request is accepted if and only if the number of users respecting all request's constraints is equal or grater 		than 1000.
+	\item there are no constraints which define when and how a single data request is accepted, it depends from an undefined user 		choise.
+\end{itemize}To obtain a possible world the amount of users that must be in a request of a group of users has been drastically decremented.
