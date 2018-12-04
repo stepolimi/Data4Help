@@ -1,4 +1,4 @@
-\subsection{Structure}
+\subsubsection{Structure}
 The presented Component Diagram has the aim to show in a more precise and detailed way which components are in each layer and how they interact.\\
 To be more precise in the left it is possible to see the presentation layer devided in three components:
 \begin{itemize}
@@ -17,7 +17,7 @@ To be more precise in the left it is possible to see the presentation layer devi
 \end{figure}
 \FloatBarrier
 
-\subsection{Class Diagram}
+\subsubsection{Class Diagram}
 To better describe the model's structure, is presented an UML class diagram more precise than the one in the RASD document. \\
 
 \begin{figure}[h!]
@@ -28,7 +28,7 @@ To better describe the model's structure, is presented an UML class diagram more
 Note that the presented class diagram is intended as a guide for the implementation and integration of the model's part of the software.
 
 
-\subsection{Database}
+\subsubsection{Database}
 The data layer must contain the DB and also a DBMS component necessary to manage all possible operation, such as insertion, deletion, update, that can be done on data inside the storage unit. The chosen DBMS must guarantee the correct working of transaction according to the ACID properties.\\
 A RDBMS is the best choice for this app because it adheres to the ACID properties; guarantees high performances by using indexis to sort data and by supporting both desktop and web apps and also guarantees data security providing a layer of protection for sensitive data. Using a RDBMS it is also possible to build  the DB structure and clearly define the relations between data.\\ 
 As said in the previous section, the chosen architecture is composed by closed layers and for this reason  the data layer, the one which contains the stored data, can only be accessed by the Application's one, via a dedicated interface. Bacause of this it is necessary to provide a persistence unit which can handle all possible behaviors. Credentials and sensible data as personal informations must be encripted to avoid any possible privacy violation.\\

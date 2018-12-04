@@ -1,0 +1,12 @@
+The following styles and patterns have been used:
+
+\subsubsection{Three layer architecture}
+As already said in section 2.1 it has been chosen a three layer architecture formed by the Presentation layer, the Application layer and the Data layer. The use of this architecture allows to phisically divide presentation, application processing and data operations.\\
+The presentation layer is extensive and includes both users and third parties interactions in various device (multichannel access) and tools for managing the tier. It is implemented based on the design pattern MVC (Model-View-Controller)  but the direct link to the data layer is connected to the app tier, which is made accessible using services components, consisting of the service model of the application.
+
+\subsubsection{Thin Client}
+It has been chosen to use the thin client approach while designing the interaction between users' or third parties' devices and the system. Because of this the main logic is implemented by the App Server which has been designed to have sufficient computing power and to work in an efficient way by managing in a proper way concurrency issues. It has also been picked because in this way the app via device doesn't take to much space, it can work even in case of limited computing power and it canbe updated in an easier way.
+
+\subsubsection{Model-View-Controller}
+The two applications use the MVC patter which allows for efficient code reuse and parallel developement.
+%must complet the MVC definition
