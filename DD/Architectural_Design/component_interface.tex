@@ -1,0 +1,10 @@
+This section is devoted to give more datails on the interface between all different components presented in section 2.2.
+
+\subsubsection{Client - Application Server}
+The communication between the client and the Application server is done via Restful APIs provided by the application server and  implemented using JAX-RS.
+
+\subsubsection{Application Server - External Service}
+The external service is an Emergency SOS service, as already said in the RASD, it could be the ECall and E112 system provided in Europe and with already implemented interfaces in most of the countries outside the EU. It is supposed that this system provides the interface APIs to which the Application Server can adapt itself, via the ASOS manager component, to send the health parametes and the location of an unhealty user.
+
+\subsubsection{Application Server - Database}
+Because of the chosen architecture and because of the closed layers the Data Layer can only be access by the App Layer. The Application Server is the only one that can access to the database and this is done through the Persistence Unit which implement the Java Persistence API (JPA) which create a sort of mapping between java objects and the elements inside the DB.

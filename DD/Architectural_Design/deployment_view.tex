@@ -7,7 +7,7 @@ In the diagram it is possible to find some implementation choices which are anal
 It has been choice to use Java Enterprise Edition 8.2 (JEE) for the app layer because the aim of the final product is to become a large scope application with a great number of simultaneous clients and because, thanks to the ammount of APIs and tools the developers can focus on the main logic.
 Here there are some choices made for the App Server implementation:
 \begin{itemize}
-	\item GlassFish or Jboss % still have to choose
+	\item Tomcat has been choice as server because it is an incredibly lightweight app, in fact it offers only the most basic 				functionality necessary to run a serverand it allows to use other API to solve all non basic ones. Thanks to its lightweight it is 			quite flexible and stable.
 	\item The RESTful APIs architecture is applied because it makes the efficiet use of the bandwidth and uses standard HTTP. It 			also has a great scalability and it allows to carry out basic operations;
 	\item JAX-RS to implement proper REStful APIs to interface with clients;
 	\item Java Persistence API (JPA) as persistence Unit to acces the database. It has been picked out because it is an Object/			Relational Mapping (ORM) framework applicable to RDBMS without implement direct SQL queries and because of its high 				performances , scalability, stability and quality.
