@@ -4,21 +4,46 @@ All requirements aren't report here because this section would become too confus
 
 \begin{itemize}
 	\item[${\textbf{[G1]}}$] {Allows a person to register and to have a personal area to which he/she can access with his 				credentials.\\(Requirements - \textbf{R1 - R2 - R3 - R3.1 - R3.2 - R3.3})}
-		%\begin{itemize}
-			
-		%\end{itemize}
+		\begin{itemize}
+			\item UserService	
+		\end{itemize}
 	\item[${\textbf{[G2]}}$] {Allows the third party to register and to have a personal area to which it can access with his 				credentials.\\(Requirements - \textbf{R4 - R5 - R6 - R6.1 - R6.2 - R6.3})}
+		\begin{itemize}
+			\item ThirdPartyService	
+		\end{itemize}
 	\item[${\textbf{[G3]}}$] {Allows the third party to require data.
 				\begin{itemize}
 					\item[${\textbf{[G3.1]}}$] {Third party can require single person's data.\\(Requirements - 								\textbf{R7})}
+					\begin{itemize}
+						\item RequestUserService	
+					\end{itemize}
 					\item[${\textbf{[G3.2]}}$] {Third party can require anonymized data of group of people.\\ 								(Requirements - \textbf{R8 - R8.1 - R8.2})}
+					\begin{itemize}
+						\item RequestGroupService	
+					\end{itemize}
 				\end{itemize}}
 	\item[${\textbf{[G4]}}$] {Allows the user to accept or not to let a third party to have access to his/her data.\\(Requirements - 	\textbf{R9 - R10})}
+	\begin{itemize}
+		\item RequestUserService	
+	\end{itemize}
 	\item[${\textbf{[G5]}}$] {Allows third party to subscribe for new data.\\(Requirements - \textbf{R11 - R12 - R13 - R14})}
+	\begin{itemize}
+		\item SubscribeService	
+	\end{itemize}
 	\item[${\textbf{[G6]}}$] {Allows third party to see users' or groups of users' data obtained through a successful request.\\			(Requirements - \textbf{R15 - R16})}
+	\begin{itemize}
+		\item RequestGroupService	
+	\end{itemize}
 	\item[${\textbf{[G7]}}$] {Allows users to monitor their health parameters.\\(Requirements - \textbf{R20})}
-	\item[${\textbf{[G8]}}$] {Allows users to activate or deactivate the \hbox{\emph{ASOS}} service on top of \hbox{\emph{D4H}}.\\(Requirements - \textbf{R17})}
-	\item[${\textbf{[G9]}}$] {Allows an unhealty user to receive quick help if have the \hbox{\emph{ASOS}} service activated on his account.\\(Requirements - \textbf{R18 - R19})}
-
-	
+	\begin{itemize}
+		\item HealthParamService	
+	\end{itemize}
+	\item[${\textbf{[G8]}}$] {Allows users to activate or deactivate the \hbox{\emph{ASOS}} service on top of 					\hbox{\emph{D4H}}.\\(Requirements - \textbf{R17})}
+	\begin{itemize}
+		\item AsosService	
+	\end{itemize}
+	\item[${\textbf{[G9]}}$] {Allows an unhealty user to receive quick help if have the \hbox{\emph{ASOS}} service activated on 		his account.\\(Requirements - \textbf{R18 - R19})}
+	\begin{itemize}
+		\item AsosService	
+	\end{itemize}	
 \end{itemize}
