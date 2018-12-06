@@ -16,7 +16,7 @@ The DB's implementation choices are the following:
 \begin{itemize}
 	\item JPA within the App Server as the interface to the DB;
 	\item MySQL as the RDBMS;
-	\item InnoDB as the data engine; this is already the default engine applied to every table generated in MySQL but it has been 			choice because it associates high performances to high data consictency and integrity. To let this happens, this particular 			engine has developed some particular functionalities such as the introduction of foreign keys; locks at row level; MVCC to 			increment the concurrency in queries and support in tansactions to guarantee correctness in data.
+	\item InnoDB as the data engine; this is already the default engine applied to every table generated in MySQL but it has been 			choice because it associates high performances to high data consictency and integrity. To let this happens, this particular 			engine has developed some particular functionalities such as the introduction of foreign keys; locks at row level; Multiversion  			Concurrency Control (MVCC) to increment the concurrency in queries and support in tansactions to guarantee correctness in data.
 \end{itemize}
 
 \begin{figure}[h!]
