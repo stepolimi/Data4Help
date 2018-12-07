@@ -11,5 +11,14 @@ It has been chosen to use the thin client approach while designing the interacti
 The thick client approach has been picked while designing the interaction between users' devices and the system. Even though the main logic is still implemented by the App Server, this type of client has been chosen to deal with the associated devices' sensors devoted to collect the user's health parameters. However, the added logic shouldn't require to much space, so also the users' application should still be lightweight and easily updatable.
 
 \subsubsection{Model-View-Controller}
-The two applications use the Model-View-Controller (MVC) pattern which allows for efficient code reuse and parallel developement.
-%must complet the MVC definition
+The system is design using the Model-View-Controller (MVC) pattern which separates internal representations of information from the ways information is presented to and accepted from the user. 
+\begin{itemize}
+	\item The model directly manages data, logic and rules of the application while beeing independent of the user interface.
+	\item The controller receives all the users' inputs and performs their requests interacting with the model.
+	\item The view gives a representation of the model to the users.
+\end{itemize}
+The choice of using the MVC pattern is made because goes well with the three layer architecture and garants efficient code reuse and parallel development.
+
+\subsubsection{Singleton}
+The model's "service" classes are designed as singletons. Those includes UserService and ThirdPartyService which are the classes in charge of manage the interactions with clients; RequestUserService and RequestGroupService which manages data requestes made by third parties; SubscribeService which gather data from users and group of users and gives them to third parties; HealthParamService and AsosService which are in charge of monitor health parameters of users and send assistance to them if their health parameters goes below a certain threshold. \\
+The choice of design these classes as singletons is made because is needed only one object of them to coordinate actions across the system.
