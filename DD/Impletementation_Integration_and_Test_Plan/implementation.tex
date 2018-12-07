@@ -1,8 +1,9 @@
 \section{Implementation Plan}
-All most important services offered by \textit{D4H} are related to the storage of health parameters. Health parameters are analyzed in case a user has subscribed to the \textit{ASOS service} and sent to third parties which have required data of group of users with particular characteristics or data of specific single users.\\
-Starting from the point written above and considering some other factors, such as the possible interdependencies between different components and moduls, it is necessary to provide an order in which would be better to implement the various app's elements.
-The given implementation order has also the aim to highlight and modify as early as possible all mistakes and progettual problems found.
+Considering some factors, such as the possible dependencies between different components and modules, it is necessary to provide an order in which would be better to implement the various app's elements. All most important services offered by \textit{D4H} are related to the storage of health parameters which are analyzed in case a user has subscribed to the \textit{ASOS service} to provide tempestive medical assistance; they are also sent to third parties which have required data of group of users or of single users. \\
+Starting from the points written above and considering that the implementation plan has also the aim to highlight and modify as early as possible all mistakes and progettual problems found, a track for the order of the components' development is presented in this section.
+
 \begin{itemize}
-	\item The database must be developed as first because it is one of the most important units of the application; it will determine the 	model structure and the way data will be send and used.
+	\item The database must be developed as first because of the application; it will determine the 	model structure and the way data will be send and used.
 	\item  The model, which corresponds to the application logic component, and the persistence unit will be implemented after the 			Data Layer components. The first one does not contains just all main algorithms but also all objects which will be mapped via 		JPA to the DB's tables and relations.
 \end{itemize}
+\section{Testing Plan}
