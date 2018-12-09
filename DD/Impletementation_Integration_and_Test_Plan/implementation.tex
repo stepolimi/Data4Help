@@ -21,21 +21,21 @@ Starting from the points written above and considering that the implementation p
 	The representation of the model that the users will see is presented in the section 3 of this document and also in the section 3 of the RASD. This will be the last part to be developed 			because it represents the least critical and also the most dynamic component of the software.
 
 \section{Testing Plan}
-To develop a well working software it is required to do both the structural testing (white box testing) and the functional testing (black box testing) during the implementation and integration of the product. Here below are both analyzed more in the detailes.\\
+To develop a well working software it is required to do both the structural testing (white box testing) and the functional testing (black box testing) during the implementation and integration of the product. Here below are both analyzed more in the details.
+
 \subsection{Structural testing}
-	For the coverage of paths, statements, edges and conditions it will be required at least a percentage of 90 for the model's part because of the high risk of errors, faults and failures that lays 	in the nature of this component; for the other parts of the software will be enought a coverage percentage of 80. The process to do the tests must be: 
+For the coverage of paths, statements, edges and conditions it will be required at least a percentage of 90 for the model's part because of the high risk of errors, faults and failures that lays 	in the nature of this component; for the other parts of the software will be enought a coverage percentage of 80. The process to do the tests must be: 
 	\begin{itemize}
-		\item Unit testing will be made in parallel with the implementation of each module. It is needed to give particular attention to the modules which contains critical algorithms such as the 			HealthParamService, SubscribeService and RequestGroupService classes.
-		\item Integration testing will be made after each step of the integration of the modules. In this phase it is needed to give particular attention to the correct integration of the modules 			which are related to the core functions of the system.
-		\item System testing will be made after the completition of the implementation and integration steps to test the conformity with the functional and non-functional requirements.
+		\item Unit testing will be made in parallel with the implementation of each module. It is needed to give particular 					attention to the modules which contains critical algorithms such as the HealthParamService, SubscribeService and 				RequestGroupService classes.
+		\item Integration testing will be made after each step of the integration of the modules. In this phase it is needed to 				give particular attention to the correct integration of the modules which are related to the core functions of the system.
+		\item System testing will be made after the completion of the implementation and integration steps to test the 					conformity with the functional and non-functional requirements.
 		\item Regression testing will be made constantly during the life cycle of the software after it's release. 
 	\end{itemize}
 \subsection{Functional testing}
 	The functional testing is left to the software development team; for the develop of this tests it will be needed again to give particular attention to the limit cases and particular cases 		related to the core functions of the software.
 \section{Integration Plan}
-The integration order should follow the implementation's one: this means that first of all will be integrated the model's classes related to the data storage with the corresponding database's tables and relations via the persisentence unit, then will be integrated the other classes of the model with eachother and with the UserService and ThirdPartyService and last the view's part and its relations with the server.\\ 
- Each component should be integrated with the others only after it's almost totally completition and with a satisfying unit testing's result to avoid and contain the impact of each possible error, fault and failur; for the same scope, after a component has been integrated with the sistem, the relative integration testing should be made right after it. 
-
+The integration order should follow the implementation's one: first of all the model's classes related to the data storage will be integrated with the corresponding database's tables and relations via the persisentence unit, then  the other classes of the model will be integrated with each other and with the UserService and ThirdPartyService and last the view's part and its relations with the server.\\ 
+Each component should be integrated with the others only after it's almost totally completion and with a satisfying unit testing's result to avoid and contain the impact of each possible error, fault and failure. For the same scope, right after a component has been integrated with the system, the relative integration testing should be made. 
 
 
 
