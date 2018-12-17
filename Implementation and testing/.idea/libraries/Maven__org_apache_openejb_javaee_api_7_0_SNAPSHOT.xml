@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.apache.openejb:javaee-api:7.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/openejb/javaee-api/7.0-SNAPSHOT/javaee-api-7.0-20150424.131648-31.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/openejb/javaee-api/7.0-SNAPSHOT/javaee-api-7.0-20150424.131648-31-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/openejb/javaee-api/7.0-SNAPSHOT/javaee-api-7.0-20150424.131648-31-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
