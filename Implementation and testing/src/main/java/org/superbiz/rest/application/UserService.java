@@ -1,6 +1,6 @@
 package org.superbiz.rest.application;
 
-import org.superbiz.injection.jpa.model.Credential;
+import org.superbiz.rest.application.model.Credential;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -14,6 +14,5 @@ public interface UserService {
 
     @GET
     String ciao();
-
 
 }

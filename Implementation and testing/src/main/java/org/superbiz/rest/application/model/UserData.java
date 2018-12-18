@@ -1,9 +1,11 @@
-package org.superbiz.injection.jpa.model;
+package org.superbiz.rest.application.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class UserData {
@@ -26,8 +28,8 @@ public class UserData {
     @OneToOne
     private User user;
 
-    //@ManyToMany
-    //private Wearable wearable;
+    @ManyToMany
+    private List<Wearable> wearable;
 
 
     public String getFiscalCode() { return fiscalCode; }
@@ -101,13 +103,12 @@ public class UserData {
     public void setUser(User user) {
         this.user = user;
     }
-/*
-    public Wearable getWearable() {
+
+    public List<Wearable> getWearable() {
         return wearable;
     }
 
-    public void setWearable(Wearable wearable) {
+    public void setWearable(List<Wearable> wearable) {
         this.wearable = wearable;
     }
-*/
 }

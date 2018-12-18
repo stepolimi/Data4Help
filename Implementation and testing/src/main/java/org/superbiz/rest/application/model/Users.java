@@ -1,11 +1,10 @@
-package org.superbiz.injection.jpa.model;
+package org.superbiz.rest.application.model;
 
 import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
-import javax.xml.registry.infomodel.User;
 import java.util.List;
 
 @Stateful
@@ -23,7 +22,7 @@ public class Users {
     }
 
     public List<User> getUsers() throws Exception {
-        Query query = entityManager.createQuery("SELECT m from User as m");
+        Query query = entityManager.createQuery("SELECT u from User as u");
         return query.getResultList();
     }
 }

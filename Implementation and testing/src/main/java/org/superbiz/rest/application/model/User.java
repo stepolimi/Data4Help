@@ -1,11 +1,12 @@
-package org.superbiz.injection.jpa.model;
+package org.superbiz.rest.application.model;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-public class User{
+public class User {
 
-    @Id
+    @Id @GeneratedValue
     private int id;
 
     @OneToOne
@@ -14,8 +15,9 @@ public class User{
     @OneToOne
     private UserData userData;
 
-    //@OneToMany
-    //private HealthParameters healthParameters;
+    @OneToMany
+    private List<HealthParameters> healthParameters;
+
 
     public Credential getCredential() {
         return credential;
@@ -41,13 +43,8 @@ public class User{
         this.userData = userData;
     }
 
-/*    public HealthParameters getHealthParameters() {
-        return healthParameters;
-    }
+    public List<HealthParameters> getHealthParameters() { return healthParameters; }
 
-    public void setHealthParameters(HealthParameters healthParameters) {
-        this.healthParameters = healthParameters;
-    }
-*/
+    public void setHealthParameters(List<HealthParameters> healthParameters) { this.healthParameters = healthParameters; }
 }
 

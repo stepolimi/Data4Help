@@ -21,6 +21,7 @@
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.9.0" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.0" />
           <element id="library" level="project" name="Maven: junit:junit:3.8.2" />
+          <element id="library" level="project" name="Maven: org.apache.geronimo.specs:geronimo-osgi-locator:1.1" />
         </element>
       </element>
       <element id="directory" name="META-INF">

@@ -1,4 +1,4 @@
-package org.superbiz.injection.jpa.model;
+package org.superbiz.rest.application.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
