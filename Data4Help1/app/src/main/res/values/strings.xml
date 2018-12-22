@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">Data4Help1</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="e_mail">E-mail</string>
+    <string name="don_t_you_have_an_account_yet_register_here">Don\'t you have an account yet? Register here.</string>
+    <string name="personal_details">Personal Details</string>
+    <string name="fiscal_code">Fiscal Code*</string>
+    <string name="surname">Surname*</string>
+    <string name="name">Name*</string>
+    <string name="address">Address*</string>
+    <string name="birthday">Date Of Birth: gg/mm/aaaa*</string>
+    <string name="sex">Sex*</string>
+    <string name="female">Female</string>
+    <string name="male">Male</string>
+    <string name="personal_account">Personal Account</string>
+    <string name="e_mail_reg">E-mail*</string>
+    <string name="password_reg">Password*</string>
+    <string name="i_accept_the_regulatory_policy">I accept the regulatory policy</string>
+    <string name="register">Register</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="health_parameters">Health Parameters</string>
+    <string name="heart_beat">Heart Beat</string>
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="year">Year</string>
+    <string name="month">Month</string>
+    <string name="height_cm">Height: --- cm</string>
+    <string name="weight_kg">Weight: --- kg</string>
+    <string name="bpm">-- bpm</string>
+</resources>
