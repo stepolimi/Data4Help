@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Registration">
+    tools:context=".RegistrationActivity">
 
     <ImageView
         android:id="@+id/imageView3"
@@ -48,7 +48,6 @@
         android:layout_height="55dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="1dp"
         android:ems="10"
         android:hint="@string/name"
         android:inputType="text|textPersonName"
@@ -60,7 +59,7 @@
     <EditText
         android:id="@+id/surname"
         android:layout_width="310dp"
-        android:layout_height="64dp"
+        android:layout_height="55dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
@@ -74,7 +73,7 @@
     <EditText
         android:id="@+id/fiscalCode"
         android:layout_width="310dp"
-        android:layout_height="57dp"
+        android:layout_height="55dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
@@ -88,21 +87,21 @@
     <EditText
         android:id="@+id/address"
         android:layout_width="310dp"
-        android:layout_height="57dp"
+        android:layout_height="55dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="@string/address"
         android:inputType="textPostalAddress"
-        app:layout_constraintBottom_toTopOf="@+id/birthday"
+        app:layout_constraintBottom_toTopOf="@+id/dateOfBirth"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="Autofill" />
 
     <EditText
-        android:id="@+id/birthday"
+        android:id="@+id/dateOfBirth"
         android:layout_width="310dp"
-        android:layout_height="57dp"
+        android:layout_height="55dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
@@ -116,7 +115,7 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="310dp"
-        android:layout_height="57dp"
+        android:layout_height="55dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="6dp"
@@ -127,24 +126,32 @@
         <TextView
             android:id="@+id/textView2"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:layout_weight="1"
             android:text="@string/sex"
             android:textStyle="bold" />
 
-        <RadioButton
-            android:id="@+id/femaleButton"
-            android:layout_width="115dp"
+        <RadioGroup
+            android:layout_width="243dp"
             android:layout_height="match_parent"
-            android:text="@string/female" />
+            android:orientation="vertical">
 
-        <RadioButton
-            android:id="@+id/maleButton2"
-            android:layout_width="117dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:text="@string/male" />
+            <RadioButton
+                android:id="@+id/maleButton"
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:text="@string/male" />
+
+            <RadioButton
+                android:id="@+id/femaleButton"
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:text="@string/female" />
+
+        </RadioGroup>
+
     </LinearLayout>
 
     <TextView
@@ -166,7 +173,7 @@
     <EditText
         android:id="@+id/regEmail"
         android:layout_width="310dp"
-        android:layout_height="57dp"
+        android:layout_height="55dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
@@ -180,20 +187,20 @@
     <EditText
         android:id="@+id/regPassword"
         android:layout_width="310dp"
-        android:layout_height="57dp"
+        android:layout_height="55dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="@string/password_reg"
         android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/checkBox"
+        app:layout_constraintBottom_toTopOf="@+id/acceptPolicy"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="Autofill" />
 
     <CheckBox
-        android:id="@+id/checkBox"
+        android:id="@+id/acceptPolicy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -210,8 +217,19 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="7dp"
         android:text="@string/register"
+        app:layout_constraintBottom_toTopOf="@+id/error"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

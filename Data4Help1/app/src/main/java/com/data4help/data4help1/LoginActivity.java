@@ -18,7 +18,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Login extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     private EditText email;
     private EditText password;
@@ -40,12 +40,12 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 JSONObject jObject = new JSONObject();
                 try {
-                    jObject.put("email", email);
-                    jObject.put("password", password);
+                    jObject.put("email", email.getText().toString());
+                    jObject.put("password", password.getText().toString());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    RequestQueue queue = Volley.newRequestQueue(Login.this);
+                    RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
                 JsonObjectRequest jobReq = new JsonObjectRequest(Request.Method.POST, url, jObject,
                         new Response.Listener<JSONObject>() {
                             @Override
@@ -60,7 +60,7 @@ public class Login extends AppCompatActivity {
 
         registerLink.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { startActivity(new Intent(Login.this, Registration.class)); }
+            public void onClick(View v) { startActivity(new Intent(LoginActivity.this, RegistrationActivity.class)); }
         });
     }
 }
