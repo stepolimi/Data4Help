@@ -1,10 +1,15 @@
 <persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 
-    <persistence-unit name="user-unit" transaction-type="TRANSACTION">
+    <persistence-unit name="client-unit" transaction-type="TRANSACTION">
         <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
         <jta-data-source>jdbc/db</jta-data-source>
-        <class>com.d4h.application.model.User</class>
-
+        <class>com.d4h.application.model.user.User</class>
+        <class>com.d4h.application.model.thirdParty.ThirdParty</class>
+        <class>com.d4h.application.model.user.Wearable</class>
+        <class>com.d4h.application.model.user.UserData</class>
+        <class>com.d4h.application.model.user.UserCredential</class>
+        <class>com.d4h.application.model.user.HealthParameters</class>
+        <class>com.d4h.application.model.user.Address</class>
         <properties>
             <property name="openjpa.Log" value="DefaultLevel=WARN, Runtime=INFO, Tool=INFO, SQL=TRACE"/>
             <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>

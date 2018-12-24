@@ -1,17 +1,14 @@
-package com.d4h.application.model;
+package com.d4h.application.model.user;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 public class UserData {
 
-    @Id
-    private int id;
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    private String id;
 
     private String fiscalCode;
     private String name;
@@ -88,11 +85,11 @@ public class UserData {
         this.address = address;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

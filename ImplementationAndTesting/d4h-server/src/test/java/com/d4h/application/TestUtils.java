@@ -1,12 +1,10 @@
 package com.d4h.application;
 
-import org.apache.openejb.Container;
 
 import javax.ejb.embeddable.EJBContainer;
 import java.util.Properties;
 
 public class TestUtils {
-
   public static String DATA_SOURCE_NAME = "jdbc/db";
 
   public static EJBContainer bootstrapEJBContainerWithInMemoryDb() {

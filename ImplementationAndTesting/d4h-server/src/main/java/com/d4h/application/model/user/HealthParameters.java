@@ -1,14 +1,14 @@
-package com.d4h.application.model;
+package com.d4h.application.model.user;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import com.d4h.application.model.user.User;
+
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 public class HealthParameters {
-    @Id
-    private int id;
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    private String id;
 
     private int heartBeat;
     private int veinPressure;
@@ -58,11 +58,11 @@ public class HealthParameters {
         this.date = date;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 }

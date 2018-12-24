@@ -1,23 +1,21 @@
-package com.d4h.application.model;
+package com.d4h.application.model.thirdParty;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Entity
-public class Credential {
-    @Id
-    private int id;
+public class ThirdPartyCredential {
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    private String id;
 
     private String email;
     private String password;
 
     @OneToOne
-    private User user; // devo capire come verificare se registrazione o no
+    private ThirdParty thirdParty; // devo capire come verificare se registrazione o no
 
-    public Credential() {}
+    public ThirdPartyCredential() {}
 
-    public Credential(String email, String password){
+    public ThirdPartyCredential(String email, String password){
         this.email = email;
         this.password = password;
     }
@@ -38,11 +36,11 @@ public class Credential {
         return email;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 }
