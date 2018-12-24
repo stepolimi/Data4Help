@@ -1,4 +1,4 @@
-package com.data4help.data4help1;
+package com.data4help.d4h_thirdpartyclient;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

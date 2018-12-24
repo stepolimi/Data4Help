@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_heart"
+            android:icon="@drawable/ic_heart"
+            android:title="@string/health_parameters" />
+        <item
+            android:id="@+id/nav_pocket"
+            android:icon="@drawable/ic_pocket"
+            android:title="@string/third_parties_using_my_data" />
+        <item
+            android:id="@+id/nav_hospital"
+            android:icon="@drawable/ic_hospital"
+            android:title="@string/automated_sos" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/settings" />
+    </group>
+
+</menu>

@@ -1,15 +1,13 @@
 <resources>
-    <string name="app_name">Data4Help: User</string>
+    <string name="app_name">Data4Help: Third Party</string>
     <string name="login">Login</string>
     <string name="password">Password</string>
     <string name="e_mail">E-mail</string>
     <string name="don_t_you_have_an_account_yet_register_here">Don\'t you have an account yet? Register here.</string>
     <string name="personal_details">Personal Details</string>
     <string name="fiscal_code">Fiscal Code*</string>
-    <string name="surname">Surname*</string>
     <string name="name">Name*</string>
     <string name="address">Address*</string>
-    <string name="birthday">Date Of Birth: gg/mm/aaaa*</string>
     <string name="sex">Sex*</string>
     <string name="female">Female</string>
     <string name="male">Male</string>
@@ -111,4 +109,6 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="wearable_devices">Wearable Devices</string>
+    <string name="type_of_society">Type Of Society*</string>
+    <string name="p_iva">P.Iva*</string>
 </resources>

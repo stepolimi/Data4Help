@@ -1,4 +1,4 @@
-package com.data4help.data4help1;
+package com.data4help.d4h_thirdpartyclient;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,13 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ThirdPartiesFragment  extends Fragment {
-
+public class HomeFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.content_third_party, container, false);
+        return inflater.inflate(R.layout.content_main, container, false);
     }
 }
