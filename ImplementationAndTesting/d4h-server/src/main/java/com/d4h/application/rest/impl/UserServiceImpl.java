@@ -1,6 +1,6 @@
 package com.d4h.application.rest.impl;
-import com.d4h.application.model.Credential;
-import com.d4h.application.dao.UsersDao;
+import com.d4h.application.model.user.UserCredential;
+import com.d4h.application.dao.User.UsersDao;
 import com.d4h.application.rest.UserService;
 
 import javax.ejb.EJB;
@@ -16,7 +16,7 @@ public class UserServiceImpl implements UserService {
     Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
 
     @Override
-    public Response registration(Credential credential) {
+    public Response registration(UserCredential credential) {
         return Response.ok(credential, "application/json").build();
     }
 

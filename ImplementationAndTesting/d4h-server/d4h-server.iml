@@ -75,7 +75,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.metatype.sxc:sxc-jaxb-core:0.8" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.metatype.sxc:sxc-runtime:0.8" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: commons-cli:commons-cli:1.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: commons-collections:commons-collections:3.2.2" level="project" />
+    <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.activemq:activemq-ra:5.15.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.activemq:activemq-kahadb-store:5.15.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.activemq.protobuf:activemq-protobuf:1.1" level="project" />
@@ -89,7 +89,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.geronimo.components:geronimo-transaction:3.1.4" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.objectweb.howl:howl:1.0.1-1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.geronimo.javamail:geronimo-javamail_1.4_mail:1.9.0-alpha-2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.xbean:xbean-asm6-shaded:4.10" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xbean:xbean-asm6-shaded:4.10" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.xbean:xbean-finder-shaded:4.10" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.xbean:xbean-reflect:4.10" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.xbean:xbean-naming:4.10" level="project" />
@@ -109,8 +109,12 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.openwebbeans:openwebbeans-ee-common:2.0.7" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.openwebbeans:openwebbeans-web:2.0.7" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.openwebbeans:openwebbeans-el22:2.0.7" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.openjpa:openjpa:3.0.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.serp:serp:1.15.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.tomee.patch:bval-jsr:2.0.0-nonfinal-57300f3" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.openjpa:openjpa:3.0.0" level="project" />
+    <orderEntry type="library" name="Maven: net.sourceforge.serp:serp:1.15.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: commons-pool:commons-pool:1.6" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.geronimo.specs:geronimo-jpa_2.1_spec:1.0-alpha-1" level="project" />
   </component>
 </module>

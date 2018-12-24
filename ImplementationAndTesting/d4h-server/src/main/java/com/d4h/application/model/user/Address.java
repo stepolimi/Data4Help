@@ -1,13 +1,11 @@
-package com.d4h.application.model;
+package com.d4h.application.model.user;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Entity
 public class Address {
-    @Id
-    private int id;
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    private String id;
 
     private int cap;
     private int num;
@@ -67,11 +65,11 @@ public class Address {
         this.region = region;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
