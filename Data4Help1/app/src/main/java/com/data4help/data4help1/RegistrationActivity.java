@@ -43,6 +43,8 @@ public class RegistrationActivity extends AppCompatActivity {
     private String url = " http://example.com";
     private TextView error;
 
+    private JsonArrayRequest jobReq;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,20 +56,14 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onClick (View v){
                 JSONArray registrationData = new JSONArray();
                 JSONObject personalDetails = new JSONObject();
-                JSONObject accountDetails = new JSONObject();
+                JSONObject credential = new JSONObject();
 
                 registrationData.put(personalDetails);
-                registrationData.put(accountDetails);
+                registrationData.put(credential);
 
-                try {
-                    setPersonalDetails(personalDetails);
-                    setAccountDetails(accountDetails);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
 
                 RequestQueue queue = Volley.newRequestQueue(RegistrationActivity.this);
-                JsonArrayRequest jobReq = new JsonArrayRequest(Request.Method.POST, url, registrationData,
+                jobReq = new JsonArrayRequest(Request.Method.POST, url, registrationData,
                         new Response.Listener<JSONArray>() {
                             @Override
                             public void onResponse(JSONArray registrationData) {
@@ -75,6 +71,12 @@ public class RegistrationActivity extends AppCompatActivity {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError volleyError) { VolleyLog.e("Error: ", volleyError.getMessage()); }});
+                try {
+                    setPersonalDetails(personalDetails);
+                    setCredential(credential);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 queue.add(jobReq);
             }
 
@@ -105,16 +107,23 @@ public class RegistrationActivity extends AppCompatActivity {
      *
      * Checks if a sex is selected: if not it throws an error, if yes it adds the sex values to the JSON Object
      */
-    @SuppressLint("SetTextI18n")
     private void checkSex(JSONObject personalDetails) throws JSONException{
         Boolean m = male.isChecked();
         Boolean f = female.isChecked();
         if(!f && !m)
-            error.setText("Some fields are empty. You must fill all of them!");
+            cancelReq("Some fields are empty. You must fill all of them!");
         else{
             personalDetails.put("male", m);
             personalDetails.put("female", f);
         }
+    }
+
+    /**
+     * set text in the error label and cancel the request
+     */
+    private void cancelReq(String errorText) {
+        error.setText(errorText);
+        jobReq.cancel();
     }
 
     /**
@@ -128,12 +137,10 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     @SuppressLint("SetTextI18n")
     private void checkValue(String field, String value,JSONObject personalDetails) throws JSONException {
-        if(value.length() == 0 )
-            error.setText("Some fields are empty. You must fill all of them!");
-        else {
-            error.setText("");
+        if(value.isEmpty())
+            cancelReq("Some fields are empty. You must fill all of them!");
+        else
             personalDetails.put(field, value);
-        }
     }
 
     /**
@@ -147,20 +154,19 @@ public class RegistrationActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void checkFiscalCode(JSONObject personalDetails) throws JSONException {
         String fc = fiscalCode.getText().toString();
-        if( fc.length() != 16 ) {
-            error.setText("The fiscal code is incorrect!");
-            return;
-        }
-        String fc2 = fc.toUpperCase();
-        for( int i = 0; i < fc2.length(); i++ ){
-            int c = fc2.charAt(i);
-            if( ! ( c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' ) ) {
-                error.setText("The fiscal code is incorrect!");
-                return;
+        if( fc.length() == 16 ) {
+            String fc2 = fc.toUpperCase();
+            for (int i = 0; i < fc2.length(); i++) {
+                int c = fc2.charAt(i);
+                if (!(c >= '0' && c <= '9' || c >= 'A' && c <= 'Z')) {
+                    cancelReq("The fiscal code is incorrect!");
+                    return;
+                }
             }
+            personalDetails.put("fiscalCode", fc);
         }
-        error.setText("");
-        personalDetails.put("fiscalCode", fc);
+        else
+            cancelReq("The fiscal code is incorrect!");
 
     }
 
@@ -169,7 +175,7 @@ public class RegistrationActivity extends AppCompatActivity {
      *
      * Puts the detected values in the accountDetails object
      */
-    private void setAccountDetails(JSONObject accountDetails) throws JSONException {
+    private void setCredential(JSONObject accountDetails) throws JSONException {
 
         checkValue("email", email.getText().toString(), accountDetails);
         checkPassword(accountDetails);
@@ -186,7 +192,8 @@ public class RegistrationActivity extends AppCompatActivity {
     private void checkPassword(JSONObject accountDetails) throws JSONException {
         String psw = password.getText().toString();
         if(psw.length() < 8 || psw.length() > 20)
-            error.setText("The password must contain at least 8 elements.");
+            cancelReq("The password must contain at least 8 elements.");
+
         else
             accountDetails.put("password", password.getText().toString());
     }
@@ -201,7 +208,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private void checkPolicyBox(JSONObject accountDetails) throws JSONException {
         boolean policyBox = acceptPolicy.isChecked();
         if (!policyBox)
-            error.setText("Some fields are empty. You must fill all of them!");
+            cancelReq("Some fields are empty. You must fill all of them!");
         else
             accountDetails.put("acceptedPolicy", true);
     }
