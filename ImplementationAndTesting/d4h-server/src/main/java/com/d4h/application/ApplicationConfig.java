@@ -20,15 +20,17 @@ import com.d4h.application.rest.impl.UserServiceImpl;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+//The initial path till here is: http://localhost:8080/d4h-server-0.0.1-SNAPSHOT/
 
 @ApplicationPath("/api")
 public class ApplicationConfig extends Application {
 
     public Set<Class<?>> getClasses() {
-        return new HashSet<>(Arrays.asList(UserServiceImpl.class));
+        return new HashSet<>(Collections.singletonList(UserServiceImpl.class));
     }
 
 }
