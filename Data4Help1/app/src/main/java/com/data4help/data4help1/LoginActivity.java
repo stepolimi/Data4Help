@@ -22,7 +22,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText email;
     private EditText password;
-    private String url = "http://jsonplaceholder.typicode.com/posts";
+    private String url = "http://192.168.0.143:8080/d4h-server-0.0.1-SNAPSHOT/api/users/registration";
 
 
     @Override
@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
                             public void onResponse(JSONObject jsonObject) { System.out.print("hi"); }},
                         new Response.ErrorListener() {
                             @Override
-                            public void onErrorResponse(VolleyError volleyError) { VolleyLog.e("Error: ", volleyError.getMessage()); }});
+                            public void onErrorResponse(VolleyError volleyError) { VolleyLog.e("Error: "+ volleyError.getMessage()); }});
                 queue.add(jobReq);
             }
         });

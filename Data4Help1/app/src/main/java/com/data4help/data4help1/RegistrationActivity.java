@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -40,10 +41,11 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private Button registrationButton;
 
-    private String url = " http://example.com";
+    private String url = "http://192.168.0.143:8080/d4h-server-0.0.1-SNAPSHOT/api/users/registration";
     private TextView error;
 
-    private JsonArrayRequest jobReq;
+    private JsonObjectRequest jobReq;
+    private RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,34 +56,50 @@ public class RegistrationActivity extends AppCompatActivity {
         registrationButton.setOnClickListener(new  View.OnClickListener() {
             @Override
             public void onClick (View v){
-                JSONArray registrationData = new JSONArray();
-                JSONObject personalDetails = new JSONObject();
+                 final JSONObject personalDetails = new JSONObject();
                 JSONObject credential = new JSONObject();
 
-                registrationData.put(personalDetails);
-                registrationData.put(credential);
-
-
-                RequestQueue queue = Volley.newRequestQueue(RegistrationActivity.this);
-                jobReq = new JsonArrayRequest(Request.Method.POST, url, registrationData,
-                        new Response.Listener<JSONArray>() {
-                            @Override
-                            public void onResponse(JSONArray registrationData) {
-                                startActivity(new Intent(RegistrationActivity.this, MenuActivity.class)); }},
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError volleyError) { VolleyLog.e("Error: ", volleyError.getMessage()); }});
                 try {
                     setPersonalDetails(personalDetails);
                     setCredential(credential);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                queue = Volley.newRequestQueue(RegistrationActivity.this);
+                jobReq = new JsonObjectRequest(Request.Method.POST, url, credential,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject token) {
+                                System.out.println("id"+ token);
+                                startActivity(new Intent(RegistrationActivity.this, MenuActivity.class)); }},
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError volleyError) { VolleyLog.e("Error: ", volleyError.getMessage()); }});
+
                 queue.add(jobReq);
             }
 
         });
 
+    }
+
+    private void sendUserData(JSONObject personalDetails) {
+        jobReq = new JsonObjectRequest(Request.Method.POST, url, personalDetails,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject jsonObject) {
+                        System.out.println(jsonObject);
+                        startActivity(new Intent(RegistrationActivity.this, MenuActivity.class)); }},
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) { VolleyLog.e("Error: ", volleyError.getMessage()); }});
+        try {
+            setPersonalDetails(personalDetails);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        queue.add(jobReq);
     }
 
     /**
@@ -98,6 +116,8 @@ public class RegistrationActivity extends AppCompatActivity {
 
         checkFiscalCode(personalDetails);
         checkSex(personalDetails);
+
+        checkPolicyBox(personalDetails);
     }
 
 
@@ -179,7 +199,8 @@ public class RegistrationActivity extends AppCompatActivity {
 
         checkValue("email", email.getText().toString(), accountDetails);
         checkPassword(accountDetails);
-        checkPolicyBox(accountDetails);
+
+        System.out.println(accountDetails);
     }
 
     /**
