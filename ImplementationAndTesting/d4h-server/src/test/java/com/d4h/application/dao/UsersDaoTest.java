@@ -42,7 +42,7 @@ public class UsersDaoTest extends DaoTestBase {
 
         UsersDao users = (UsersDao) context.lookup("java:global/d4h-server/UsersDao");
 
-        assertNull( users.getUser("1"));
+        assertNull( users.getUserById("1"));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class UsersDaoTest extends DaoTestBase {
 
         users.addUser(user);
 
-        assertNotNull( users.getUser(user.getId()));
+        assertNotNull( users.getUserById(user.getId()));
         users.deleteUser(user);
     }
 }

@@ -1,18 +1,16 @@
 package com.d4h.application.dao.User;
 
+import com.d4h.application.dao.DaoBase;
 import com.d4h.application.model.user.UserData;
 
 import javax.ejb.Stateful;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.util.List;
 
 @Stateful
 public class UserDataDao {
     @PersistenceContext(unitName = "client-unit", type = PersistenceContextType.EXTENDED)
-    private EntityManager entityManager;
+    private EntityManager entityManager = DaoBase.getDaoBase().getEntityManager();
 
     public void addUserData(UserData userData) throws Exception {
         entityManager.persist(userData);

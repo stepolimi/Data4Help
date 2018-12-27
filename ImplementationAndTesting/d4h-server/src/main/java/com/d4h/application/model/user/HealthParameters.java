@@ -15,7 +15,7 @@ public class HealthParameters {
     private float temperature;
     private Date date;
 
-    @OneToOne
+    @ManyToOne (cascade = CascadeType.ALL)
     private User user;
 
     public int getHeartBeat() {

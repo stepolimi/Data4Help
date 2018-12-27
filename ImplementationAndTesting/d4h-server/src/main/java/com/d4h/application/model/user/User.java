@@ -10,13 +10,13 @@ public class User {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private UserCredential credential;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private UserData userData;
 
-    @OneToMany
+    @OneToMany (cascade = CascadeType.ALL)
     private List<HealthParameters> healthParameters = new ArrayList<>();
 
 
@@ -32,8 +32,8 @@ public class User {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setId(String userId) {
+        this.id = userId;
     }
 
     public UserData getUserData() {

@@ -14,7 +14,7 @@ public class Address {
     private String region;
     private String state;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private User user;
 
     public int getCap() {

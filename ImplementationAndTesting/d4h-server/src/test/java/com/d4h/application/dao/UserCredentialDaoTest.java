@@ -1,6 +1,7 @@
 package com.d4h.application.dao;
 
 import com.d4h.application.dao.User.UserCredentialDao;
+import com.d4h.application.dao.User.UsersDao;
 import com.d4h.application.model.user.UserCredential;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +14,7 @@ public class UserCredentialDaoTest extends DaoTestBase{
     public void emptyGetUserCredentials() throws Exception {
         final Context context = container.getContext();
 
-        UserCredentialDao users = (UserCredentialDao) context.lookup("java:global/d4h-server/UserCredentialDao");
+        UsersDao users = (UsersDao) context.lookup("java:global/d4h-server/UsersDao");
 
         assertEquals(0, users.getUserCredentials().size());
     }
@@ -24,7 +25,7 @@ public class UserCredentialDaoTest extends DaoTestBase{
         UserCredential user0 = new UserCredential();
         UserCredential user1 = new UserCredential();
 
-        UserCredentialDao users = (UserCredentialDao) context.lookup("java:global/d4h-server/UserCredentialDao");
+        UsersDao users = (UsersDao) context.lookup("java:global/d4h-server/UsersDao");
 
         users.addUserCredential(user0);
         assertEquals(1, users.getUserCredentials().size());
@@ -40,7 +41,7 @@ public class UserCredentialDaoTest extends DaoTestBase{
     public void emptyGetUserCredential() throws Exception {
         final Context context = container.getContext();
 
-        UserCredentialDao users = (UserCredentialDao) context.lookup("java:global/d4h-server/UserCredentialDao");
+        UsersDao users = (UsersDao) context.lookup("java:global/d4h-server/UsersDao");
 
         assertNull( users.getUserCredential("1"));
     }
@@ -50,7 +51,7 @@ public class UserCredentialDaoTest extends DaoTestBase{
         final Context context = container.getContext();
         UserCredential user = new UserCredential();
 
-        UserCredentialDao users = (UserCredentialDao) context.lookup("java:global/d4h-server/UserCredentialDao");
+        UsersDao users = (UsersDao) context.lookup("java:global/d4h-server/UsersDao");
 
         users.addUserCredential(user);
 

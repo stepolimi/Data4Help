@@ -25,9 +25,6 @@ public class UserServiceImpl implements UserService{
     @EJB
     UsersDao users;
 
-    @EJB
-    UserCredentialDao usersCredentials;
-
     private Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
 
     @Override
@@ -44,14 +41,14 @@ public class UserServiceImpl implements UserService{
             // authenticate the user using the credentials provided
             if(!authenticate(email)){
 
-                usersCredentials.addUserCredential(credential);
-
                 User user = new User();
                 user.setCredential(credential);
+                credential.setUser(user);
 
+                users.addUserCredential(credential);
                 users.addUser(user);
 
-                System.out.println("size: " + users.getUsers().size());
+                System.out.println(ok(credential.getId()).build());
                 return ok(credential.getId()).build();
             }
             else
@@ -106,7 +103,7 @@ public class UserServiceImpl implements UserService{
      */
     private boolean authenticate(String email){
         try {
-            List<UserCredential> usersCred = usersCredentials.getUserCredentials();
+            List<UserCredential> usersCred = users.getUserCredentials();
             if (!usersCred.isEmpty()) {
                 for (UserCredential userCred : usersCred)
                     if (userCred.getEmail().equals(email))
@@ -121,7 +118,7 @@ public class UserServiceImpl implements UserService{
 
     private boolean checkId(String userId){
         try {
-            List<UserCredential> userCredentialList = usersCredentials.getUserCredentials();
+            List<UserCredential> userCredentialList = users.getUserCredentials();
             for(UserCredential userCred : userCredentialList){
                 if(userCred.getId().equals(userId))
                     return true;

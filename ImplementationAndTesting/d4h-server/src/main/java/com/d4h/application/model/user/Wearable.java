@@ -1,9 +1,6 @@
 package com.d4h.application.model.user;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Wearable {
@@ -12,8 +9,10 @@ public class Wearable {
 
     private String name;
 
-//    @ManyToMany
-//    private AcquiredUserData userData;
+    private WearableType type;
+
+    @ManyToOne
+    private UserData userData;
 
     public String getId() {
         return id;
@@ -23,6 +22,22 @@ public class Wearable {
         this.id = id;
     }
 
+    public WearableType getWearableType() {
+        return type;
+    }
+
+    public void setWearableType(WearableType type) {
+        this.type = type;
+    }
+
+    public UserData getUserData() {
+        return userData;
+    }
+
+    public void setUserData(UserData userData) {
+        this.userData = userData;
+    }
+
     public String getName() {
         return name;
     }
@@ -30,12 +45,4 @@ public class Wearable {
     public void setName(String name) {
         this.name = name;
     }
-
-    /*public AcquiredUserData getAcquiredUserData() {
-        return userData;
-    }
-
-    public void setUserData(AcquiredUserData userData) {
-        this.userData = userData;
-    }*/
 }

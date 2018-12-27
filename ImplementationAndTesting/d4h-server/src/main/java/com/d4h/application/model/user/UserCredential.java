@@ -13,7 +13,7 @@ public class UserCredential {
     private String email;
     private String password;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private User user; // devo capire come verificare se registrazione o no
 
     public UserCredential() {}
@@ -41,6 +41,14 @@ public class UserCredential {
 
     public String getId() {
         return id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void setId(String id) {

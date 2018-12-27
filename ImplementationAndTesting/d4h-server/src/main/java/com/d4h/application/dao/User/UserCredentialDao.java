@@ -1,5 +1,6 @@
 package com.d4h.application.dao.User;
 
+import com.d4h.application.dao.DaoBase;
 import com.d4h.application.model.user.UserCredential;
 
 import javax.ejb.Stateful;
@@ -12,7 +13,7 @@ import java.util.List;
 @Stateful
 public class UserCredentialDao {
     @PersistenceContext(unitName = "client-unit", type = PersistenceContextType.EXTENDED)
-    private EntityManager entityManager;
+    private EntityManager entityManager = DaoBase.getDaoBase().getEntityManager();
 
     public void addUserCredential(UserCredential userCredential) throws Exception {
         entityManager.persist(userCredential);

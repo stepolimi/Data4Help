@@ -2,6 +2,7 @@ package com.d4h.application.dao;
 
 
 import com.d4h.application.dao.User.HealthParametersDao;
+import com.d4h.application.dao.User.UsersDao;
 import com.d4h.application.model.user.HealthParameters;
 import org.junit.jupiter.api.Test;
 
@@ -14,9 +15,9 @@ public class HealthParametersDaoTest extends DaoTestBase{
     public void emptyGetHealthParameterss() throws Exception {
         final Context context = container.getContext();
 
-        HealthParametersDao healthParameterss = (HealthParametersDao) context.lookup("java:global/d4h-server/HealthParametersDao");
+        UsersDao users = (UsersDao) context.lookup("java:global/d4h-server/UsersDao");
 
-        assertEquals(0, healthParameterss.getHealthParameters().size());
+        assertEquals(0, users.getHealthParameters().size());
     }
 
     @Test
@@ -25,25 +26,25 @@ public class HealthParametersDaoTest extends DaoTestBase{
         HealthParameters healthParameters0 = new HealthParameters();
         HealthParameters healthParameters1 = new HealthParameters();
 
-        HealthParametersDao healthParameterss = (HealthParametersDao) context.lookup("java:global/d4h-server/HealthParametersDao");
+        UsersDao users = (UsersDao) context.lookup("java:global/d4h-server/UsersDao");
 
-        healthParameterss.addHealthParameters(healthParameters0);
-        assertEquals(1, healthParameterss.getHealthParameters().size());
-        healthParameterss.addHealthParameters(healthParameters1);
-        assertEquals(2, healthParameterss.getHealthParameters().size());
-        healthParameterss.deleteHealthParameters(healthParameters1);
-        assertEquals(1, healthParameterss.getHealthParameters().size());
-        healthParameterss.deleteHealthParameters(healthParameters0);
-        assertEquals(0, healthParameterss.getHealthParameters().size());
+        users.addHealthParameters(healthParameters0);
+        assertEquals(1, users.getHealthParameters().size());
+        users.addHealthParameters(healthParameters1);
+        assertEquals(2, users.getHealthParameters().size());
+        users.deleteHealthParameters(healthParameters1);
+        assertEquals(1, users.getHealthParameters().size());
+        users.deleteHealthParameters(healthParameters0);
+        assertEquals(0, users.getHealthParameters().size());
     }
 
     @Test
     public void emptyGetHealthParameters() throws Exception {
         final Context context = container.getContext();
 
-        HealthParametersDao healthParameterss = (HealthParametersDao) context.lookup("java:global/d4h-server/HealthParametersDao");
+        UsersDao users = (UsersDao) context.lookup("java:global/d4h-server/UsersDao");
 
-        assertNull( healthParameterss.getHealthParameters("1"));
+        assertNull( users.getHealthParameters("1"));
     }
 
     @Test
@@ -51,11 +52,11 @@ public class HealthParametersDaoTest extends DaoTestBase{
         final Context context = container.getContext();
         HealthParameters healthParameters = new HealthParameters();
 
-        HealthParametersDao healthParameterss = (HealthParametersDao) context.lookup("java:global/d4h-server/HealthParametersDao");
+        UsersDao users = (UsersDao) context.lookup("java:global/d4h-server/UsersDao");
 
-        healthParameterss.addHealthParameters(healthParameters);
+        users.addHealthParameters(healthParameters);
 
-        assertNotNull( healthParameterss.getHealthParameters(healthParameters.getId()));
-        healthParameterss.deleteHealthParameters(healthParameters);
+        assertNotNull( users.getHealthParameters(healthParameters.getId()));
+        users.deleteHealthParameters(healthParameters);
     }
 }

@@ -1,5 +1,8 @@
 package com.d4h.application.model.user;
 
+import org.apache.openjpa.persistence.InverseLogical;
+import org.apache.openjpa.persistence.jdbc.Unique;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -9,8 +12,9 @@ public class UserData {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
-
+    @Unique
     private String fiscalCode;
+
     private String name;
     private String surname;
     private Date dateOfBirth;
@@ -19,13 +23,13 @@ public class UserData {
     private Sex sex;
     private Status status;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private Address address;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private User user;
 
-    @ManyToMany
+    @OneToMany (cascade = CascadeType.ALL)
     private List<Wearable> wearable;
 
 

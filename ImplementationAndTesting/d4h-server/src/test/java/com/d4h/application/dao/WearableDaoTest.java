@@ -1,5 +1,6 @@
 package com.d4h.application.dao;
 
+import com.d4h.application.dao.User.UsersDao;
 import com.d4h.application.dao.User.WearableDao;
 import com.d4h.application.model.user.Wearable;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ public class WearableDaoTest extends DaoTestBase{
     public void emptyGetWearables() throws Exception {
         final Context context = container.getContext();
 
-        WearableDao users = (WearableDao) context.lookup("java:global/d4h-server/WearableDao");
+        UsersDao users = (UsersDao) context.lookup("java:global/d4h-server/UsersDao");
 
         assertEquals(0, users.getWearables().size());
     }
@@ -24,7 +25,7 @@ public class WearableDaoTest extends DaoTestBase{
         Wearable user0 = new Wearable();
         Wearable user1 = new Wearable();
 
-        WearableDao users = (WearableDao) context.lookup("java:global/d4h-server/WearableDao");
+        UsersDao users = (UsersDao) context.lookup("java:global/d4h-server/UsersDao");
 
         users.addWearable(user0);
         assertEquals(1, users.getWearables().size());
@@ -40,7 +41,7 @@ public class WearableDaoTest extends DaoTestBase{
     public void emptyGetWearable() throws Exception {
         final Context context = container.getContext();
 
-        WearableDao users = (WearableDao) context.lookup("java:global/d4h-server/WearableDao");
+        UsersDao users = (UsersDao) context.lookup("java:global/d4h-server/UsersDao");
 
         assertNull( users.getWearable("1"));
     }
@@ -50,7 +51,7 @@ public class WearableDaoTest extends DaoTestBase{
         final Context context = container.getContext();
         Wearable user = new Wearable();
 
-        WearableDao users = (WearableDao) context.lookup("java:global/d4h-server/WearableDao");
+        UsersDao users = (UsersDao) context.lookup("java:global/d4h-server/UsersDao");
 
         users.addWearable(user);
 
