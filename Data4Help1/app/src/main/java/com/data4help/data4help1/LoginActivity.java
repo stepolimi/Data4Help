@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -22,7 +23,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText email;
     private EditText password;
-    private String url = "http://192.168.0.143:8080/d4h-server-0.0.1-SNAPSHOT/api/users/registration";
+    private String url = "http://192.168.0.143:8080/d4h-server-0.0.1-SNAPSHOT/api/users";
 
 
     @Override
@@ -38,21 +39,40 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                JSONObject jObject = new JSONObject();
+                JSONObject credential = new JSONObject();
                 try {
-                    jObject.put("email", email.getText().toString());
-                    jObject.put("password", password.getText().toString());
+                    credential.put("email", email.getText().toString());
+                    credential.put("password", password.getText().toString());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
-                JsonObjectRequest jobReq = new JsonObjectRequest(Request.Method.POST, url, jObject,
+                JsonObjectRequest jobReq = new JsonObjectRequest(Request.Method.GET, url, credential,
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject jsonObject) { System.out.print("hi"); }},
                         new Response.ErrorListener() {
                             @Override
-                            public void onErrorResponse(VolleyError volleyError) { VolleyLog.e("Error: "+ volleyError.getMessage()); }});
+                            public void onErrorResponse(VolleyError volleyError) { VolleyLog.e("Error: "+ volleyError.getMessage()); }}){
+                    @Override
+                    protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                        switch (response.statusCode) {
+                            case 200:
+                                System.out.println("funziona!!!");
+                                startActivity(new Intent(LoginActivity.this, MenuActivity.class));
+                                break;
+                            case 403:
+                                System.out.println("The access has been denied. Try again.");
+                                break;
+                            case 401:
+                                System.out.println("The given email is already in the DB. Change it or login.");
+                                break;
+
+                        }
+                        finish();
+                        return super.parseNetworkResponse(response);
+                    }
+                };
                 queue.add(jobReq);
             }
         });

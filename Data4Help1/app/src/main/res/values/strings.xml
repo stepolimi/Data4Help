@@ -111,4 +111,11 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="wearable_devices">Wearable Devices</string>
+    <string name="street">Street*</string>
+    <string name="number">Number*</string>
+    <string name="city">City*</string>
+    <string name="cap">CAP*</string>
+    <string name="region">Region*</string>
+    <string name="country">Country*</string>
+    <string name="save">Save</string>
 </resources>

@@ -4,22 +4,22 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,7 +38,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private Button registrationButton;
 
-    private String url = " http://http://192.168.0.143:8080/d4h-server-0.0.1-SNAPSHOT/api/users/registration";
+    private String url = "http://192.168.0.143:8080/d4h-server-0.0.1-SNAPSHOT/api/users/registration";
     private TextView error;
 
     private JsonObjectRequest jobReq;
@@ -55,24 +55,30 @@ public class RegistrationActivity extends AppCompatActivity {
                 JSONObject personalDetails = new JSONObject();
                 JSONObject credential = new JSONObject();
 
-
+                try {
+                    setPersonalDetails(personalDetails);
+                    setCredential(credential);
+                    System.out.println(credential);
+                    System.out.println("string : " + credential.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
                 RequestQueue queue = Volley.newRequestQueue(RegistrationActivity.this);
                 jobReq = new JsonObjectRequest(Request.Method.POST, url, credential,
                         new Response.Listener<JSONObject>() {
                             @Override
-                            public void onResponse(JSONObject token) {
-                                System.out.println(token);
+                            public void onResponse(JSONObject response) {
+                                System.out.println("ci entra??");
+                                VolleyLog.v("Response:%n %s", response.toString());
+
                                 startActivity(new Intent(RegistrationActivity.this, MenuActivity.class)); }},
                         new Response.ErrorListener() {
                             @Override
-                            public void onErrorResponse(VolleyError volleyError) { VolleyLog.e("Error: "+ volleyError.getMessage()); }});
-                try {
-                    setPersonalDetails(personalDetails);
-                    setCredential(credential);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                            public void onErrorResponse(VolleyError volleyError) {
+                                System.out.println("bo");
+                                VolleyLog.e("Error: "+ volleyError.getMessage()); }});
+
                 queue.add(jobReq);
             }
 
