@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryLight"
+    tools:context=".HomeActivity">
+
+    <LinearLayout
+        android:layout_height="50dp"
+        android:layout_width="wrap_content">
+
+        <TextView
+            android:id="@+id/data"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="@string/data" />
+
+        <TextView
+            android:id="@+id/groupRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="@string/group_request" />
+
+        <TextView
+            android:id="@+id/singleRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="@string/single_request" />
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/mainPage"
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="750dp" />
+
+</RelativeLayout>

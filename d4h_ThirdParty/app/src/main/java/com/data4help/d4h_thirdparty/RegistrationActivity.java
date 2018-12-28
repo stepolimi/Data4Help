@@ -1,17 +1,15 @@
-package com.data4help.data4help1;
+package com.data4help.d4h_thirdparty;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -27,21 +25,19 @@ import org.json.JSONObject;
 public class RegistrationActivity extends AppCompatActivity {
 
     private EditText name;
-    private EditText surname;
+    private EditText typeSociety;
     private EditText fiscalCode;
-    private EditText dateOfBirth;
+    private EditText pIva;
     private EditText street;
     private EditText number;
     private EditText city;
     private EditText cap;
     private EditText region;
     private EditText country;
-    private RadioButton male;
-    private RadioButton female;
-    private CheckBox acceptPolicy;
 
     private EditText email;
     private EditText password;
+    private CheckBox acceptPolicy;
 
     private Button registrationButton;
 
@@ -49,10 +45,6 @@ public class RegistrationActivity extends AppCompatActivity {
     private TextView error;
 
     private JsonObjectRequest jobReq;
-    private RequestQueue queue;
-
-    private JSONObject personalDetails = new JSONObject();
-    private JSONObject credential = new JSONObject();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,107 +52,39 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.registration);
 
         setAttributes();
-      /*  registrationButton.setOnClickListener(new  View.OnClickListener() {
+        registrationButton.setOnClickListener(new  View.OnClickListener() {
             @Override
             public void onClick (View v){
+                JSONObject personalDetails = new JSONObject();
+                JSONObject credential = new JSONObject();
+
                 try {
                     setPersonalDetails(personalDetails);
                     setCredential(credential);
+                    System.out.println(credential);
+                    System.out.println("string : " + credential.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                queue = Volley.newRequestQueue(RegistrationActivity.this);
+
+                RequestQueue queue = Volley.newRequestQueue(RegistrationActivity.this);
                 jobReq = new JsonObjectRequest(Request.Method.POST, url, credential,
                         new Response.Listener<JSONObject>() {
                             @Override
-                            public void onResponse(JSONObject token) {
-                                startActivity(new Intent(RegistrationActivity.this, MenuActivity.class)); }},
+                            public void onResponse(JSONObject response) {
+                                System.out.println("ci entra??");
+                                VolleyLog.v("Response:%n %s", response.toString()); }},
                         new Response.ErrorListener() {
                             @Override
-                            public void onErrorResponse(VolleyError volleyError) { VolleyLog.e("Error: ", volleyError.getMessage()); }}){
-                    @Override
-                    protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                        switch(response.statusCode){
-                            case 200:
-                                try {
-                                    personalDetails.put("authId", "credential id");
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                sendUserData(personalDetails);
-                                System.out.println("funziona");
-                                break;
-                            default:
-                                break;
-                        }
-                        finish();
-                        return super.parseNetworkResponse(response);
-                    }
-                };
+                            public void onErrorResponse(VolleyError volleyError) {
+                                System.out.println("bo");
+                                VolleyLog.e("Error: "+ volleyError.getMessage()); }});
+
                 queue.add(jobReq);
             }
 
-        });*/
-        registrationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { startActivity(new Intent(RegistrationActivity.this, MenuActivity.class)); }
         });
 
-    }
-
-
-
-    /**
-     * @param personalDetails is the object containing all personal details of the just created user
-     */
-    private void sendUserData(JSONObject personalDetails) {
-        jobReq = new JsonObjectRequest(Request.Method.PUT, url, personalDetails,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject jsonObject) {
-                        System.out.println(jsonObject);
-                        startActivity(new Intent(RegistrationActivity.this, MenuActivity.class)); }},
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) { VolleyLog.e("Error: ", volleyError.getMessage()); }}){
-        @Override
-        protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-            switch(response.statusCode){
-                case 200:
-                    System.out.println("funziona!!!");
-                    startActivity(new Intent(RegistrationActivity.this, MenuActivity.class));
-                    break;
-                case 403:
-                    cancelReq("The access has been denied. Try again.");
-                    break;
-                case 401:
-                    cancelReq("The given email is already in the DB. Change it or login.");
-                    break;
-
-            }
-            finish();
-            return super.parseNetworkResponse(response);
-        }
-    };
-        queue.add(jobReq);
-    }
-
-    /**
-     * Clear all param in case of wrong answer
-     */
-    private void deleteParam() {
-        email.getText().clear();
-        password.getText().clear();
-        name.getText().clear();
-        surname.getText().clear();
-        fiscalCode.getText().clear();
-        dateOfBirth.getText().clear();
-        street.getText().clear();
-        number.getText().clear();
-        city.getText().clear();
-        cap.getText().clear();
-        country.getText().clear();
-        region.getText().clear();
     }
 
     /**
@@ -171,15 +95,14 @@ public class RegistrationActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void setPersonalDetails(JSONObject personalDetails) throws JSONException {
         checkValue("name", name.getText().toString(), personalDetails);
-        checkValue("surname", surname.getText().toString(), personalDetails);
-        checkValue("dateOfBirth", dateOfBirth.getText().toString(), personalDetails);
+        checkValue("typeOfSociety", typeSociety.getText().toString(), personalDetails);
+        checkValue("pIva", pIva.getText().toString(), personalDetails);
         JSONObject address = new JSONObject();
         setAddress(address);
         personalDetails.put("address", address);
 
-        checkFiscalCode(personalDetails);
-        checkSex(personalDetails);
         checkPolicyBox(personalDetails);
+        checkFiscalCode(personalDetails);
     }
 
     /**
@@ -199,29 +122,30 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
     /**
-     * @param personalDetails is the JSON object
-     * @throws JSONException if some problems occur
-     *
-     * Checks if a sex is selected: if not it throws an error, if yes it adds the sex values to the JSON Object
-     */
-    private void checkSex(JSONObject personalDetails) throws JSONException{
-        Boolean m = male.isChecked();
-        Boolean f = female.isChecked();
-        if(!f && !m)
-            cancelReq("Some fields are empty. You must fill all of them!");
-        else{
-            personalDetails.put("male", m);
-            personalDetails.put("female", f);
-        }
-    }
-
-    /**
      * set text in the error label and cancel the request
      */
     private void cancelReq(String errorText) {
         error.setText(errorText);
-        jobReq.cancel();
         deleteParam();
+        jobReq.cancel();
+    }
+
+    /**
+     * Clear all param in case of wrong answer
+     */
+    private void deleteParam() {
+        email.getText().clear();
+        password.getText().clear();
+        name.getText().clear();
+        typeSociety.getText().clear();
+        fiscalCode.getText().clear();
+        pIva.getText().clear();
+        street.getText().clear();
+        number.getText().clear();
+        city.getText().clear();
+        cap.getText().clear();
+        country.getText().clear();
+        region.getText().clear();
     }
 
     /**
@@ -269,47 +193,45 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     /**
-     * @param accountDetails is the JSONObject that must be filled
+     * @param credential is the JSONObject that must be filled
      *
-     * Puts the detected values in the accountDetails object
+     * Puts the detected values in the credential object
      */
-    private void setCredential(JSONObject accountDetails) throws JSONException {
+    private void setCredential(JSONObject credential) throws JSONException {
 
-        checkValue("email", email.getText().toString(), accountDetails);
-        checkPassword(accountDetails);
-
-        System.out.println(accountDetails);
+        checkValue("email", email.getText().toString(), credential);
+        checkPassword(credential);
     }
 
     /**
-     * @param accountDetails is the JSONObject in which the fiscal code must be put
+     * @param credential is the JSONObject in which the fiscal code must be put
      * @throws JSONException if some problems occur
      *
      * Checks if the password is in the length range.
      */
     @SuppressLint("SetTextI18n")
-    private void checkPassword(JSONObject accountDetails) throws JSONException {
+    private void checkPassword(JSONObject credential) throws JSONException {
         String psw = password.getText().toString();
         if(psw.length() < 8 || psw.length() > 20)
             cancelReq("The password must contain at least 8 elements.");
 
         else
-            accountDetails.put("password", password.getText().toString());
+            credential.put("password", password.getText().toString());
     }
 
     /**
-     * @param accountDetails is the JSONObject in which the fiscal code must be put
+     * @param credential is the JSONObject in which the fiscal code must be put
      * @throws JSONException if some problems occur
      *
      * Checks if the policy box has been selected or not.
      */
     @SuppressLint("SetTextI18n")
-    private void checkPolicyBox(JSONObject accountDetails) throws JSONException {
+    private void checkPolicyBox(JSONObject credential) throws JSONException {
         boolean policyBox = acceptPolicy.isChecked();
         if (!policyBox)
             cancelReq("Some fields are empty. You must fill all of them!");
         else
-            accountDetails.put("acceptedPolicy", true);
+            credential.put("acceptedPolicy", true);
     }
 
 
@@ -318,12 +240,9 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     private void setAttributes() {
         name = findViewById(R.id.name);
-        surname = findViewById(R.id.surname);
+        typeSociety = findViewById(R.id.typeSociety);
         fiscalCode = findViewById(R.id.fiscalCode);
-        dateOfBirth = findViewById(R.id.dateOfBirth);
-        male = findViewById(R.id.maleButton);
-        female = findViewById(R.id.femaleButton);
-
+        pIva = findViewById(R.id.pIva);
         street = findViewById(R.id.street);
         number = findViewById(R.id.number);
         city = findViewById(R.id.city);
@@ -339,3 +258,4 @@ public class RegistrationActivity extends AppCompatActivity {
         error = findViewById(R.id.error);
     }
 }
+
