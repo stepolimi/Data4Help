@@ -47,4 +47,7 @@
     <string name="geoposition">Geographical Position</string>
     <string name="group_request_param">Group Request Parameters</string>
     <string name="single_request_param">Select User for Single Request</string>
+
+    <string name="refuse">Refuse</string>
+    <string name="subscribe">Subscribe</string>
 </resources>

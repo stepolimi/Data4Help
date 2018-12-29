@@ -61,8 +61,6 @@ public class RegistrationActivity extends AppCompatActivity {
                 try {
                     setPersonalDetails(personalDetails);
                     setCredential(credential);
-                    System.out.println(credential);
-                    System.out.println("string : " + credential.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -72,12 +70,10 @@ public class RegistrationActivity extends AppCompatActivity {
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
-                                System.out.println("ci entra??");
                                 VolleyLog.v("Response:%n %s", response.toString()); }},
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError volleyError) {
-                                System.out.println("bo");
                                 VolleyLog.e("Error: "+ volleyError.getMessage()); }});
 
                 queue.add(jobReq);
