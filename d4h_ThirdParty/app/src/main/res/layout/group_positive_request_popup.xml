@@ -37,7 +37,7 @@
             android:textSize="20dp"/>
 
         <TextView
-            android:id="@+id/singlePositiveRequest"
+            android:id="@+id/groupPositiveRequest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
@@ -46,7 +46,7 @@
             android:textSize="18dp"/>
 
         <Button
-            android:id="@+id/singleRefuseButton"
+            android:id="@+id/groupRefuseButton"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
@@ -58,7 +58,7 @@
 
 
         <Button
-            android:id="@+id/singleAcceptButton"
+            android:id="@+id/groupAcceptButton"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"

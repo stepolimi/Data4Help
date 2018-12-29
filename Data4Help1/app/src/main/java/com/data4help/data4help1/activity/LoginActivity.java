@@ -1,8 +1,8 @@
-package com.data4help.d4h_thirdparty;
+package com.data4help.data4help1.activity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,9 +19,6 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * A login screen that offers login via email/password.
- */
 public class LoginActivity extends AppCompatActivity {
 
     private EditText email;
@@ -32,12 +29,12 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);
+        setContentView(com.data4help.data4help1.R.layout.login);
 
-        email = findViewById(R.id.email);
-        password = findViewById(R.id.password);
-        Button loginButton = findViewById(R.id.loginButton);
-        View registerLink = findViewById(R.id.registerLink);
+        email = findViewById(com.data4help.data4help1.R.id.email);
+        password = findViewById(com.data4help.data4help1.R.id.password);
+        Button loginButton = findViewById(com.data4help.data4help1.R.id.loginButton);
+        View registerLink = findViewById(com.data4help.data4help1.R.id.registerLink);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,10 +43,10 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     credential.put("email", email.getText().toString());
                     credential.put("password", password.getText().toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
                 JsonObjectRequest jobReq = new JsonObjectRequest(Request.Method.GET, url, credential,
                         new Response.Listener<JSONObject>() {
                             @Override
@@ -62,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
                         switch (response.statusCode) {
                             case 200:
                                 System.out.println("funziona!!!");
+                                startActivity(new Intent(LoginActivity.this, MenuActivity.class));
                                 break;
                             case 403:
                                 System.out.println("The access has been denied. Try again.");
@@ -82,8 +80,7 @@ public class LoginActivity extends AppCompatActivity {
 
         registerLink.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { startActivity(new Intent(LoginActivity.this, HomeActivity.class)); }
+            public void onClick(View v) { startActivity(new Intent(LoginActivity.this, RegistrationActivity.class)); }
         });
     }
 }
-

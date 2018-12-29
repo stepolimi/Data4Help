@@ -1,10 +1,9 @@
-package com.data4help.d4h_thirdparty;
+package com.data4help.d4h_thirdparty.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -12,8 +11,6 @@ import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -46,40 +43,39 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private JsonObjectRequest jobReq;
 
+    private String errorString;
+    private boolean incompleteRequest = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.registration);
+        setContentView(com.data4help.d4h_thirdparty.R.layout.registration);
 
         setAttributes();
-        registrationButton.setOnClickListener(new  View.OnClickListener() {
-            @Override
-            public void onClick (View v){
-                JSONObject personalDetails = new JSONObject();
-                JSONObject credential = new JSONObject();
+        registrationButton.setOnClickListener(v -> {
+            JSONObject personalDetails = new JSONObject();
+            JSONObject credential = new JSONObject();
 
-                try {
-                    setPersonalDetails(personalDetails);
-                    setCredential(credential);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                RequestQueue queue = Volley.newRequestQueue(RegistrationActivity.this);
-                jobReq = new JsonObjectRequest(Request.Method.POST, url, credential,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                VolleyLog.v("Response:%n %s", response.toString()); }},
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError volleyError) {
-                                VolleyLog.e("Error: "+ volleyError.getMessage()); }});
-
-                queue.add(jobReq);
+            try {
+                setPersonalDetails(personalDetails);
+                setCredential(credential);
+            } catch (JSONException e) {
+                errorString = "Server problem. Try again later.";
+                incompleteRequest = true;
             }
 
+            RequestQueue queue = Volley.newRequestQueue(RegistrationActivity.this);
+            jobReq = new JsonObjectRequest(Request.Method.POST, url, credential,
+                    response -> VolleyLog.v("Response:%n %s", response.toString()),
+                    volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage()));
+
+            if(incompleteRequest)
+                cancelReq(errorString);
+            else
+            queue.add(jobReq);
         });
+
+        name.setOnClickListener(v -> error.setText(""));
 
     }
 
@@ -120,8 +116,8 @@ public class RegistrationActivity extends AppCompatActivity {
     /**
      * set text in the error label and cancel the request
      */
-    private void cancelReq(String errorText) {
-        error.setText(errorText);
+    private void cancelReq(String errorString) {
+        error.setText(errorString);
         deleteParam();
         jobReq.cancel();
     }
@@ -155,8 +151,10 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     @SuppressLint("SetTextI18n")
     private void checkValue(String field, String value,JSONObject personalDetails) throws JSONException {
-        if(value.isEmpty())
-            cancelReq("Some fields are empty. You must fill all of them!");
+        if(value.isEmpty()){
+            errorString = "Some fields are empty. You must fill all of them!";
+            incompleteRequest = true;
+        }
         else
             personalDetails.put(field, value);
     }
@@ -177,14 +175,17 @@ public class RegistrationActivity extends AppCompatActivity {
             for (int i = 0; i < fc2.length(); i++) {
                 int c = fc2.charAt(i);
                 if (!(c >= '0' && c <= '9' || c >= 'A' && c <= 'Z')) {
-                    cancelReq("The fiscal code is incorrect!");
+                    errorString = "The fiscal code is incorrect!";
+                    incompleteRequest = true;
                     return;
                 }
             }
             personalDetails.put("fiscalCode", fc);
         }
-        else
-            cancelReq("The fiscal code is incorrect!");
+        else{
+            errorString = "The fiscal code is incorrect!";
+            incompleteRequest = true;
+        }
 
     }
 
@@ -194,7 +195,6 @@ public class RegistrationActivity extends AppCompatActivity {
      * Puts the detected values in the credential object
      */
     private void setCredential(JSONObject credential) throws JSONException {
-
         checkValue("email", email.getText().toString(), credential);
         checkPassword(credential);
     }
@@ -208,9 +208,10 @@ public class RegistrationActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void checkPassword(JSONObject credential) throws JSONException {
         String psw = password.getText().toString();
-        if(psw.length() < 8 || psw.length() > 20)
-            cancelReq("The password must contain at least 8 elements.");
-
+        if(psw.length() < 8 || psw.length() > 20){
+            errorString = "The password must contain at least 8 elements.";
+            incompleteRequest = true;
+        }
         else
             credential.put("password", password.getText().toString());
     }
@@ -224,8 +225,10 @@ public class RegistrationActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void checkPolicyBox(JSONObject credential) throws JSONException {
         boolean policyBox = acceptPolicy.isChecked();
-        if (!policyBox)
-            cancelReq("Some fields are empty. You must fill all of them!");
+        if (!policyBox){
+            errorString = "Some fields are empty. You must fill all of them!";
+            incompleteRequest = true;
+        }
         else
             credential.put("acceptedPolicy", true);
     }
@@ -235,23 +238,23 @@ public class RegistrationActivity extends AppCompatActivity {
      * Associates attributes to registration.xml elements
      */
     private void setAttributes() {
-        name = findViewById(R.id.name);
-        typeSociety = findViewById(R.id.typeSociety);
-        fiscalCode = findViewById(R.id.fiscalCode);
-        pIva = findViewById(R.id.pIva);
-        street = findViewById(R.id.street);
-        number = findViewById(R.id.number);
-        city = findViewById(R.id.city);
-        cap = findViewById(R.id.postalCode);
-        region = findViewById(R.id.region);
-        country = findViewById(R.id.country);
+        name = findViewById(com.data4help.d4h_thirdparty.R.id.name);
+        typeSociety = findViewById(com.data4help.d4h_thirdparty.R.id.typeSociety);
+        fiscalCode = findViewById(com.data4help.d4h_thirdparty.R.id.fiscalCode);
+        pIva = findViewById(com.data4help.d4h_thirdparty.R.id.pIva);
+        street = findViewById(com.data4help.d4h_thirdparty.R.id.street);
+        number = findViewById(com.data4help.d4h_thirdparty.R.id.number);
+        city = findViewById(com.data4help.d4h_thirdparty.R.id.city);
+        cap = findViewById(com.data4help.d4h_thirdparty.R.id.postalCode);
+        region = findViewById(com.data4help.d4h_thirdparty.R.id.region);
+        country = findViewById(com.data4help.d4h_thirdparty.R.id.country);
 
-        email = findViewById(R.id.regEmail);
-        password = findViewById(R.id.regPassword);
-        acceptPolicy = findViewById(R.id.acceptPolicy);
+        email = findViewById(com.data4help.d4h_thirdparty.R.id.regEmail);
+        password = findViewById(com.data4help.d4h_thirdparty.R.id.regPassword);
+        acceptPolicy = findViewById(com.data4help.d4h_thirdparty.R.id.acceptPolicy);
 
-        registrationButton = findViewById(R.id.registrationButton);
-        error = findViewById(R.id.error);
+        registrationButton = findViewById(com.data4help.d4h_thirdparty.R.id.registrationButton);
+        error = findViewById(com.data4help.d4h_thirdparty.R.id.error);
     }
 }
 

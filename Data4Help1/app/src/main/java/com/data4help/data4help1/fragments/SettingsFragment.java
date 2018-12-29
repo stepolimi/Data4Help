@@ -1,4 +1,4 @@
-package com.data4help.data4help1;
+package com.data4help.data4help1.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,11 +33,11 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.content_settings, container, false);
+        View view = inflater.inflate(com.data4help.data4help1.R.layout.content_settings, container, false);
 
-        weight = view.findViewById(R.id.weight);
-        height = view.findViewById(R.id.height);
-        Button saveButton = view.findViewById(R.id.saveButton);
+        weight = view.findViewById(com.data4help.data4help1.R.id.weight);
+        height = view.findViewById(com.data4help.data4help1.R.id.height);
+        Button saveButton = view.findViewById(com.data4help.data4help1.R.id.saveButton);
         url = "http://192.168.0.143:8080/d4h_server-0.0.1-SNAPSHOT/api/users/settings";
 
 

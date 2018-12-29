@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegistrationActivity">
+    tools:context="com.data4help.d4h_thirdparty.activity.RegistrationActivity">
 
     <ImageView
         android:id="@+id/imageView3"
@@ -241,6 +241,9 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="7dp"
         android:text="@string/register"
+        android:background="@drawable/button_shape"
+        android:textColor="@color/black"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/error"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -1,14 +1,16 @@
-package com.data4help.d4h_thirdparty;
+package com.data4help.d4h_thirdparty.activity;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.data4help.d4h_thirdparty.fragments.GroupRequestFragment;
+import com.data4help.d4h_thirdparty.fragments.HomeFragment;
+import com.data4help.d4h_thirdparty.fragments.SingleRequestFragment;
+
 class PagerViewAdapter extends FragmentPagerAdapter{
 
-    public PagerViewAdapter(FragmentManager fm) {
-        super(fm);
-    }
+    PagerViewAdapter(FragmentManager fm) { super(fm); }
 
     /**
      * @param position the id of the fragment

@@ -1,9 +1,8 @@
-package com.data4help.d4h_thirdparty;
+package com.data4help.d4h_thirdparty.activity;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.TextView;
 
 public class HomeActivity extends AppCompatActivity{
@@ -16,13 +15,13 @@ public class HomeActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.home);
+        setContentView(com.data4help.d4h_thirdparty.R.layout.home);
 
-        data = findViewById(R.id.data);
-        singleRequest = findViewById(R.id.singleRequest);
-        groupRequest = findViewById(R.id.groupRequest);
+        data = findViewById(com.data4help.d4h_thirdparty.R.id.data);
+        singleRequest = findViewById(com.data4help.d4h_thirdparty.R.id.singleRequest);
+        groupRequest = findViewById(com.data4help.d4h_thirdparty.R.id.groupRequest);
 
-        viewPager = findViewById(R.id.mainPage);
+        viewPager = findViewById(com.data4help.d4h_thirdparty.R.id.mainPage);
         PagerViewAdapter pagerAdapter = new PagerViewAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
 
@@ -51,19 +50,15 @@ public class HomeActivity extends AppCompatActivity{
     private void changeTab(int position) {
         switch (position){
             case 0:
-                System.out.println("0");
                 setColor(data, singleRequest, groupRequest);
                 break;
             case 1:
-                System.out.println("1");
                 setColor(groupRequest, singleRequest, data);
                 break;
             case 2:
-                System.out.println("2");
                 setColor(singleRequest, groupRequest, data);
                 break;
             default:
-                System.out.println("defult");
                 setColor(data, singleRequest, groupRequest);
                 break;
         }
@@ -75,9 +70,9 @@ public class HomeActivity extends AppCompatActivity{
      * @param unselected2 is one of the textView not related to the selected fragment
      */
     private void setColor(TextView selected, TextView unselected1, TextView unselected2){
-        selected.setTextColor(getColor(R.color.colorAccent));
-        unselected1.setTextColor(getColor(R.color.black));
-        unselected2.setTextColor(getColor(R.color.black));
+        selected.setTextColor(getColor(com.data4help.d4h_thirdparty.R.color.colorAccent));
+        unselected1.setTextColor(getColor(com.data4help.d4h_thirdparty.R.color.greyDark));
+        unselected2.setTextColor(getColor(com.data4help.d4h_thirdparty.R.color.greyDark));
     }
 
     /**
@@ -87,12 +82,9 @@ public class HomeActivity extends AppCompatActivity{
      * Changes the fragment depending on the selected textView
      */
     private void setItem(final TextView textView, final int position ) {
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeTab(position);
-                viewPager.setCurrentItem(position);
-            }
+        textView.setOnClickListener(v -> {
+            changeTab(position);
+            viewPager.setCurrentItem(position);
         });
 
     }

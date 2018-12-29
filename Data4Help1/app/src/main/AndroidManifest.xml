@@ -18,28 +18,28 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name=".LoginActivity">
+        <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".RegistrationActivity">
+        <activity android:name=".activity.RegistrationActivity">
             <!-- Default Intent Filter -->
             <intent-filter>
                 <action android:name="android.intent.action.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".MenuActivity" android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".activity.MenuActivity" android:theme="@style/AppTheme.NoActionBar">
             <!-- Default Intent Filter -->
             <intent-filter>
                 <action android:name="android.intent.action.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".SettingsFragment"  android:theme="@style/AppTheme.NoActionBar"
+        <activity android:name=".fragments.SettingsFragment"  android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/settings">
             <!-- Default Intent Filter -->
             <intent-filter>
@@ -47,7 +47,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".HomeFragment"  android:theme="@style/AppTheme.NoActionBar"
+        <activity android:name=".fragments.HomeFragment"  android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/settings">
             <!-- Default Intent Filter -->
             <intent-filter>
@@ -55,7 +55,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ThirdPartiesFragment"  android:theme="@style/AppTheme.NoActionBar"
+        <activity android:name=".fragments.ThirdPartiesFragment"  android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/settings">
             <!-- Default Intent Filter -->
             <intent-filter>

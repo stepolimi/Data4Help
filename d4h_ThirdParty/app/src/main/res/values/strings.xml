@@ -50,4 +50,6 @@
 
     <string name="refuse">Refuse</string>
     <string name="subscribe">Subscribe</string>
+    <string name="dialog_title">Data Request</string>
+    <string name="single_negative_response">The single user has refused your request.</string>
 </resources>

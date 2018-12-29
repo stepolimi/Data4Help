@@ -1,4 +1,4 @@
-package com.data4help.data4help1;
+package com.data4help.data4help1.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -18,7 +18,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,7 +56,7 @@ public class RegistrationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.registration);
+        setContentView(com.data4help.data4help1.R.layout.registration);
 
         setAttributes();
       /*  registrationButton.setOnClickListener(new  View.OnClickListener() {
@@ -317,25 +316,25 @@ public class RegistrationActivity extends AppCompatActivity {
      * Associates attributes to registration.xml elements
      */
     private void setAttributes() {
-        name = findViewById(R.id.name);
-        surname = findViewById(R.id.surname);
-        fiscalCode = findViewById(R.id.fiscalCode);
-        dateOfBirth = findViewById(R.id.dateOfBirth);
-        male = findViewById(R.id.maleButton);
-        female = findViewById(R.id.femaleButton);
+        name = findViewById(com.data4help.data4help1.R.id.name);
+        surname = findViewById(com.data4help.data4help1.R.id.surname);
+        fiscalCode = findViewById(com.data4help.data4help1.R.id.fiscalCode);
+        dateOfBirth = findViewById(com.data4help.data4help1.R.id.dateOfBirth);
+        male = findViewById(com.data4help.data4help1.R.id.maleButton);
+        female = findViewById(com.data4help.data4help1.R.id.femaleButton);
 
-        street = findViewById(R.id.street);
-        number = findViewById(R.id.number);
-        city = findViewById(R.id.city);
-        cap = findViewById(R.id.postalCode);
-        region = findViewById(R.id.region);
-        country = findViewById(R.id.country);
+        street = findViewById(com.data4help.data4help1.R.id.street);
+        number = findViewById(com.data4help.data4help1.R.id.number);
+        city = findViewById(com.data4help.data4help1.R.id.city);
+        cap = findViewById(com.data4help.data4help1.R.id.postalCode);
+        region = findViewById(com.data4help.data4help1.R.id.region);
+        country = findViewById(com.data4help.data4help1.R.id.country);
 
-        email = findViewById(R.id.regEmail);
-        password = findViewById(R.id.regPassword);
-        acceptPolicy = findViewById(R.id.acceptPolicy);
+        email = findViewById(com.data4help.data4help1.R.id.regEmail);
+        password = findViewById(com.data4help.data4help1.R.id.regPassword);
+        acceptPolicy = findViewById(com.data4help.data4help1.R.id.acceptPolicy);
 
-        registrationButton = findViewById(R.id.registrationButton);
-        error = findViewById(R.id.error);
+        registrationButton = findViewById(com.data4help.data4help1.R.id.registrationButton);
+        error = findViewById(com.data4help.data4help1.R.id.error);
     }
 }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
-    tools:context=".SingleRequestFragment">
+    tools:context="com.data4help.d4h_thirdparty.activity.HomeActivity">
 
 
 
@@ -100,12 +100,15 @@
 
         <Button
             android:id="@+id/saveSingleRequestButton"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="10dp"
             android:text="@string/save_and_send"
+            android:background="@drawable/button_shape"
+            android:textColor="@color/black"
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/errorSingleRequest"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

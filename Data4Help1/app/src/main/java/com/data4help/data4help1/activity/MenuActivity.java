@@ -1,4 +1,4 @@
-package com.data4help.data4help1;
+package com.data4help.data4help1.activity;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,27 +12,32 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.data4help.data4help1.fragments.AsosFragment;
+import com.data4help.data4help1.fragments.HomeFragment;
+import com.data4help.data4help1.fragments.SettingsFragment;
+import com.data4help.data4help1.fragments.ThirdPartiesFragment;
+
 public class MenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(com.data4help.data4help1.R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(com.data4help.data4help1.R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(com.data4help.data4help1.R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, com.data4help.data4help1.R.string.navigation_drawer_open, com.data4help.data4help1.R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(com.data4help.data4help1.R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         if(savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, new HomeFragment()).commit();
-            navigationView.setCheckedItem(R.id.nav_heart);
+            getSupportFragmentManager().beginTransaction().replace(com.data4help.data4help1.R.id.frame_container, new HomeFragment()).commit();
+            navigationView.setCheckedItem(com.data4help.data4help1.R.id.nav_heart);
         }
     }
 
@@ -48,8 +53,8 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         Fragment fragment = fragmentChoice(menuItem.getItemId());
         assert fragment != null;
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, fragment).commit();
-        DrawerLayout drawer =findViewById(R.id.drawer_layout);
+        getSupportFragmentManager().beginTransaction().replace(com.data4help.data4help1.R.id.frame_container, fragment).commit();
+        DrawerLayout drawer =findViewById(com.data4help.data4help1.R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -61,13 +66,13 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     @Nullable
     private Fragment fragmentChoice(int itemId) {
         switch (itemId) {
-            case R.id.nav_heart:
+            case com.data4help.data4help1.R.id.nav_heart:
                 return new HomeFragment();
-            case R.id.nav_hospital:
+            case com.data4help.data4help1.R.id.nav_hospital:
                 return new AsosFragment();
-            case R.id.nav_pocket:
+            case com.data4help.data4help1.R.id.nav_pocket:
                 return new ThirdPartiesFragment();
-            case R.id.nav_settings:
+            case com.data4help.data4help1.R.id.nav_settings:
                 return new SettingsFragment();
             default:
                 return null;
@@ -76,7 +81,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     }
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(com.data4help.data4help1.R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {

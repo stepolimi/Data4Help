@@ -61,6 +61,9 @@
         android:layout_marginBottom="56dp"
         android:text="@string/login"
         app:layout_constraintBottom_toTopOf="@+id/registerLink"
+        android:background="@drawable/button_shape"
+        android:textColor="@color/black"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
