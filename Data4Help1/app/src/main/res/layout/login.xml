@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context="com.data4help.data4help1.activity.LoginActivity">
 
     <ImageView
         android:id="@+id/imageView2"
@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="52dp"
+        android:layout_marginBottom="70dp"
         android:ems="10"
         android:hint="@string/password"
         android:inputType="textPassword"
@@ -59,6 +59,9 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="56dp"
         android:text="@string/login"
+        android:background="@drawable/button_shape"
+        android:textColor="@color/black"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/registerLink"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -82,15 +85,26 @@
     <TextView
         android:id="@+id/registerLink"
         android:layout_width="311dp"
-        android:layout_height="32dp"
+        android:layout_height="45dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="28dp"
         android:gravity="center"
         android:text="@string/don_t_you_have_an_account_yet_register_here"
-        android:textColor="#0D47A1"
-        android:textSize="15sp"
+        android:textColor="@color/colorSecondary"
+        android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/loginError"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/loginError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

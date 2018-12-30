@@ -1,0 +1,55 @@
+<resources>
+    <string name="app_name">Data4Help: ThirdParty</string>
+    <string name="email">Email*</string>
+    <string name="password">Password*</string>
+    <string name="login">Login</string>
+    <string name="noAccount">Don\'t you have an account yet? Register here.</string>
+    <string name="personalDetails">Personal Details</string>
+    <string name="name">Name*</string>
+    <string name="type_of_society">Type Of Society*</string>
+    <string name="fiscal_code">Fiscal Code*</string>
+    <string name="p_iva">P.Iva*</string>
+    <string name="personal_account">Personal Account</string>
+    <string name="e_mail_reg">Email*</string>
+    <string name="password_reg">Password*</string>
+    <string name="i_accept_the_regulatory_policy">I accept the regulatory policy</string>
+    <string name="register">Register</string>
+
+    <string name="street">Street*</string>
+    <string name="number">Number*</string>
+    <string name="city">City*</string>
+    <string name="cap">CAP*</string>
+    <string name="region">Region*</string>
+    <string name="country">Country*</string>
+
+    <string name="data">Data</string>
+    <string name="single_request">Single Request</string>
+    <string name="group_request">Group Request</string>
+
+    <string name="if_italian_insert_the_fiscal_code_else_the_number">If italian insert the fiscal code else the numberID.</string>
+    <string name="service_provided">Service Provided*</string>
+    <string name="save_and_send">Save and send Request</string>
+    <string name="service_description">Service Description*</string>
+
+    <string name="age">Age  .</string>
+    <string name="min_age">MinAge</string>
+    <string name="max_age">MaxAge</string>
+    <string name="weight">Weight</string>
+    <string name="min_weight">MinWeight</string>
+    <string name="max_weight">MaxWeight</string>
+    <string name="height">Height</string>
+    <string name="min_height">MinHeight</string>
+    <string name="max_height">MaxHeight</string>
+
+    <string name="sex">Sex</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="geoposition">Geographical Position</string>
+    <string name="group_request_param">Group Request Parameters</string>
+    <string name="single_request_param">Select User for Single Request</string>
+
+    <string name="refuse">Refuse</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="dialog_title">Data Request</string>
+    <string name="single_negative_response">The single user has refused your request.</string>
+</resources>
