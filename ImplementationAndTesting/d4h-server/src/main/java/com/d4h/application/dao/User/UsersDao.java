@@ -1,6 +1,7 @@
 package com.d4h.application.dao.User;
 
 import com.d4h.application.dao.DaoBase;
+import com.d4h.application.model.request.RequestGroup;
 import com.d4h.application.model.user.*;
 
 import javax.ejb.Stateful;
@@ -8,7 +9,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Stateful
-public class UsersDao {
+public class UsersDao extends DaoBase {
     @PersistenceContext(unitName = "client-unit", type = PersistenceContextType.EXTENDED)
     private EntityManager entityManager = DaoBase.getDaoBase().getEntityManager();
 
@@ -39,7 +40,21 @@ public class UsersDao {
         return (User) query.getSingleResult();
     }
 
-  //  public int getFiscalCode
+    public User getUserByMail(String email) throws Exception{
+        Query query = entityManager.createQuery("SELECT u from User u where u.credential.email like :dataId").setParameter("dataId", email);
+        if(query.getResultList().isEmpty())
+            return null;
+        return (User) query.getSingleResult();
+    }
+
+    public User getUserByUserData(UserData data) throws Exception{
+        Query query = entityManager.createQuery("SELECT u from User u where u.userData.id like :dataId").setParameter("dataId", data.getId());
+        if(query.getResultList().isEmpty())
+            return null;
+        return (User) query.getSingleResult();
+    }
+
+
 
     //user credentials
     public void addUserCredential(UserCredential userCredential) throws Exception {
@@ -62,6 +77,7 @@ public class UsersDao {
         return (UserCredential) query.getSingleResult();
     }
 
+
     //user data
     public void addUserData(UserData userData) throws Exception {
         entityManager.persist(userData);
@@ -82,6 +98,14 @@ public class UsersDao {
             return null;
         return (UserData) query.getSingleResult();
     }
+
+    public UserData getUserDataByUser(User user) throws Exception{
+        Query query = entityManager.createQuery("SELECT u from UserData u where u.user.id like :dataId").setParameter("dataId", user.getId());
+        if(query.getResultList().isEmpty())
+            return null;
+        return (UserData) query.getSingleResult();
+    }
+
 
     //wearable
     public void addWearable(Wearable wearable) throws Exception {
@@ -104,6 +128,7 @@ public class UsersDao {
         return (Wearable) query.getSingleResult();
     }
 
+
     //HealthParam
     public void addHealthParameters(HealthParameters healthParameters) throws Exception {
         entityManager.persist(healthParameters);
@@ -118,12 +143,18 @@ public class UsersDao {
         return query.getResultList();
     }
 
-    public HealthParameters getHealthParameters(String id) throws Exception{
+    public HealthParameters getHealthParam(String id) throws Exception{
         Query query = entityManager.createQuery("SELECT u from HealthParameters u where u.id like :dataId").setParameter("dataId", id);
         if(query.getResultList().isEmpty())
             return null;
         return (HealthParameters) query.getSingleResult();
     }
+
+    public List<HealthParameters> getUserHealthParam(String id) throws Exception{
+        Query query = entityManager.createQuery("SELECT u from HealthParameters u where u.user.id like :userId").setParameter("userId", id);
+        return query.getResultList();
+    }
+
 
     //address
     public void addAddress(Address address) throws Exception {

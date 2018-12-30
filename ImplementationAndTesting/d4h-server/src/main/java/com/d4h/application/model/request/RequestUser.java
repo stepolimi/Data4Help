@@ -1,23 +1,63 @@
 package com.d4h.application.model.request;
 
+import com.d4h.application.model.thirdParty.AcquiredUserData;
 import com.d4h.application.model.thirdParty.ThirdParty;
+import com.d4h.application.model.user.User;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
+@Entity
 public class RequestUser implements Request {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
-    @OneToOne
+    @ManyToOne
     private ThirdParty sender;
+
+    @OneToOne
+    private User user;
+
+    @OneToOne
+    private AcquiredUserData acquiredUserData;
 
     private String fiscalCode;
     private String motivation;
     private boolean accepted;
+    private boolean pending;
+    private boolean waiting;
+
+    public AcquiredUserData getAcquiredUserData() {
+        return acquiredUserData;
+    }
+
+    public void setAcquiredUserData(AcquiredUserData acquiredUserData) {
+        this.acquiredUserData = acquiredUserData;
+    }
+
+    public boolean isWaiting() {
+        return waiting;
+    }
+
+    public void setWaiting(boolean waiting) {
+        this.waiting = waiting;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public boolean isPending() {
+        return pending;
+    }
+
+    public void setPending(boolean pending) {
+        this.pending = pending;
+    }
 
     @Override
     public String getId() {

@@ -44,4 +44,6 @@ public class AcquiredUserData {
         healthParams.add(healthParam);
     }
 
+    public void addHealthParameters(List<HealthParameters> healthParameters) { healthParams.addAll(healthParameters); }
+
 }

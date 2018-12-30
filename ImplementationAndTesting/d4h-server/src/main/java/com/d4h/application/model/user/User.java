@@ -1,5 +1,7 @@
 package com.d4h.application.model.user;
 
+import com.d4h.application.model.request.RequestUser;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,20 @@ public class User {
     @OneToMany (cascade = CascadeType.ALL)
     private List<HealthParameters> healthParameters = new ArrayList<>();
 
+    @OneToMany (cascade = CascadeType.ALL)
+    private List<RequestUser> requests = new ArrayList<>();
+
+    public List<RequestUser> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(List<RequestUser> requests) {
+        this.requests = requests;
+    }
+
+    public void addRequest(RequestUser requestUser){
+        requests.add(requestUser);
+    }
 
     public UserCredential getCredential() {
         return credential;
