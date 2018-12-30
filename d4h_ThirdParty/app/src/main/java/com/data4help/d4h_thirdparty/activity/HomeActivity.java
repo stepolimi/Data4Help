@@ -5,6 +5,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
+import com.data4help.d4h_thirdparty.R;
+
 public class HomeActivity extends AppCompatActivity{
 
     private TextView data;
@@ -21,7 +23,7 @@ public class HomeActivity extends AppCompatActivity{
         singleRequest = findViewById(com.data4help.d4h_thirdparty.R.id.singleRequest);
         groupRequest = findViewById(com.data4help.d4h_thirdparty.R.id.groupRequest);
 
-        viewPager = findViewById(com.data4help.d4h_thirdparty.R.id.mainPage);
+        viewPager = findViewById(R.id.mainPage);
         PagerViewAdapter pagerAdapter = new PagerViewAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
 

@@ -1,4 +1,4 @@
-package com.data4help.d4h_thirdparty.fragments;
+package com.data4help.d4h_thirdparty.fragment;
 
 
 import android.annotation.SuppressLint;
@@ -19,8 +19,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.data4help.d4h_thirdparty.dialogfragments.GroupNegativeRequestDialogFragment;
-import com.data4help.d4h_thirdparty.dialogfragments.GroupPositiveRequestDialogFragment;
+import com.data4help.d4h_thirdparty.dialogfragment.GroupNegativeRequestDialogFragment;
+import com.data4help.d4h_thirdparty.dialogfragment.GroupPositiveRequestDialogFragment;
 import org.json.JSONException;
 import org.json.JSONObject;
 

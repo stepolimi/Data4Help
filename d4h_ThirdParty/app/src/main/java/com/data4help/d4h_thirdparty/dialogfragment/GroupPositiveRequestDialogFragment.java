@@ -1,4 +1,4 @@
-package com.data4help.d4h_thirdparty.dialogfragments;
+package com.data4help.d4h_thirdparty.dialogfragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;

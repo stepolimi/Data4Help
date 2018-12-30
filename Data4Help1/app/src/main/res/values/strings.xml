@@ -118,4 +118,17 @@
     <string name="region">Region*</string>
     <string name="country">Country*</string>
     <string name="save">Save</string>
+
+    <string name="min_bpm">Min bpm</string>
+    <string name="average_bpm">Average</string>
+    <string name="max_bpm">Max bpm</string>
+    <string name="xxx">---</string>
+    <string name="min_pressure">Min pressure</string>
+    <string name="max_pressure">Max pressure</string>
+    <string name="min_temperature">Min Temp</string>
+    <string name="max_temperature">Max Temp</string>
+
+    <string name="refuse">Refuse</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="dialog_title">Data Request</string>
 </resources>

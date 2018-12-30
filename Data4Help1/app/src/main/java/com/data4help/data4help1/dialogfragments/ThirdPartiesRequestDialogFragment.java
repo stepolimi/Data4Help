@@ -1,4 +1,4 @@
-package com.data4help.d4h_thirdparty.dialogfragments;
+package com.data4help.data4help1.dialogfragments;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -10,24 +10,25 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.data4help.data4help1.R.*;
+
 import java.util.Objects;
 
-public class SinglePositiveRequestDialogFragment extends DialogFragment{
+public class ThirdPartiesRequestDialogFragment extends DialogFragment{
 
-    public SinglePositiveRequestDialogFragment(){}
+    public ThirdPartiesRequestDialogFragment(){}
 
     public boolean subscribed = false;
+    public TextView singlePositiveRequest;
 
     @Override
     @SuppressLint("SetTextI18n")
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        final View dialogFragment = inflater.inflate(com.data4help.d4h_thirdparty.R.layout.single_positive_request_popup, container, false);
+        final View dialogFragment = inflater.inflate(layout.third_party_request_popup, container, false);
 
-        Button singleAcceptButton = dialogFragment.findViewById(com.data4help.d4h_thirdparty.R.id.singleAcceptButton);
-        Button singleRefuseButton = dialogFragment.findViewById(com.data4help.d4h_thirdparty.R.id.singleRefuseButton);
-        TextView singlePositiveRequest = dialogFragment.findViewById(com.data4help.d4h_thirdparty.R.id.singlePositiveRequest);
-
-        singlePositiveRequest.setText("The single user has accepted your request! If you want you can subscribe for receiving more data.");
+        Button singleAcceptButton = dialogFragment.findViewById(id.singleAcceptButton);
+        Button singleRefuseButton = dialogFragment.findViewById(id.singleRefuseButton);
+        singlePositiveRequest = dialogFragment.findViewById(id.singlePositiveRequest);
 
         singleAcceptButton.setOnClickListener(v -> {
             getDialog().dismiss();

@@ -33,47 +33,41 @@
         android:id="@+id/textView0"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="30dp"
         android:text="@string/health_parameters"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textView1"
+        app:layout_constraintBottom_toTopOf="@+id/date"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="25dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/heart_beat"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/date"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent" />
-
-
-    <TextView
         android:id="@+id/date"
         android:layout_width="wrap_content"
-        android:layout_height="25dp"
+        android:layout_height="18dp"
+        android:text="@string/heart_beat"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toTopOf="@+id/hour"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/hour"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/heart_beat"
-        android:textSize="18sp"
+        android:textSize="15sp"
         android:textStyle="italic"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/gridLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
@@ -82,8 +76,8 @@
         android:layout_width="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView6"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/healthFragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
@@ -128,24 +122,19 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.AppCompat"/>
-
     </LinearLayout>
 
-    <LinearLayout>
 
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="23dp"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/healthFragment"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_marginTop="15dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="20dp"
-        android:text="@string/bpm"
         app:layout_constraintBottom_toTopOf="@+id/textView8"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
         android:id="@+id/textView8"

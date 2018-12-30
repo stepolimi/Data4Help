@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context="com.data4help.d4h_thirdparty.activity.LoginActivity">
 
     <ImageView
         android:id="@+id/imageView2"
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="52dp"
+        android:layout_marginBottom="70dp"
         android:ems="10"
         android:hint="@string/password"
         android:inputType="textPassword"
@@ -86,15 +86,26 @@
     <TextView
         android:id="@+id/registerLink"
         android:layout_width="311dp"
-        android:layout_height="32dp"
+        android:layout_height="45dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="28dp"
         android:gravity="center"
         android:text="@string/noAccount"
-        android:textColor="@color/colorAccent"
-        android:textSize="15sp"
+        android:textColor="@color/colorSecondary"
+        android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/loginError"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/loginError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

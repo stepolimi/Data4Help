@@ -1,4 +1,4 @@
-package com.data4help.d4h_thirdparty.fragments;
+package com.data4help.d4h_thirdparty.fragment;
 
 
 import android.os.Bundle;

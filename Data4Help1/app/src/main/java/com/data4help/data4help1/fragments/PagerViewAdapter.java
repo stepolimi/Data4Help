@@ -1,12 +1,8 @@
-package com.data4help.d4h_thirdparty.activity;
+package com.data4help.data4help1.fragments;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-
-import com.data4help.d4h_thirdparty.fragment.GroupRequestFragment;
-import com.data4help.d4h_thirdparty.fragment.HomeFragment;
-import com.data4help.d4h_thirdparty.fragment.SingleRequestFragment;
 
 class PagerViewAdapter extends FragmentPagerAdapter{
 
@@ -20,11 +16,13 @@ class PagerViewAdapter extends FragmentPagerAdapter{
     public Fragment getItem(int position) {
         switch (position){
             case 0:
-                return new HomeFragment();
+                return new DayFragment();
             case 1:
-                return new GroupRequestFragment();
+                return new WeekFragment();
             case 2:
-                return new SingleRequestFragment();
+                return new MonthFragment();
+            case 3:
+                return new YearFragment();
             default:
                 return null;
 
@@ -33,6 +31,6 @@ class PagerViewAdapter extends FragmentPagerAdapter{
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 }
