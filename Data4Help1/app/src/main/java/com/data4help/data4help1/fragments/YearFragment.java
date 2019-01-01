@@ -1,5 +1,6 @@
 package com.data4help.data4help1.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -15,12 +16,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.data4help.data4help1.AuthToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Objects;
 
+import static com.data4help.data4help1.Config.YEARHEALTHPARAM;
 import static com.data4help.data4help1.R.*;
 
 /**
@@ -36,6 +39,8 @@ public class YearFragment extends Fragment {
 
     private TextView minYearTemperature;
     private TextView maxYearTemperature;
+
+    private JSONObject authUser;
 
     public YearFragment() {
         // Required empty public constructor
@@ -53,16 +58,25 @@ public class YearFragment extends Fragment {
         return view;
     }
 
-    private void getParameters() {
-        JSONObject authUser = new JSONObject();
+    /**
+     * Sets the JSONObject containing the user di
+     */
+    private void setUserId() {
+        authUser = new JSONObject();
         try {
-            authUser.put("authid", "authID");
+            authUser.put("userID", AuthToken.getId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()).getApplicationContext());
-        String url = "";
-        JsonObjectRequest jobReq = new JsonObjectRequest(Request.Method.GET, url, authUser ,
+    }
+
+    private void getParameters() {
+        setUserId();
+
+        Context context = Objects.requireNonNull(getActivity()).getApplicationContext();
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        JsonObjectRequest jobReq = new JsonObjectRequest(Request.Method.POST, YEARHEALTHPARAM, authUser ,
                 jsonObject -> System.out.print("hi"),
                 volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
             @Override
@@ -86,6 +100,11 @@ public class YearFragment extends Fragment {
         queue.add(jobReq);
     }
 
+
+    /**
+     *
+     * Sets all health parameters obtained from the response
+     */
     private void setHealthParameters() {
         //TODO
         minYearBpm.setText("");

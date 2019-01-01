@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                 queue.add(jobReq);
         });
 
-        registerLink.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, RegistrationActivity.class)));
+        registerLink.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, HomeActivity.class)));
     }
 
     /**

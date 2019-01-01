@@ -1,6 +1,6 @@
 package com.data4help.data4help1.fragments;
 
-
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -13,15 +13,18 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.data4help.data4help1.AuthToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
+import static com.data4help.data4help1.Config.WEEKLYHEALTHPARAM;
 import static com.data4help.data4help1.R.*;
 
 
@@ -39,9 +42,9 @@ public class WeekFragment extends Fragment {
     private TextView minWeekTemperature;
     private TextView maxWeekTemperature;
 
-    public WeekFragment() {
-        // Required empty public constructor
-    }
+    private JSONObject authUser;
+
+    public WeekFragment() {}
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -55,24 +58,43 @@ public class WeekFragment extends Fragment {
         return view;
     }
 
-    private void getParameters() {
-        JSONObject authUser = new JSONObject();
+    /**
+     * Sets the JSONObject containing the user di
+     */
+    private void setUserId() {
+        authUser = new JSONObject();
         try {
-            authUser.put("authid", "authID");
+            authUser.put("userID", AuthToken.getId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()).getApplicationContext());
-        String url = "";
-        JsonObjectRequest jobReq = new JsonObjectRequest(Request.Method.GET, url, authUser ,
-                jsonObject -> System.out.print("hi"),
-                volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
+    }
+
+
+    /**
+     * Asks the daily health parameters of the user
+     */
+    private void getParameters() {
+        setUserId();
+
+        Context context = Objects.requireNonNull(getActivity()).getApplicationContext();
+
+        RequestQueue queue = Volley.newRequestQueue(context);
+        JsonObjectRequest jobReq = new JsonObjectRequest(Request.Method.POST, WEEKLYHEALTHPARAM, authUser ,
+                jsonObject -> {},
+                volleyError -> {}){
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 switch (response.statusCode) {
                     case 200:
-                        System.out.println("funziona!!!");
+                        String json = null;
+                        try {
+                            json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
                         setHealthParameters();
+                        //TODO
                         break;
                     case 403:
                         System.out.println("The access has been denied. Try again.");
@@ -88,6 +110,11 @@ public class WeekFragment extends Fragment {
         queue.add(jobReq);
     }
 
+
+    /**
+     *
+     * Sets all health parameters obtained from the response
+     */
     private void setHealthParameters() {
         //TODO
         minWeekBpm.setText("");

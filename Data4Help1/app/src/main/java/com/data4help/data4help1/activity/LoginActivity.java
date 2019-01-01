@@ -13,14 +13,21 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.data4help.data4help1.AuthToken;
 
+import static com.data4help.data4help1.Config.EMPTYFIELDS;
+import static com.data4help.data4help1.Config.LOGINURL;
+import static com.data4help.data4help1.Config.SERVERERROR;
 import static com.data4help.data4help1.R.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -28,12 +35,9 @@ public class LoginActivity extends AppCompatActivity {
     private EditText password;
     private TextView error;
 
-    private String url = "http://192.168.0.143:8080/d4h-server-0.0.1-SNAPSHOT/api/users";
-
     private String errorString;
     private boolean incompleteRequest = false;
-    private JSONObject credential;
-    private JsonObjectRequest jobReq;
+    private JsonObjectRequest loginReq;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,37 +50,50 @@ public class LoginActivity extends AppCompatActivity {
         Button loginButton = findViewById(id.loginButton);
         View registerLink = findViewById(id.registerLink);
 
-        loginButton.setOnClickListener((v)-> {
-            setCredential();
-            RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
-            jobReq = new JsonObjectRequest(Request.Method.GET, url, credential,
-                    jsonObject -> System.out.print("hi"),
-                    volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
-                @Override
-                protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                    switch (response.statusCode) {
-                        case 200:
-                            System.out.println("funziona!!!");
-                            startActivity(new Intent(LoginActivity.this, MenuActivity.class));
-                            break;
-                        case 403:
-                            System.out.println("The access has been denied. Try again.");
-                            break;
-                        case 401:
-                            System.out.println("The given email is already in the DB. Change it or login.");
-                            break;
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JSONObject credential = new JSONObject();
+                setCredential(credential);
+                System.out.println(credential.toString());
+                RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+                loginReq = new JsonObjectRequest(Request.Method.POST, LOGINURL, credential,
+                        response -> {},
+                        volleyError -> {}) {
+                    @Override
+                    protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                        switch (response.statusCode) {
+                            case 200:
+                                try {
+                                    String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                                    new AuthToken(json);
+                                    System.out.println(json);
+                                } catch (UnsupportedEncodingException e) {
+                                    errorString = SERVERERROR;
+                                    incompleteRequest = true;
+                                }
+                                startActivity(new Intent(LoginActivity.this, MenuActivity.class));
+                                break;
+                                //TODO
+                            case 403:
+                                System.out.println("The access has been denied. Try again.");
+                                break;
+                            case 401:
+                                System.out.println("The given email is already in the DB. Change it or login.");
+                                break;
+                        }
+                        finish();
+                        return super.parseNetworkResponse(response);
                     }
-                    finish();
-                    return super.parseNetworkResponse(response);
-                }
-            };
-            if(incompleteRequest)
-                cancelReq(errorString);
-            else
-                queue.add(jobReq);
+                };
+                if (incompleteRequest)
+                    cancelReq(errorString);
+                else
+                    queue.add(loginReq);
+            }
         });
 
-        registerLink.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, MenuActivity.class)));
+        registerLink.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, RegistrationActivity.class)));
     }
 
     /**
@@ -84,14 +101,13 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void cancelReq(String errorString) {
         error.setText(errorString);
-        jobReq.cancel();
+        loginReq.cancel();
     }
 
     /**
      * Sets the attributes in the JSONObject
      */
-    private void setCredential() {
-        credential = new JSONObject();
+    private void setCredential(JSONObject credential) {
         checkValue("email", email.getText().toString(), credential);
         checkValue("password",password.getText().toString(), credential);
     }
@@ -107,14 +123,14 @@ public class LoginActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void checkValue(String field, String value,JSONObject personalDetails){
         if(value.isEmpty()){
-            errorString = "Some fields are empty. You must fill all of them!";
+            errorString = EMPTYFIELDS;
             incompleteRequest = true;
         }
         else {
             try {
                 personalDetails.put(field, value);
             } catch (JSONException e) {
-                errorString = "Server problem. Try again later.";
+                errorString = SERVERERROR;
                 incompleteRequest = true;
             }
         }

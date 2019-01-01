@@ -12,15 +12,18 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.data4help.data4help1.AuthToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
+import static com.data4help.data4help1.Config.DAILYHEALTHPARAM;
 import static com.data4help.data4help1.R.*;
 
 
@@ -39,9 +42,8 @@ public class DayFragment extends Fragment {
     private TextView minDayTemperature;
     private TextView maxDayTemperature;
 
-    public DayFragment() {
-        // Required empty public constructor
-    }
+    private JSONObject authUser;
+    public DayFragment() {}
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -55,24 +57,28 @@ public class DayFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Asks the daily health parameters of the user
+     */
     private void getParameters() {
-        JSONObject authUser = new JSONObject();
-        try {
-            authUser.put("authid", "authID");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        setUserId();
+
         RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()).getApplicationContext());
-        String url = "";
-        JsonObjectRequest jobReq = new JsonObjectRequest(Request.Method.GET, url, authUser ,
-                jsonObject -> System.out.print("hi"),
-                volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
+
+        JsonObjectRequest dailyHealthParamReq = new JsonObjectRequest(Request.Method.POST, DAILYHEALTHPARAM, authUser ,
+                jsonObject -> {},
+                volleyError -> {}){
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 switch (response.statusCode) {
                     case 200:
-                        System.out.println("funziona!!!");
-                        setHealthParameters();
+                        String json = null;
+                        try {
+                            json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                        setHealthParameters(json);
                         break;
                     case 403:
                         System.out.println("The access has been denied. Try again.");
@@ -85,10 +91,27 @@ public class DayFragment extends Fragment {
                 return super.parseNetworkResponse(response);
             }
         };
-        queue.add(jobReq);
+        queue.add(dailyHealthParamReq);
     }
 
-    private void setHealthParameters() {
+    /**
+     * Sets the JSONObject containing the user di
+     */
+    private void setUserId() {
+        authUser = new JSONObject();
+        try {
+            authUser.put("userID", AuthToken.getId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * @param json is the response
+     *
+     * Sets all health parameters obtained from the response
+     */
+    private void setHealthParameters(String json) {
         //TODO
         minDayBpm.setText("");
         averageDayBmp.setText("");

@@ -24,6 +24,9 @@ public class HomeFragment extends Fragment {
     private Button month;
     private Button year;
 
+    protected static TextView weight;
+    protected static TextView height;
+
     private ViewPager viewPager;
 
     @Override
@@ -75,7 +78,6 @@ public class HomeFragment extends Fragment {
     private void changeTab(int position) {
         switch (position){
             case 0:
-                System.out.println("enter?");
                 setColor(day, week, month, year);
                 break;
             case 1:
@@ -88,7 +90,6 @@ public class HomeFragment extends Fragment {
                 setColor(year, day, week, month);
                 break;
             default:
-                System.out.println("entri qui?");
                 setColor(day, week, month, year);
                 break;
         }
@@ -120,6 +121,8 @@ public class HomeFragment extends Fragment {
         month = view.findViewById(R.id.monthButton);
         year = view.findViewById(R.id.yearButton);
 
+        weight = view.findViewById(R.id.homeWeight);
+        height = view.findViewById(R.id.homeHeight);
         setDate(view);
     }
 
