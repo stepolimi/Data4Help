@@ -1,5 +1,7 @@
 package com.d4h.application.model.request;
 
+import com.d4h.application.model.user.Sex;
+
 import javax.persistence.*;
 
 @Entity
@@ -11,12 +13,32 @@ public class RequestAttributes {
     @OneToOne
     private AddressRange addressRange;
 
+    @OneToOne
+    private RequestGroup requestGroup;
+
     private int minHeight;
     private int maxHeight;
     private int minWeight;
     private int maxWeight;
     private int minAge;
     private int maxAge;
+    private Sex sex;
+
+    public Sex getSex() {
+        return sex;
+    }
+
+    public void setSex(Sex sex) {
+        this.sex = sex;
+    }
+
+    public RequestGroup getRequestGroup() {
+        return requestGroup;
+    }
+
+    public void setRequestGroup(RequestGroup requestGroup) {
+        this.requestGroup = requestGroup;
+    }
 
     public AddressRange getAddressRange() {
         return addressRange;

@@ -11,7 +11,15 @@ public class ThirdPartyCredential {
     private String password;
 
     @OneToOne
-    private ThirdParty thirdParty; // devo capire come verificare se registrazione o no
+    private ThirdParty thirdParty;
+
+    public ThirdParty getThirdParty() {
+        return thirdParty;
+    }
+
+    public void setThirdParty(ThirdParty thirdParty) {
+        this.thirdParty = thirdParty;
+    }
 
     public ThirdPartyCredential() {}
 

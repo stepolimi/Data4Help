@@ -31,4 +31,6 @@ public class AnonymousUserData {
         healthParams.add(healthParam);
     }
 
+    public void addHealthParameters(List<HealthParameters> healthParameters) { this.healthParams.addAll(healthParameters); }
+
 }

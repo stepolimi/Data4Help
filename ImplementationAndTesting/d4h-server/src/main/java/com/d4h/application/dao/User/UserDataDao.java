@@ -4,11 +4,12 @@ import com.d4h.application.dao.DaoBase;
 import com.d4h.application.model.user.UserData;
 
 import javax.ejb.Stateful;
+import javax.ejb.Stateless;
 import javax.persistence.*;
 import java.util.List;
 
 @Stateful
-public class UserDataDao {
+public class UserDataDao extends DaoBase{
     @PersistenceContext(unitName = "client-unit", type = PersistenceContextType.EXTENDED)
     private EntityManager entityManager = DaoBase.getDaoBase().getEntityManager();
 

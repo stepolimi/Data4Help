@@ -42,7 +42,7 @@ public class ThirdPartyDaoTest extends DaoTestBase{
 
         ThirdPartyDao thirdParties = (ThirdPartyDao) context.lookup("java:global/d4h-server/ThirdPartyDao");
 
-        assertNull( thirdParties.getThirdParty("1"));
+        assertNull( thirdParties.getThirdPartyById("1"));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class ThirdPartyDaoTest extends DaoTestBase{
 
         thirdParties.addThirdParty(thirdParty);
 
-        assertNotNull( thirdParties.getThirdParty(thirdParty.getId()));
+        assertNotNull( thirdParties.getThirdPartyById(thirdParty.getId()));
         thirdParties.deleteThirdParty(thirdParty);
     }
 }

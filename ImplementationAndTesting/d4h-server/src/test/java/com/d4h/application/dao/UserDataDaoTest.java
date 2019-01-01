@@ -86,22 +86,37 @@ public class UserDataDaoTest extends DaoTestBase{
         user1.setUserData(userData1);
 
 
-        System.out.println(userData0.getUser().getId());
-
-
-        //usersData = (UserDataDao) context.lookup("java:global/d4h-server/UserDataDao");
-
         assertEquals("1",users.getUserData(userData0.getId()).getFiscalCode());
         assertEquals("2",users.getUserData(userData1.getId()).getFiscalCode());
 
         assertEquals(2,users.getUsers().size());
-        for(User u: users.getUsers())
-            System.out.println(u.getUserData());
+
         assertEquals(user0,users.getUserByCode("1"));
 
         users.deleteUser(user0);
         users.deleteUser(user1);
         users.deleteUserData(userData0);
         users.deleteUserData(userData1);
+    }
+
+    @Test
+    public void addAttributes() throws Exception{
+        final Context context = container.getContext();
+        UserData userData0 = new UserData();
+
+        UsersDao users = (UsersDao) context.lookup("java:global/d4h-server/UsersDao");
+
+        userData0.setFiscalCode("1");
+        userData0.setHeight(1);
+        userData0.setName("foo");
+        userData0.setSurname("bar");
+        users.addUserData(userData0);
+
+        assertEquals("1",users.getUserData(userData0.getId()).getFiscalCode());
+        assertEquals(1,users.getUserData(userData0.getId()).getHeight());
+        assertEquals("foo",users.getUserData(userData0.getId()).getName());
+        assertEquals("bar",users.getUserData(userData0.getId()).getSurname());
+
+        users.deleteUserData(userData0);
     }
 }

@@ -1,9 +1,6 @@
 package com.d4h.application.model.thirdParty;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class ThirdPartyData {
@@ -15,6 +12,17 @@ public class ThirdPartyData {
     private int fiscalCode;
     private int pIva;
     private TypeOfSociety type;
+
+    @OneToOne
+    private ThirdParty thirdParty;
+
+    public ThirdParty getThirdParty() {
+        return thirdParty;
+    }
+
+    public void setThirdParty(ThirdParty thirdParty) {
+        this.thirdParty = thirdParty;
+    }
 
     public TypeOfSociety getType() {
         return type;

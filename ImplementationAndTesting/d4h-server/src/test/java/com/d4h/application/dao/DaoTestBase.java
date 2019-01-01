@@ -16,6 +16,7 @@ public class DaoTestBase {
 
      @AfterAll
      public static void tearDown() {
-         UsersDaoTest.container.close();
+         container.close();
+
      }
 }

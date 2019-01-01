@@ -3,6 +3,7 @@ package com.d4h.application.dao.User;
 import com.d4h.application.model.user.Address;
 
 import javax.ejb.Stateful;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;

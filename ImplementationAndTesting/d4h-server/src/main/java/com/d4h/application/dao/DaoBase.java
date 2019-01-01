@@ -12,7 +12,7 @@ public class DaoBase {
 
     private static DaoBase daoBase;
 
-    private DaoBase(){}
+    //private DaoBase(){}
 
     public static DaoBase getDaoBase() {
         if(daoBase == null)
