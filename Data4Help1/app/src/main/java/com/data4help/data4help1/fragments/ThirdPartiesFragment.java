@@ -26,7 +26,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
-import static com.data4help.data4help1.Config.THIRDPARTYNOTIFICATION;
+import static com.data4help.data4help1.Config.THIRDPARTYNOTIFICATIONURL;
 
 public class ThirdPartiesFragment  extends Fragment {
 
@@ -52,7 +52,7 @@ public class ThirdPartiesFragment  extends Fragment {
 
             Context context = Objects.requireNonNull(getActivity()).getApplicationContext();
             RequestQueue queue = Volley.newRequestQueue(context);
-            JsonObjectRequest groupUserRequest = new JsonObjectRequest(Request.Method.POST, THIRDPARTYNOTIFICATION,  null,
+            JsonObjectRequest groupUserRequest = new JsonObjectRequest(Request.Method.POST, THIRDPARTYNOTIFICATIONURL,  null,
                     response -> VolleyLog.v("Response:%n %s", response.toString()),
                     volleyError ->{
                         VolleyLog.e("Error: "+ volleyError.getMessage());}){

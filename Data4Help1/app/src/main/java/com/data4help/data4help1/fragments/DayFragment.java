@@ -23,7 +23,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
-import static com.data4help.data4help1.Config.DAILYHEALTHPARAM;
+import static com.data4help.data4help1.Config.DAILYHEALTHPARAMURL;
 import static com.data4help.data4help1.R.*;
 
 
@@ -65,7 +65,7 @@ public class DayFragment extends Fragment {
 
         RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()).getApplicationContext());
 
-        JsonObjectRequest dailyHealthParamReq = new JsonObjectRequest(Request.Method.POST, DAILYHEALTHPARAM, authUser ,
+        JsonObjectRequest dailyHealthParamReq = new JsonObjectRequest(Request.Method.POST, DAILYHEALTHPARAMURL, authUser ,
                 jsonObject -> {},
                 volleyError -> {}){
             @Override

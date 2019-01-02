@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
-import static com.data4help.data4help1.Config.THIRDPARTYNOTIFICATION;
+import static com.data4help.data4help1.Config.ACCEPTORDENIEURL;
 
 public class ThirdPartiesRequestDialogFragment extends DialogFragment{
 
@@ -79,7 +79,7 @@ public class ThirdPartiesRequestDialogFragment extends DialogFragment{
     private void sendResponse() {
         Context context = Objects.requireNonNull(getActivity()).getApplicationContext();
         RequestQueue queue = Volley.newRequestQueue(context);
-        JsonObjectRequest groupUserRequest = new JsonObjectRequest(Request.Method.POST, THIRDPARTYNOTIFICATION,  null,
+        JsonObjectRequest groupUserRequest = new JsonObjectRequest(Request.Method.POST, ACCEPTORDENIEURL,  null,
                 response -> VolleyLog.v("Response:%n %s", response.toString()),
                 volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
             @Override

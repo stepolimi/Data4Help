@@ -26,7 +26,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
-import static com.data4help.data4help1.Config.MONTHLYHEALTHPARAM;
+import static com.data4help.data4help1.Config.MONTHLYHEALTHPARAMURL;
 import static com.data4help.data4help1.R.*;
 
 /**
@@ -70,7 +70,7 @@ public class MonthFragment extends Fragment {
         Context context = Objects.requireNonNull(getActivity()).getApplicationContext();
         RequestQueue queue = Volley.newRequestQueue(context);
 
-        JsonObjectRequest jobReq = new JsonObjectRequest(Request.Method.POST, MONTHLYHEALTHPARAM, authUser ,
+        JsonObjectRequest jobReq = new JsonObjectRequest(Request.Method.POST, MONTHLYHEALTHPARAMURL, authUser ,
                 jsonObject -> System.out.print("hi"),
                 volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
             @Override

@@ -11,7 +11,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.data4help.data4help1.R;
+import com.data4help.data4help1.activity.HealthParamActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -24,8 +27,8 @@ public class HomeFragment extends Fragment {
     private Button month;
     private Button year;
 
-    protected static TextView weight;
-    protected static TextView height;
+    public static TextView weight;
+    public static TextView height;
 
     private ViewPager viewPager;
 
@@ -34,6 +37,7 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.content_main, container, false);
+
 
         setAttributes(view);
 

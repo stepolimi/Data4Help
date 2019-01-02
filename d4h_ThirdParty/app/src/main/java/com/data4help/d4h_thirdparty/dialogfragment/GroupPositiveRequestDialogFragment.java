@@ -10,32 +10,39 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.data4help.d4h_thirdparty.R.*;
 import java.util.Objects;
+
+import static com.data4help.d4h_thirdparty.Config.POSITIVEGROUPREQUEST;
 
 public class GroupPositiveRequestDialogFragment extends DialogFragment{
     public boolean subscribed = false;
+    public boolean goesOnInSendingData = false;
 
     public GroupPositiveRequestDialogFragment(){}
 
     @Override
     @SuppressLint("SetTextI18n")
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        final View dialogFragment = inflater.inflate(com.data4help.d4h_thirdparty.R.layout.group_positive_request_popup, container, false);
+        final View dialogFragment = inflater.inflate(layout.group_positive_request_popup, container, false);
 
-        Button groupAcceptButton = dialogFragment.findViewById(com.data4help.d4h_thirdparty.R.id.groupAcceptButton);
-        Button groupRefuseButton = dialogFragment.findViewById(com.data4help.d4h_thirdparty.R.id.groupRefuseButton);
-        TextView groupPositiveRequest = dialogFragment.findViewById(com.data4help.d4h_thirdparty.R.id.groupPositiveRequest);
+        Button groupAcceptButton = dialogFragment.findViewById(id.groupAcceptButton);
+        Button groupRefuseButton = dialogFragment.findViewById(id.groupRefuseButton);
+        TextView groupPositiveRequest = dialogFragment.findViewById(id.groupPositiveRequest);
 
-        groupPositiveRequest.setText("The app has found more than 1000 users which respect all request constraints.\n" +
-        "The request has been accepted.\n" + "If you want you can subscribe for receiving more data.\n");
+        groupPositiveRequest.setText(POSITIVEGROUPREQUEST);
 
         groupAcceptButton.setOnClickListener(v -> {
+            goesOnInSendingData = true;
             subscribed = true;
             getDialog().dismiss();
             Objects.requireNonNull(getActivity()).getFragmentManager().findFragmentByTag("SingleRequestFragment");
         });
 
-        groupRefuseButton.setOnClickListener(v -> getDialog().dismiss());
+        groupRefuseButton.setOnClickListener(v -> {
+            goesOnInSendingData = true;
+            getDialog().dismiss();
+        });
 
         return dialogFragment;
     }

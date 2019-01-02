@@ -1,5 +1,6 @@
 package com.data4help.data4help1.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -71,13 +72,14 @@ public class SettingsFragment extends Fragment {
                 settingsReq = new JsonObjectRequest(Request.Method.POST, SETTINGSURL, size,
                         response -> {},
                         volleyError -> {}){
+                    @SuppressLint("SetTextI18n")
                     @Override
                     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                         switch (response.statusCode) {
 
                             case 200:
-                                HomeFragment.height = height;
-                                HomeFragment.weight = weight;
+                                HomeFragment.height.setText("Height: " + height + "cm" );
+                                HomeFragment.weight.setText("Height: " + weight + "kg" );
                                 startActivity(new Intent(context, HomeFragment.class));
                                 break;
                             //TODO: altri codici di error

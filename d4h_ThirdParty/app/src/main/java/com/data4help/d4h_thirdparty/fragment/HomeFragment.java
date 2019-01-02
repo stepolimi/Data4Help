@@ -16,8 +16,7 @@ public class HomeFragment extends Fragment {
 
 
     public HomeFragment() {}
-
-
+    
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

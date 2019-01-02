@@ -1,6 +1,7 @@
 package com.data4help.d4h_thirdparty.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -9,15 +10,27 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.data4help.d4h_thirdparty.AuthToken;
+import com.data4help.d4h_thirdparty.Config;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+
+import static com.data4help.d4h_thirdparty.Config.EMPTYFIELDS;
+import static com.data4help.d4h_thirdparty.Config.INCORRECTFISCALCODE;
+import static com.data4help.d4h_thirdparty.Config.REGISTRATIONURL;
+import static com.data4help.d4h_thirdparty.Config.SERVERERROR;
+import static com.data4help.d4h_thirdparty.Config.SHORTPASSWORD;
 import static com.data4help.d4h_thirdparty.R.*;
 
 
@@ -40,10 +53,10 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private Button registrationButton;
 
-    private String url = "http://192.168.0.143:8080/d4h-server-0.0.1-SNAPSHOT/api/users/registration";
     private TextView error;
 
     private JsonObjectRequest jobReq;
+    private RequestQueue queue;
 
     private String errorString;
     private boolean incompleteRequest = false;
@@ -62,15 +75,40 @@ public class RegistrationActivity extends AppCompatActivity {
                 setPersonalDetails(personalDetails);
                 setCredential(credential);
             } catch (JSONException e) {
-                errorString = "Server problem. Try again later.";
+                errorString = SERVERERROR;
                 incompleteRequest = true;
             }
 
-            RequestQueue queue = Volley.newRequestQueue(RegistrationActivity.this);
-            jobReq = new JsonObjectRequest(Request.Method.POST, url, credential,
+            queue = Volley.newRequestQueue(RegistrationActivity.this);
+            jobReq = new JsonObjectRequest(Request.Method.POST, REGISTRATIONURL, credential,
                     response -> VolleyLog.v("Response:%n %s", response.toString()),
-                    volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage()));
-
+                    volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
+                @Override
+                protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                    switch (response.statusCode) {
+                        case 200:
+                            try {
+                                String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                                new AuthToken(json);
+                                personalDetails.put("userId", AuthToken.getId());
+                            } catch (UnsupportedEncodingException | JSONException e) {
+                                errorString = SERVERERROR;
+                                incompleteRequest = true;
+                            }
+                            sendUserData(personalDetails);
+                            break;
+                        //TODO: altri errori
+                        case 403:
+                            System.out.println("The access has been denied. Try again.");
+                            break;
+                        case 401:
+                            System.out.println("The given email is already in the DB. Change it or login.");
+                            break;
+                    }
+                    finish();
+                    return super.parseNetworkResponse(response);
+                }
+            };
             if(incompleteRequest)
                 cancelReq(errorString);
             else
@@ -82,11 +120,41 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     /**
+     * @param personalDetails is the object containing all personal details of the just created user
+     */
+    private void sendUserData(JSONObject personalDetails) {
+        JsonObjectRequest userDataReq = new JsonObjectRequest(Request.Method.POST, Config.PERSONALDATAURL, personalDetails,
+                response -> {},
+                volleyError -> {}){
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                switch(response.statusCode){
+                    case 200:
+                        startActivity(new Intent(RegistrationActivity.this, HomeActivity.class));
+                        break;
+                    //TODO: codici d'errore
+                    case 403:
+                        cancelReq("The access has been denied. Try again.");
+                        break;
+                    case 401:
+                        cancelReq("The given email is already in the DB. Change it or login.");
+                        break;
+                }
+                finish();
+                return super.parseNetworkResponse(response);
+            }
+        };
+        if(incompleteRequest)
+            cancelReq(errorString);
+        else
+            queue.add(userDataReq);
+    }
+
+    /**
      * @param personalDetails is the JSONObject that must be filled
      *
      * Puts the detected values in the personalDetails object
      */
-    @SuppressLint("SetTextI18n")
     private void setPersonalDetails(JSONObject personalDetails) throws JSONException {
         checkValue("name", name.getText().toString(), personalDetails);
         checkValue("typeOfSociety", typeSociety.getText().toString(), personalDetails);
@@ -94,9 +162,9 @@ public class RegistrationActivity extends AppCompatActivity {
         JSONObject address = new JSONObject();
         setAddress(address);
         personalDetails.put("address", address);
-
-        checkPolicyBox(personalDetails);
         checkFiscalCode(personalDetails);
+
+        checkPolicyBox();
     }
 
     /**
@@ -107,11 +175,33 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     private void setAddress(JSONObject address) throws JSONException {
         checkValue("street", street.getText().toString(), address);
-        checkValue("number", number.getText().toString(), address);
+        checkNumber("number", number.getText().toString(), address);
         checkValue("city", city.getText().toString(), address);
-        checkValue("cap", cap.getText().toString(), address);
+        checkNumber("cap", cap.getText().toString(), address);
         checkValue("region", region.getText().toString(), address);
         checkValue("country", country.getText().toString(), address);
+    }
+
+    /**
+     * @param field is the JSON field
+     * @param value is the value obtained by the related TextView
+     * @param address is the JSONObject
+     *
+     * Checks if the number fields are empty or not
+     */
+    private void checkNumber(String field, String value, JSONObject address) {
+        if(!value.isEmpty()) {
+            try {
+                address.put(field, Integer.parseInt(value));
+            } catch (JSONException e) {
+                errorString = SERVERERROR;
+                incompleteRequest = true;
+            }
+        }
+        else{
+            errorString = EMPTYFIELDS;
+            incompleteRequest = true;
+        }
     }
 
 
@@ -151,10 +241,9 @@ public class RegistrationActivity extends AppCompatActivity {
      * checks if the String that must be insert are empty or not: if empty an error will be thrown, if
      * not it will be put in the JSON Object.
      */
-    @SuppressLint("SetTextI18n")
     private void checkValue(String field, String value,JSONObject personalDetails) throws JSONException {
         if(value.isEmpty()){
-            errorString = "Some fields are empty. You must fill all of them!";
+            errorString = EMPTYFIELDS;
             incompleteRequest = true;
         }
         else
@@ -177,7 +266,7 @@ public class RegistrationActivity extends AppCompatActivity {
             for (int i = 0; i < fc2.length(); i++) {
                 int c = fc2.charAt(i);
                 if (!(c >= '0' && c <= '9' || c >= 'A' && c <= 'Z')) {
-                    errorString = "The fiscal code is incorrect!";
+                    errorString = INCORRECTFISCALCODE;
                     incompleteRequest = true;
                     return;
                 }
@@ -185,7 +274,7 @@ public class RegistrationActivity extends AppCompatActivity {
             personalDetails.put("fiscalCode", fc);
         }
         else{
-            errorString = "The fiscal code is incorrect!";
+            errorString = INCORRECTFISCALCODE;
             incompleteRequest = true;
         }
 
@@ -211,7 +300,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private void checkPassword(JSONObject credential) throws JSONException {
         String psw = password.getText().toString();
         if(psw.length() < 8 || psw.length() > 20){
-            errorString = "The password must contain at least 8 elements.";
+            errorString = SHORTPASSWORD;
             incompleteRequest = true;
         }
         else
@@ -219,20 +308,14 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     /**
-     * @param credential is the JSONObject in which the fiscal code must be put
-     * @throws JSONException if some problems occur
-     *
      * Checks if the policy box has been selected or not.
      */
-    @SuppressLint("SetTextI18n")
-    private void checkPolicyBox(JSONObject credential) throws JSONException {
+    private void checkPolicyBox(){
         boolean policyBox = acceptPolicy.isChecked();
         if (!policyBox){
-            errorString = "Some fields are empty. You must fill all of them!";
+            errorString = EMPTYFIELDS;
             incompleteRequest = true;
         }
-        else
-            credential.put("acceptedPolicy", true);
     }
 
 

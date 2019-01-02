@@ -60,7 +60,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private String errorString;
     private boolean incompleteRequest;
 
-    private JsonObjectRequest jobReq;
+    private JsonObjectRequest registrationReq;
     private RequestQueue queue;
 
     @Override
@@ -84,7 +84,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 }
 
                 queue = Volley.newRequestQueue(RegistrationActivity.this);
-                jobReq = new JsonObjectRequest(Request.Method.POST, REGISTRATIONURL, credential,
+                registrationReq = new JsonObjectRequest(Request.Method.POST, REGISTRATIONURL, credential,
                         response -> {},
                         volleyError -> {}){
                     @Override
@@ -118,7 +118,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 if(incompleteRequest)
                     cancelReq(errorString);
                 else
-                queue.add(jobReq);
+                queue.add(registrationReq);
             }
 
         });
@@ -186,9 +186,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private void setPersonalDetails(JSONObject personalDetails) throws JSONException {
         checkValue("name", name.getText().toString(), personalDetails);
         checkValue("surname", surname.getText().toString(), personalDetails);
-
-         if(!yearOfBirth.getText().toString().isEmpty())
-            personalDetails.put("yearOfBirth", Integer.parseInt(yearOfBirth.getText().toString()));
+        checkNumber("yearOfBirth", yearOfBirth.getText().toString(), personalDetails);
 
         JSONObject address = new JSONObject();
         setAddress(address);
@@ -200,6 +198,28 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     /**
+     * @param field is the JSON field
+     * @param value is the value obtained by the related TextView
+     * @param address is the JSONObject
+     *
+     * Checks if the number fields are empty or not
+     */
+    private void checkNumber(String field, String value, JSONObject address) {
+        if(!value.isEmpty()) {
+            try {
+                address.put(field, Integer.parseInt(value));
+            } catch (JSONException e) {
+                errorString = SERVERERROR;
+                incompleteRequest = true;
+            }
+        }
+        else{
+            errorString = EMPTYFIELDS;
+            incompleteRequest = true;
+        }
+    }
+
+    /**
      * @param address is the jsonObject which will contain the address
      * @throws JSONException if something goes wrong
      *
@@ -207,15 +227,9 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     private void setAddress(JSONObject address) throws JSONException {
         checkValue("street", street.getText().toString(), address);
-
-        if(!number.getText().toString().isEmpty())
-            address.put("number", Integer.parseInt(number.getText().toString()));
-
+        checkNumber("number", number.getText().toString(), address);
         checkValue("city", city.getText().toString(), address);
-
-        if(!cap.getText().toString().isEmpty())
-            address.put("cap", Integer.parseInt(cap.getText().toString()));
-
+        checkNumber("cap", cap.getText().toString(), address);
         checkValue("region", region.getText().toString(), address);
         checkValue("state", country.getText().toString(), address);
     }
@@ -245,7 +259,7 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     private void cancelReq(String errorText) {
         error.setText(errorText);
-        jobReq.cancel();
+        registrationReq.cancel();
         deleteParam();
     }
 
@@ -328,7 +342,6 @@ public class RegistrationActivity extends AppCompatActivity {
     /**
      * Checks if the policy box has been selected or not.
      */
-    @SuppressLint("SetTextI18n")
     private void checkPolicyBox(){
         boolean policyBox = acceptPolicy.isChecked();
         if (!policyBox){

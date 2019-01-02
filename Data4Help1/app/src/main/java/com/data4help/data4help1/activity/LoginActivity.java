@@ -51,45 +51,53 @@ public class LoginActivity extends AppCompatActivity {
         View registerLink = findViewById(id.registerLink);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                JSONObject credential = new JSONObject();
-                setCredential(credential);
-                System.out.println(credential.toString());
-                RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
-                loginReq = new JsonObjectRequest(Request.Method.POST, LOGINURL, credential,
-                        response -> {},
-                        volleyError -> {}) {
+                new Thread(new Runnable() {
                     @Override
-                    protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                        switch (response.statusCode) {
-                            case 200:
-                                try {
-                                    String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                                    new AuthToken(json);
-                                    System.out.println(json);
-                                } catch (UnsupportedEncodingException e) {
-                                    errorString = SERVERERROR;
-                                    incompleteRequest = true;
+                    public void run() {
+                        JSONObject credential = new JSONObject();
+                        setCredential(credential);
+                        System.out.println(credential.toString());
+                        RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+                        loginReq = new JsonObjectRequest(Request.Method.POST, LOGINURL, credential,
+                                response -> {
+                                },
+                                volleyError -> {
+                                }) {
+                            @Override
+                            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                                switch (response.statusCode) {
+                                    case 200:
+                                        try {
+                                            String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                                            new AuthToken(json);
+                                            System.out.println(json);
+                                        } catch (UnsupportedEncodingException e) {
+                                            errorString = SERVERERROR;
+                                            incompleteRequest = true;
+                                        }
+                                        startActivity(new Intent(LoginActivity.this, MenuActivity.class));
+                                        break;
+                                    //TODO
+                                    case 403:
+                                        System.out.println("The access has been denied. Try again.");
+                                        break;
+                                    case 401:
+                                        System.out.println("The given email is already in the DB. Change it or login.");
+                                        break;
                                 }
-                                startActivity(new Intent(LoginActivity.this, MenuActivity.class));
-                                break;
-                                //TODO
-                            case 403:
-                                System.out.println("The access has been denied. Try again.");
-                                break;
-                            case 401:
-                                System.out.println("The given email is already in the DB. Change it or login.");
-                                break;
-                        }
-                        finish();
-                        return super.parseNetworkResponse(response);
+                                finish();
+                                return super.parseNetworkResponse(response);
+                            }
+                        };
+                        if (incompleteRequest)
+                            cancelReq(errorString);
+                        else
+                            queue.add(loginReq);
                     }
-                };
-                if (incompleteRequest)
-                    cancelReq(errorString);
-                else
-                    queue.add(loginReq);
+                }).start();
             }
         });
 

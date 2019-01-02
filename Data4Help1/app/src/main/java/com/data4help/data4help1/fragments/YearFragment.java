@@ -23,7 +23,7 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
-import static com.data4help.data4help1.Config.YEARHEALTHPARAM;
+import static com.data4help.data4help1.Config.YEARHEALTHPARAMURL;
 import static com.data4help.data4help1.R.*;
 
 /**
@@ -76,7 +76,7 @@ public class YearFragment extends Fragment {
         Context context = Objects.requireNonNull(getActivity()).getApplicationContext();
         RequestQueue queue = Volley.newRequestQueue(context);
 
-        JsonObjectRequest jobReq = new JsonObjectRequest(Request.Method.POST, YEARHEALTHPARAM, authUser ,
+        JsonObjectRequest jobReq = new JsonObjectRequest(Request.Method.POST, YEARHEALTHPARAMURL, authUser ,
                 jsonObject -> System.out.print("hi"),
                 volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
             @Override

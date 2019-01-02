@@ -24,7 +24,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
-import static com.data4help.data4help1.Config.WEEKLYHEALTHPARAM;
+import static com.data4help.data4help1.Config.WEEKLYHEALTHPARAMURL;
 import static com.data4help.data4help1.R.*;
 
 
@@ -80,7 +80,7 @@ public class WeekFragment extends Fragment {
         Context context = Objects.requireNonNull(getActivity()).getApplicationContext();
 
         RequestQueue queue = Volley.newRequestQueue(context);
-        JsonObjectRequest jobReq = new JsonObjectRequest(Request.Method.POST, WEEKLYHEALTHPARAM, authUser ,
+        JsonObjectRequest jobReq = new JsonObjectRequest(Request.Method.POST, WEEKLYHEALTHPARAMURL, authUser ,
                 jsonObject -> {},
                 volleyError -> {}){
             @Override

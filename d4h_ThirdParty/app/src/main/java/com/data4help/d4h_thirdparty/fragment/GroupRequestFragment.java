@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +13,27 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+
+import com.data4help.d4h_thirdparty.AuthToken;
 import com.data4help.d4h_thirdparty.dialogfragment.GroupNegativeRequestDialogFragment;
 import com.data4help.d4h_thirdparty.dialogfragment.GroupPositiveRequestDialogFragment;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Objects;
+
+import static com.data4help.d4h_thirdparty.Config.GROUPREQUESTURL;
+import static com.data4help.d4h_thirdparty.Config.SERVERERROR;
+import static com.data4help.d4h_thirdparty.Config.SUBSCRIBEURL;
+import static com.data4help.d4h_thirdparty.R.*;
 
 
 /**
@@ -51,7 +60,6 @@ public class GroupRequestFragment extends Fragment {
 
     private Button saveGroupRequestButton;
 
-    private String url = "http://192.168.0.143:8080/d4h-server-0.0.1-SNAPSHOT/api/users/registration";
     private TextView errorGroupRequest;
 
     private JsonObjectRequest groupUserRequest;
@@ -81,25 +89,34 @@ public class GroupRequestFragment extends Fragment {
             try {
                 setGroupRequest(groupRequest);
             } catch (JSONException e) {
-                error = "Server problem. Try again later.";
+                error = SERVERERROR;
                 incompleteRequest = true;
             }
 
             queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()).getApplicationContext());
-            groupUserRequest = new JsonObjectRequest(Request.Method.POST, url, groupRequest,
-                    response -> VolleyLog.v("Response:%n %s", response.toString()),
-                    volleyError -> {
-                        positiveDialog = new GroupPositiveRequestDialogFragment();
-                        negativeDialog = new GroupNegativeRequestDialogFragment();
-                        final FragmentManager fm = getFragmentManager();
-                        positiveDialog.show(Objects.requireNonNull(fm), "GroupNegativeRequestDialogFragment");
-                        try {
+            groupUserRequest = new JsonObjectRequest(Request.Method.POST, GROUPREQUESTURL, groupRequest,
+                    response -> {},
+                    volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
+                @Override
+                protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                    switch(response.statusCode){
+                        case 200:
+                            positiveDialog = new GroupPositiveRequestDialogFragment();
+                            positiveDialog.show(Objects.requireNonNull(getFragmentManager()), "GroupPositiveRequestDialogFragment");
+                            waitTheAnswer();
                             subscribeRequest();
-                        } catch (JSONException e) {
-                            error = "Server problem. Try again later.";
-                            incompleteRequest = true;
-                        }
-                        VolleyLog.e("Error: "+ volleyError.getMessage()); });
+                            break;
+                        //TODO: codici d'errore
+                        case 403:
+                            negativeDialog = new GroupNegativeRequestDialogFragment();
+                            negativeDialog.show(Objects.requireNonNull(getFragmentManager()), "GroupNegativeRequestDialogFragment");
+                            break;
+                        case 401:
+                            break;
+                    }
+                    return super.parseNetworkResponse(response);
+                }
+            };
             if(incompleteRequest) {
                 cancelReq(error, groupUserRequest);
             }
@@ -110,22 +127,53 @@ public class GroupRequestFragment extends Fragment {
     }
 
     /**
-     * @throws JSONException is something goes wrong
-     *
-     * Creates a PUT
+     * A do-while loop which waits the third party answer
      */
-    private void subscribeRequest() throws JSONException {
+    private void waitTheAnswer() {
+        if (!positiveDialog.goesOnInSendingData) {
+            do {
+                try {
+                    wait(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } while (!positiveDialog.goesOnInSendingData);
+        }
+    }
+
+    /**
+     * Sends the answer to given by the third party to the server
+     */
+    private void subscribeRequest() {
         JSONObject subscribeRequest = new JSONObject();
-        subscribeRequest.put("id", "id");
-        subscribeRequest.put("subscribed", positiveDialog.subscribed);
-        //TODO
-        JsonObjectRequest subscribeReq = new JsonObjectRequest(Request.Method.PUT, url, subscribeRequest,
+        try {
+            subscribeRequest.put("thirdPartyId", AuthToken.getId());
+            subscribeRequest.put("subscribed", positiveDialog.subscribed);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest subscribeGroupReq = new JsonObjectRequest(Request.Method.POST, SUBSCRIBEURL, subscribeRequest,
                 response -> VolleyLog.v("Response:%n %s", response.toString()),
-                volleyError -> VolleyLog.e("Error: " + volleyError.getMessage()));
+                volleyError -> VolleyLog.e("Error: " + volleyError.getMessage())){
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                switch(response.statusCode){
+                    case 200:
+                        Objects.requireNonNull(getActivity()).getFragmentManager().findFragmentByTag("HomeFragment");
+                        break;
+                    //TODO: codici d'errore
+                    case 403:
+                        break;
+                    case 401:
+                        break;
+                }
+                return super.parseNetworkResponse(response);
+            }
+        };
         if(incompleteRequest)
-            cancelReq(error, subscribeReq);
+            cancelReq(error, subscribeGroupReq);
         else
-            queue.add(subscribeReq);
+            queue.add(subscribeGroupReq);
     }
 
     /**
@@ -135,21 +183,21 @@ public class GroupRequestFragment extends Fragment {
      * Fills the JSONObject
      */
     private void setGroupRequest(JSONObject groupRequest) throws JSONException {
-        groupRequest.put("authId", "id");
-        groupRequest.put("minAge", minAge.getText().toString());
-        groupRequest.put("maxAge", maxAge.getText().toString());
-        groupRequest.put("minWeight", minWeight.getText().toString());
-        groupRequest.put("maxWeight", maxWeight.getText().toString());
-        groupRequest.put("minHeight", minHeight.getText().toString());
-        groupRequest.put("maxHeight", maxHeight.getText().toString());
+        groupRequest.put("thirdPartyId", AuthToken.getId());
+        groupRequest.put("minAge", Integer.parseInt(minAge.getText().toString()));
+        groupRequest.put("maxAge", Integer.parseInt(maxAge.getText().toString()));
+        groupRequest.put("minWeight", Integer.parseInt(minWeight.getText().toString()));
+        groupRequest.put("maxWeight", Integer.parseInt(maxWeight.getText().toString()));
+        groupRequest.put("minHeight", Integer.parseInt(minHeight.getText().toString()));
+        groupRequest.put("maxHeight", Integer.parseInt(maxHeight.getText().toString()));
 
         groupRequest.put("male", male.isChecked());
         groupRequest.put("female", female.isChecked());
 
         groupRequest.put("street", street.getText().toString());
-        groupRequest.put("number", number.getText().toString());
+        groupRequest.put("number", Integer.parseInt(number.getText().toString()));
         groupRequest.put("city", city.getText().toString());
-        groupRequest.put("cap", cap.getText().toString());
+        groupRequest.put("cap", Integer.parseInt(cap.getText().toString()));
         groupRequest.put("region", region.getText().toString());
         groupRequest.put("country", country.getText().toString());
     }
@@ -158,25 +206,25 @@ public class GroupRequestFragment extends Fragment {
      * Associates attributes to registration.xml elements
      */
     private void setAttributes(View view) {
-        minAge = view.findViewById(com.data4help.d4h_thirdparty.R.id.minAge);
-        maxAge = view.findViewById(com.data4help.d4h_thirdparty.R.id.maxAge);
-        minWeight = view.findViewById(com.data4help.d4h_thirdparty.R.id.minWeight);
-        maxWeight = view.findViewById(com.data4help.d4h_thirdparty.R.id.maxWeight);
-        minHeight = view.findViewById(com.data4help.d4h_thirdparty.R.id.minHeight);
-        maxHeight = view.findViewById(com.data4help.d4h_thirdparty.R.id.maxHeight);
+        minAge = view.findViewById(id.minAge);
+        maxAge = view.findViewById(id.maxAge);
+        minWeight = view.findViewById(id.minWeight);
+        maxWeight = view.findViewById(id.maxWeight);
+        minHeight = view.findViewById(id.minHeight);
+        maxHeight = view.findViewById(id.maxHeight);
 
-        street = view.findViewById(com.data4help.d4h_thirdparty.R.id.street);
-        number = view.findViewById(com.data4help.d4h_thirdparty.R.id.number);
-        city = view.findViewById(com.data4help.d4h_thirdparty.R.id.city);
-        cap = view.findViewById(com.data4help.d4h_thirdparty.R.id.postalCode);
-        region = view.findViewById(com.data4help.d4h_thirdparty.R.id.region);
-        country = view.findViewById(com.data4help.d4h_thirdparty.R.id.country);
+        street = view.findViewById(id.street);
+        number = view.findViewById(id.number);
+        city = view.findViewById(id.city);
+        cap = view.findViewById(id.postalCode);
+        region = view.findViewById(id.region);
+        country = view.findViewById(id.country);
 
-        male = view.findViewById(com.data4help.d4h_thirdparty.R.id.maleButton);
-        female = view.findViewById(com.data4help.d4h_thirdparty.R.id.femaleButton);
+        male = view.findViewById(id.maleButton);
+        female = view.findViewById(id.femaleButton);
 
-        saveGroupRequestButton = view.findViewById(com.data4help.d4h_thirdparty.R.id.saveGroupRequestButton);
-        errorGroupRequest = view.findViewById(com.data4help.d4h_thirdparty.R.id.errorGroupRequest);
+        saveGroupRequestButton = view.findViewById(id.saveGroupRequestButton);
+        errorGroupRequest = view.findViewById(id.errorGroupRequest);
     }
 
 

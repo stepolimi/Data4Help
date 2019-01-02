@@ -5,7 +5,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import com.data4help.d4h_thirdparty.R;
+import com.data4help.d4h_thirdparty.R.*;
 
 public class HomeActivity extends AppCompatActivity{
 
@@ -17,13 +17,13 @@ public class HomeActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(com.data4help.d4h_thirdparty.R.layout.home);
+        setContentView(layout.home);
 
-        data = findViewById(com.data4help.d4h_thirdparty.R.id.data);
-        singleRequest = findViewById(com.data4help.d4h_thirdparty.R.id.singleRequest);
-        groupRequest = findViewById(com.data4help.d4h_thirdparty.R.id.groupRequest);
+        data = findViewById(id.data);
+        singleRequest = findViewById(id.singleRequest);
+        groupRequest = findViewById(id.groupRequest);
 
-        viewPager = findViewById(R.id.mainPage);
+        viewPager = findViewById(id.mainPage);
         PagerViewAdapter pagerAdapter = new PagerViewAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
 
@@ -49,7 +49,7 @@ public class HomeActivity extends AppCompatActivity{
      *
      * Modifies the textView color in relation to the the chosen position
      */
-    private void changeTab(int position) {
+    public void changeTab(int position) {
         switch (position){
             case 0:
                 setColor(data, singleRequest, groupRequest);
@@ -72,9 +72,9 @@ public class HomeActivity extends AppCompatActivity{
      * @param unselected2 is one of the textView not related to the selected fragment
      */
     private void setColor(TextView selected, TextView unselected1, TextView unselected2){
-        selected.setTextColor(getColor(com.data4help.d4h_thirdparty.R.color.colorAccent));
-        unselected1.setTextColor(getColor(com.data4help.d4h_thirdparty.R.color.greyDark));
-        unselected2.setTextColor(getColor(com.data4help.d4h_thirdparty.R.color.greyDark));
+        selected.setTextColor(getColor(color.colorAccent));
+        unselected1.setTextColor(getColor(color.greyDark));
+        unselected2.setTextColor(getColor(color.greyDark));
     }
 
     /**

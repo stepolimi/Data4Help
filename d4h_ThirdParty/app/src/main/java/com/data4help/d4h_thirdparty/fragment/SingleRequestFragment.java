@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +19,22 @@ import com.android.volley.Response;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.data4help.d4h_thirdparty.AuthToken;
 import com.data4help.d4h_thirdparty.dialogfragment.SingleNegativeRequestDialogFragment;
 import com.data4help.d4h_thirdparty.dialogfragment.SinglePositiveRequestDialogFragment;
+import com.data4help.d4h_thirdparty.R.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 import java.util.Objects;
+
+import static com.data4help.d4h_thirdparty.Config.INCORRECTFISCALCODE;
+import static com.data4help.d4h_thirdparty.Config.INSERTNUMBER;
+import static com.data4help.d4h_thirdparty.Config.SERVERERROR;
+import static com.data4help.d4h_thirdparty.Config.SINGLEREQUESTURL;
+import static com.data4help.d4h_thirdparty.Config.SUBSCRIBEURL;
 
 
 /**
@@ -40,8 +48,6 @@ public class SingleRequestFragment extends Fragment {
 
     private Button saveSingleRequestButton;
     private TextView errorSingleRequest;
-
-    private String url = "http://192.168.0.143:8080/d4h-server-0.0.1-SNAPSHOT/api/users/registration";
 
     private JsonObjectRequest singleUserRequest;
     private  RequestQueue queue;
@@ -76,30 +82,21 @@ public class SingleRequestFragment extends Fragment {
                 }
 
                 queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()).getApplicationContext());
-                singleUserRequest = new JsonObjectRequest(Request.Method.POST, url, singleRequest,
+                singleUserRequest = new JsonObjectRequest(Request.Method.POST, SINGLEREQUESTURL, singleRequest,
                         response -> VolleyLog.v("Response:%n %s", response.toString()),
-                        volleyError -> {
-                            positiveDialog = new SinglePositiveRequestDialogFragment();
-                            negativeDialog = new SingleNegativeRequestDialogFragment();
-                            final FragmentManager fm = getFragmentManager();
-                            negativeDialog.show(Objects.requireNonNull(fm), "SingleNegativeRequestDialogFragment");
-                            try {
-                                subscribeRequest();
-                            } catch (JSONException e) {
-                                error = "Server problem. Try again later.";
-                                incompleteRequest = true;
-                            }
-                            VolleyLog.e("Error: "+ volleyError.getMessage()); }){
+                        volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
                     @Override
                     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                         switch(response.statusCode){
                             case 200:
                                 positiveDialog = new SinglePositiveRequestDialogFragment();
-                                //TODO
+                                positiveDialog.show(Objects.requireNonNull(getFragmentManager()), "SinglePositiveRequestDialogFragment");
+                                waitTheAnswer();
+                                subscribeRequest();
                                 break;
                             default:
                                 negativeDialog = new SingleNegativeRequestDialogFragment();
-                                //TODO
+                                negativeDialog.show(Objects.requireNonNull(getFragmentManager()), "SingleNegativeRequestDialogFragment");
                                 break;
                         }
                         return super.parseNetworkResponse(response);
@@ -114,23 +111,56 @@ public class SingleRequestFragment extends Fragment {
         return view;
     }
 
+
     /**
-     * @throws JSONException is something goes wrong
-     *
-     * Creates a PUT
+     * A do-while loop which waits the third party answer
      */
-    private void subscribeRequest() throws JSONException {
+    private void waitTheAnswer() {
+        if (!positiveDialog.goesOnInSendingData) {
+            do {
+                try {
+                    wait(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } while (!positiveDialog.goesOnInSendingData);
+        }
+    }
+
+    /**
+     * Sends the chosen button to the user
+     */
+    private void subscribeRequest() {
         JSONObject subscribeRequest = new JSONObject();
-        subscribeRequest.put("id", "id");
-        subscribeRequest.put("subscribed", positiveDialog.subscribed);
-        //TODO
-        JsonObjectRequest subscribeReq = new JsonObjectRequest(Request.Method.PUT, url, subscribeRequest,
+        try {
+            subscribeRequest.put("thirdPartyId", AuthToken.getId());
+            subscribeRequest.put("subscribed", positiveDialog.subscribed);
+        } catch (JSONException e) {
+            error = SERVERERROR;
+            incompleteRequest = true;
+        }
+        JsonObjectRequest subscribeSingleReq = new JsonObjectRequest(Request.Method.POST, SUBSCRIBEURL, subscribeRequest,
                 response -> VolleyLog.v("Response:%n %s", response.toString()),
-                volleyError -> VolleyLog.e("Error: " + volleyError.getMessage()));
+                volleyError -> VolleyLog.e("Error: " + volleyError.getMessage())){
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                switch(response.statusCode){
+                    case 200:
+                        Objects.requireNonNull(getActivity()).getFragmentManager().findFragmentByTag("HomeFragment");
+                        break;
+                    //TODO: codici d'errore
+                    case 403:
+                        break;
+                    case 401:
+                        break;
+                }
+                return super.parseNetworkResponse(response);
+            }
+        };
         if(incompleteRequest)
-            cancelReq(error, subscribeReq);
+            cancelReq(error, subscribeSingleReq);
         else
-            queue.add(subscribeReq);
+            queue.add(subscribeSingleReq);
     }
 
 
@@ -142,13 +172,13 @@ public class SingleRequestFragment extends Fragment {
      */
     private void setSingleRequest(JSONObject singleRequest) throws JSONException {
         String country = userCountry.getText().toString().toLowerCase();
-        singleRequest.put("country", country);
+        singleRequest.put("state", country);
 
         if(country.equals("italy"))
             checkFiscalCode(singleRequest);
         else {
             if (userFiscalCode.getText().toString().isEmpty()) {
-                error = "A number must be insert in the fiscal code area.";
+                error = INSERTNUMBER;
                 incompleteRequest = true;
             }
             else
@@ -162,12 +192,12 @@ public class SingleRequestFragment extends Fragment {
      * Associates attributes to registration.xml elements
      */
     private void setAttributes(View view){
-        userCountry = view.findViewById(com.data4help.d4h_thirdparty.R.id.userCountry);
-        userFiscalCode = view.findViewById(com.data4help.d4h_thirdparty.R.id.userFiscalCode);
-        serviceDescription = view.findViewById(com.data4help.d4h_thirdparty.R.id.serviceDescription);
+        userCountry = view.findViewById(id.userCountry);
+        userFiscalCode = view.findViewById(id.userFiscalCode);
+        serviceDescription = view.findViewById(id.serviceDescription);
 
-        saveSingleRequestButton = view.findViewById(com.data4help.d4h_thirdparty.R.id.saveSingleRequestButton);
-        errorSingleRequest = view.findViewById(com.data4help.d4h_thirdparty.R.id.errorSingleRequest);
+        saveSingleRequestButton = view.findViewById(id.saveSingleRequestButton);
+        errorSingleRequest = view.findViewById(id.errorSingleRequest);
     }
 
     /**
@@ -178,7 +208,6 @@ public class SingleRequestFragment extends Fragment {
      * if not an error string will be set.
      *
      */
-    @SuppressLint("SetTextI18n")
     private void checkFiscalCode(JSONObject singleRequest) throws JSONException {
         String fc = userFiscalCode.getText().toString();
         if( fc.length() == 16 ) {
@@ -186,7 +215,7 @@ public class SingleRequestFragment extends Fragment {
             for (int i = 0; i < fc2.length(); i++) {
                 int c = fc2.charAt(i);
                 if (!(c >= '0' && c <= '9' || c >= 'A' && c <= 'Z')) {
-                    error = "The fiscal code is incorrect!";
+                    error = INCORRECTFISCALCODE;
                     incompleteRequest = true;
                     return;
                 }
@@ -194,7 +223,7 @@ public class SingleRequestFragment extends Fragment {
             singleRequest.put("fiscalCode", fc);
         }
         else{
-            error = "The fiscal code is incorrect!";
+            error = INCORRECTFISCALCODE;
             incompleteRequest = true;
         }
     }
