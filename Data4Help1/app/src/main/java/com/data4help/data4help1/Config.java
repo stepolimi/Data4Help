@@ -21,6 +21,8 @@ public class Config {
     public static final String SHORTPASSWORD = "The password must contain at least 8 elements.";
     public static final String SERVERERROR ="Server problem. Try again later.";
     public static final String INCORRECTCOUNTRY = "The app is only working in Europe, insert an european country.";
+    public static final String WRONGEMAIL = "THe entered email is wrong, please insert a correct one";
+    public static final String PRESENCENUMBERORSYMBOLS = "Some fields must not contain numbers or symbols.";
 
 
     //health param high-low values

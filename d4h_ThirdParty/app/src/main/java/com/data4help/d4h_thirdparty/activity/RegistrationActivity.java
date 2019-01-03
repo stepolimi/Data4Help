@@ -1,6 +1,7 @@
 package com.data4help.d4h_thirdparty.activity;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -25,12 +26,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.data4help.d4h_thirdparty.Config.EMPTYFIELDS;
-import static com.data4help.d4h_thirdparty.Config.INCORRECTFISCALCODE;
+import static com.data4help.d4h_thirdparty.Config.INCORRECTPIVA;
+import static com.data4help.d4h_thirdparty.Config.PRESENCENUMBERORSYMBOLS;
 import static com.data4help.d4h_thirdparty.Config.REGISTRATIONURL;
 import static com.data4help.d4h_thirdparty.Config.SERVERERROR;
 import static com.data4help.d4h_thirdparty.Config.SHORTPASSWORD;
+import static com.data4help.d4h_thirdparty.Config.WRONGEMAIL;
 import static com.data4help.d4h_thirdparty.R.*;
 
 
@@ -55,8 +60,9 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private TextView error;
 
-    private JsonObjectRequest jobReq;
+    private JsonObjectRequest registrationReq;
     private RequestQueue queue;
+    private ProgressDialog dialog;
 
     private String errorString;
     private boolean incompleteRequest = false;
@@ -75,12 +81,12 @@ public class RegistrationActivity extends AppCompatActivity {
                 setPersonalDetails(personalDetails);
                 setCredential(credential);
             } catch (JSONException e) {
-                errorString = SERVERERROR;
-                incompleteRequest = true;
+                setErrorString(SERVERERROR);
             }
 
+            setProgressDialog();
             queue = Volley.newRequestQueue(RegistrationActivity.this);
-            jobReq = new JsonObjectRequest(Request.Method.POST, REGISTRATIONURL, credential,
+            registrationReq = new JsonObjectRequest(Request.Method.POST, REGISTRATIONURL, credential,
                     response -> VolleyLog.v("Response:%n %s", response.toString()),
                     volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
                 @Override
@@ -92,8 +98,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                 new AuthToken(json);
                                 personalDetails.put("userId", AuthToken.getId());
                             } catch (UnsupportedEncodingException | JSONException e) {
-                                errorString = SERVERERROR;
-                                incompleteRequest = true;
+                                setErrorString(SERVERERROR);
                             }
                             sendUserData(personalDetails);
                             break;
@@ -110,20 +115,28 @@ public class RegistrationActivity extends AppCompatActivity {
                 }
             };
             if(incompleteRequest)
-                cancelReq(errorString);
+                cancelReq(errorString, registrationReq);
             else
-            queue.add(jobReq);
+            queue.add(registrationReq);
         });
+    }
 
-        name.setOnClickListener(v -> error.setText(""));
-
+    /**
+     * Sets a progress dialog to show to the user that the app is verifying the credentials and the
+     * personal details added by the user
+     */
+    private void setProgressDialog() {
+        dialog = new ProgressDialog(RegistrationActivity.this);
+        dialog.setMessage("Please wait...");
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 
     /**
      * @param personalDetails is the object containing all personal details of the just created user
      */
     private void sendUserData(JSONObject personalDetails) {
-        JsonObjectRequest userDataReq = new JsonObjectRequest(Request.Method.POST, Config.PERSONALDATAURL, personalDetails,
+        JsonObjectRequest thirdPartyDataReq = new JsonObjectRequest(Request.Method.POST, Config.PERSONALDATAURL, personalDetails,
                 response -> {},
                 volleyError -> {}){
             @Override
@@ -134,10 +147,10 @@ public class RegistrationActivity extends AppCompatActivity {
                         break;
                     //TODO: codici d'errore
                     case 403:
-                        cancelReq("The access has been denied. Try again.");
+                        System.out.println("The access has been denied. Try again.");
                         break;
                     case 401:
-                        cancelReq("The given email is already in the DB. Change it or login.");
+                        System.out.println("The given email is already in the DB. Change it or login.");
                         break;
                 }
                 finish();
@@ -145,9 +158,9 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         };
         if(incompleteRequest)
-            cancelReq(errorString);
+            cancelReq(errorString, thirdPartyDataReq);
         else
-            queue.add(userDataReq);
+            queue.add(thirdPartyDataReq);
     }
 
     /**
@@ -158,11 +171,10 @@ public class RegistrationActivity extends AppCompatActivity {
     private void setPersonalDetails(JSONObject personalDetails) throws JSONException {
         checkValue("name", name.getText().toString(), personalDetails);
         checkValue("typeOfSociety", typeSociety.getText().toString(), personalDetails);
-        checkValue("pIva", pIva.getText().toString(), personalDetails);
         JSONObject address = new JSONObject();
         setAddress(address);
         personalDetails.put("address", address);
-        checkFiscalCode(personalDetails);
+        checkNumber("pIva", pIva.getText().toString(), personalDetails);
 
         checkPolicyBox();
     }
@@ -190,28 +202,32 @@ public class RegistrationActivity extends AppCompatActivity {
      * Checks if the number fields are empty or not
      */
     private void checkNumber(String field, String value, JSONObject address) {
+
         if(!value.isEmpty()) {
-            try {
-                address.put(field, Integer.parseInt(value));
-            } catch (JSONException e) {
-                errorString = SERVERERROR;
-                incompleteRequest = true;
+            if(field.equals("pIva") && value.length()!= 11)
+                setErrorString(INCORRECTPIVA);
+            else {
+                try {
+                    address.put(field, Integer.parseInt(value));
+                } catch (JSONException e) {
+                    setErrorString(SERVERERROR);
+                }
             }
         }
-        else{
-            errorString = EMPTYFIELDS;
-            incompleteRequest = true;
-        }
-    }
+        else
+            setErrorString(EMPTYFIELDS);
 
+    }
 
     /**
      * set text in the error label and cancel the request
      */
-    private void cancelReq(String errorString) {
+    private void cancelReq(String errorString, JsonObjectRequest request) {
         error.setText(errorString);
         deleteParam();
-        jobReq.cancel();
+        incompleteRequest = false;
+        dialog.dismiss();
+        request.cancel();
     }
 
     /**
@@ -241,43 +257,14 @@ public class RegistrationActivity extends AppCompatActivity {
      * checks if the String that must be insert are empty or not: if empty an error will be thrown, if
      * not it will be put in the JSON Object.
      */
+    @SuppressLint("SetTextI18n")
     private void checkValue(String field, String value,JSONObject personalDetails) throws JSONException {
-        if(value.isEmpty()){
-            errorString = EMPTYFIELDS;
-            incompleteRequest = true;
-        }
+        if(value.isEmpty())
+            setErrorString(EMPTYFIELDS);
+        else if (value.matches("[^A-Za-z]"))
+            setErrorString(PRESENCENUMBERORSYMBOLS);
         else
             personalDetails.put(field, value);
-    }
-
-    /**
-     * @param personalDetails is the JSONObject in which the fiscal code must be put
-     * @throws JSONException if some problems occur
-     *
-     * Checks if the given fiscal code is correct for length and elements: if it is correct it will be put in the JSON;
-     * if not an error string will be set.
-     *
-     */
-    @SuppressLint("SetTextI18n")
-    private void checkFiscalCode(JSONObject personalDetails) throws JSONException {
-        String fc = fiscalCode.getText().toString();
-        if( fc.length() == 16 ) {
-            String fc2 = fc.toUpperCase();
-            for (int i = 0; i < fc2.length(); i++) {
-                int c = fc2.charAt(i);
-                if (!(c >= '0' && c <= '9' || c >= 'A' && c <= 'Z')) {
-                    errorString = INCORRECTFISCALCODE;
-                    incompleteRequest = true;
-                    return;
-                }
-            }
-            personalDetails.put("fiscalCode", fc);
-        }
-        else{
-            errorString = INCORRECTFISCALCODE;
-            incompleteRequest = true;
-        }
-
     }
 
     /**
@@ -286,8 +273,33 @@ public class RegistrationActivity extends AppCompatActivity {
      * Puts the detected values in the credential object
      */
     private void setCredential(JSONObject credential) throws JSONException {
-        checkValue("email", email.getText().toString(), credential);
+        checkEmail(credential);
         checkPassword(credential);
+    }
+
+    /**
+     * @param credentials is the JSONObject which must be filled with th email
+     *
+     * Checks if the given email is correct or not
+     */
+    @SuppressLint("SetTextI18n")
+    private void checkEmail(JSONObject credentials) {
+        String mail = email.getText().toString();
+        if(!mail.isEmpty()){
+            String validEmail = "[a-zA-Z0-9+._%\\-]{1,256}" + "@" + "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" + "(" + "\\." +
+                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" + ")+";
+
+            Matcher matcher= Pattern.compile(validEmail).matcher(mail);
+            if(matcher.matches()) {
+                try {
+                    credentials.put("email", mail);
+                } catch (JSONException e) {
+                    setErrorString(SERVERERROR);
+                }
+            }
+            else setErrorString(WRONGEMAIL);
+        }
+        else setErrorString(EMPTYFIELDS);
     }
 
     /**
@@ -296,13 +308,9 @@ public class RegistrationActivity extends AppCompatActivity {
      *
      * Checks if the password is in the length range.
      */
-    @SuppressLint("SetTextI18n")
     private void checkPassword(JSONObject credential) throws JSONException {
         String psw = password.getText().toString();
-        if(psw.length() < 8 || psw.length() > 20){
-            errorString = SHORTPASSWORD;
-            incompleteRequest = true;
-        }
+        if(psw.length() < 8 || psw.length() > 20) setErrorString(SHORTPASSWORD);
         else
             credential.put("password", password.getText().toString());
     }
@@ -312,12 +320,9 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     private void checkPolicyBox(){
         boolean policyBox = acceptPolicy.isChecked();
-        if (!policyBox){
-            errorString = EMPTYFIELDS;
-            incompleteRequest = true;
-        }
+        if (!policyBox)
+            setErrorString(EMPTYFIELDS);
     }
-
 
     /**
      * Associates attributes to registration.xml elements
@@ -341,5 +346,35 @@ public class RegistrationActivity extends AppCompatActivity {
         registrationButton = findViewById(id.registrationButton);
         error = findViewById(id.error);
     }
+
+    /**
+     * @param error is the error string
+     *
+     *              Sets the error label
+     */
+    private void setErrorString(String error){
+        switch (error){
+            case EMPTYFIELDS:
+                errorString = EMPTYFIELDS;
+                break;
+            case SERVERERROR:
+                errorString = SERVERERROR;
+                break;
+            case SHORTPASSWORD:
+                errorString = SHORTPASSWORD;
+                break;
+            case INCORRECTPIVA:
+                errorString = INCORRECTPIVA;
+                break;
+            case WRONGEMAIL:
+                errorString = WRONGEMAIL;
+                break;
+            case PRESENCENUMBERORSYMBOLS:
+                errorString = PRESENCENUMBERORSYMBOLS;
+                break;
+        }
+        incompleteRequest = true;
+    }
+
 }
 
