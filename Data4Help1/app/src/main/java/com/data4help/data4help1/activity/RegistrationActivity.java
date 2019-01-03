@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 
 import static com.data4help.data4help1.Config.EMPTYFIELDS;
+import static com.data4help.data4help1.Config.INCORRECTCOUNTRY;
 import static com.data4help.data4help1.Config.INCORRECTFISCALCODE;
 import static com.data4help.data4help1.Config.PERSONALDATAURL;
 import static com.data4help.data4help1.Config.REGISTRATIONURL;
@@ -28,13 +29,15 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.data4help.data4help1.AuthToken;
+import com.data4help.data4help1.EuropeanCountry;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
-public class RegistrationActivity extends AppCompatActivity {
+public class RegistrationActivity extends AppCompatActivity{
 
     private EditText name;
     private EditText surname;
@@ -83,6 +86,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     incompleteRequest = true;
                 }
 
+
                 queue = Volley.newRequestQueue(RegistrationActivity.this);
                 registrationReq = new JsonObjectRequest(Request.Method.POST, REGISTRATIONURL, credential,
                         response -> {},
@@ -120,8 +124,8 @@ public class RegistrationActivity extends AppCompatActivity {
                 else
                 queue.add(registrationReq);
             }
-
         });
+
 
     }
 
@@ -231,7 +235,30 @@ public class RegistrationActivity extends AppCompatActivity {
         checkValue("city", city.getText().toString(), address);
         checkNumber("cap", cap.getText().toString(), address);
         checkValue("region", region.getText().toString(), address);
-        checkValue("state", country.getText().toString(), address);
+        checkState(address);
+    }
+
+    /**
+     * @param address is the JsonObject which should contain the country
+     *
+     * Checks if the country is an european one or not.
+     */
+    private void checkState(JSONObject address) {
+        String state = country.getText().toString();
+        List<String> europeanCountry= new EuropeanCountry().getEuropeanCountry();
+        for(String  ec: europeanCountry){
+            if(ec.equals(state)) {
+                try {
+                    address.put("state", state);
+                } catch (JSONException e) {
+                    errorString = SERVERERROR;
+                    incompleteRequest = true;
+                }
+            }
+        }
+        errorString = INCORRECTCOUNTRY;
+        incompleteRequest = true;
+
     }
 
 

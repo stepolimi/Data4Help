@@ -20,6 +20,7 @@ public class Config {
     public static final String INCORRECTFISCALCODE = "The fiscal code is incorrect!";
     public static final String SHORTPASSWORD = "The password must contain at least 8 elements.";
     public static final String SERVERERROR ="Server problem. Try again later.";
+    public static final String INCORRECTCOUNTRY = "The app is only working in Europe, insert an european country.";
 
 
     //health param high-low values
@@ -31,4 +32,22 @@ public class Config {
     public static final int MAXMINPRESSURE = 80;
     public static final double MINTEMPERATURE = 36.0;
     public static final double MAXTEMPERATURE = 37.2;
+
+    //country
+    static final String AUSTRIA = "austria";
+    static final String BELGIUM = "belgium";
+    static final String BULGARIA = "bulgaria";
+    static final String CROATIA = "croatia";
+    static final String CYPRUS = "cyprus";
+    static final String CZECHIA = "czechia";
+    static final String DENMARK = "denmark";
+    static final String ESTONIA = "estonia";
+    static final String FINLAND = "finland";
+    static final String FRANCE = "france";
+    static final String GERMANY = "germany";
+    static final String GREECE = "greece";
+    static final String HUNGARY = "hungary";
+    static final String IRELAND = "ireland";
+    static final String ITALY = "italy";
+
 }

@@ -1,0 +1,116 @@
+\documentclass[a4paper,12pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+
+%Figure progressive enumeration
+\usepackage{chngcntr}
+\counterwithin{figure}{chapter}
+\counterwithin{table}{chapter}
+
+
+%package used to enumerate figures
+\usepackage[labelfont=bf]{caption}
+
+%hyperref for interactive PDF index
+\usepackage[bookmarks, colorlinks, breaklinks]{hyperref}
+\hypersetup{linkcolor=black, citecolor=black, filecolor=black, urlcolor=black}
+
+%Package required to use special symbols
+\usepackage{amsmath, amssymb}
+
+%Package required to use figures
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{placeins}
+
+%Include the bibliography in the table of contents
+\usepackage{tocbibind}
+
+%Package used to insert figures at the specified position
+\usepackage{float}
+\usepackage{longtable}
+
+%Our chapters must be called sections
+\addto\captionsenglish{\renewcommand{\chaptername}{Section}}
+
+\begin{document}
+
+	%Code for title page
+	\begin{titlepage}
+		\centering
+		\includegraphics[width=0.20\textwidth]{./pictures/logo_polimi.png}\par
+
+		{Politecnico di Milano \\ AA 2018-2019} \par
+		\vspace{1.5cm}
+
+		{Computer Science and Engineering}\par
+		\Large{Software Engineering II}\par
+		\vspace{1.0cm}
+
+		\includegraphics[width=1.00\textwidth]{./pictures/logo_trackme.png}\par
+		{\LARGE \textbf{Implementation and Testing Document} \par}
+		\vspace{1.0cm}
+		{\Large Stefano Bagarin\\ Alessandra Pasini\par}
+		\vspace{2cm}
+		\vfill
+
+		% Bottom of the page
+		{\large Document version: 1.0\par}
+		{\large \today \par}
+	\end{titlepage}
+
+	%Make the table of contents
+	\tableofcontents
+
+	%INTRODUCTION
+	\chapter{Introduction}
+	\label{ch:Introduction}
+
+	\section{Scope}
+	\input{./Introduction/scope.tex}
+
+	\section{References}
+	\input{./Introduction/references.tex}
+
+	%Software Functions
+	\chapter{Software Functions}
+	\label{ch: Software_Functions}
+
+	\section{Implemented functions in both Users and Third Parties' app }
+	\input{./Software_Functions/implemented_functions_both.tex}
+
+	\section{Implemented functions in Users' app}
+	\input{./Software_Functions/implemented_function_user.tex}
+
+	\section{Implemented functions in Third Parties' app}
+	\input{./Software_Functions/implemented_function_third_parties.tex}
+
+
+	%Adopted development frameworks
+	\chapter{Adopted Development Frameworks}
+	\label{ch: Adopted_Development_Frameworks}
+	\input{./adopted_developement_frameworks.tex}
+
+
+	%Code Structure
+	\chapter{Code Structure} 
+	\label{ch:Code_Structure}
+
+	%Testing
+	\chapter{Testing}
+	\label{ch: Testing}
+
+	%Installation Instruction
+	\chapter{Installation Instruction} 
+	\label{ch: Installation_Instruction}
+
+	\input{./installation_instructions.tex}
+
+	%Appendix
+	\appendix
+	\chapter{Effort Spend}
+
+
+\end{document}
