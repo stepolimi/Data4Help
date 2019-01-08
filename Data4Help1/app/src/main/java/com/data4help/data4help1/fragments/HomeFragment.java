@@ -11,10 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.data4help.data4help1.R;
-import com.data4help.data4help1.activity.HealthParamActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -26,9 +23,6 @@ public class HomeFragment extends Fragment {
     private Button week;
     private Button month;
     private Button year;
-
-    public static TextView weight;
-    public static TextView height;
 
     private ViewPager viewPager;
 
@@ -44,6 +38,7 @@ public class HomeFragment extends Fragment {
         viewPager = view.findViewById(R.id.healthFragment);
         PagerViewAdapter pagerAdapter = new PagerViewAdapter(getFragmentManager());
         viewPager.setAdapter(pagerAdapter);
+        pagerAdapter.getItem(0);
 
 
         setItem(day, 0);
@@ -125,8 +120,16 @@ public class HomeFragment extends Fragment {
         month = view.findViewById(R.id.monthButton);
         year = view.findViewById(R.id.yearButton);
 
-        weight = view.findViewById(R.id.homeWeight);
-        height = view.findViewById(R.id.homeHeight);
+        TextView weight = view.findViewById(R.id.homeWeight);
+        TextView height = view.findViewById(R.id.homeHeight);
+        if(SettingsFragment.getSetHeight() != null) {
+            String text = "Height: " + SettingsFragment.getSetHeight() + " cm";
+            height.setText(text);
+        }
+        if(SettingsFragment.getSetWeight()!= null){
+            String text = "Weight: " + SettingsFragment.getSetWeight() + " kg";
+            weight.setText(text);
+        }
         setDate(view);
     }
 

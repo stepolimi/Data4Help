@@ -22,7 +22,8 @@
     <string name="region">Region*</string>
     <string name="country">Country*</string>
 
-    <string name="data">Data</string>
+    <string name="waiting_data">Waiting Users Answer</string>
+    <string name="subscribed_data">Subscribed Data</string>
     <string name="single_request">Single Request</string>
     <string name="group_request">Group Request</string>
 
@@ -52,4 +53,28 @@
     <string name="subscribe">Subscribe</string>
     <string name="dialog_title">Data Request</string>
     <string name="single_negative_response">The single user has refused your request.</string>
+
+    <string name="sent_to_user">The request as been sent to the user. To check his/her answer goes in the Data area and click the
+    notification button.</string>
+    <string name="wrong_fiscal_code">The insert fiscal code or number is not in the DB. Try with a different one.</string>
+    <string name="notification_request">Get notification</string>
+
+    <string name="today">Today</string>
+    <string name="yesterday">1 day ago</string>
+    <string name="two_days_ago">2 days ago</string>
+    <string name="three_days_ago">3 days ago</string>
+    <string name="four_days_ago">4 days ago</string>
+    <string name="five_days_ago">5 days ago</string>
+    <string name="six_days_ago">6 days ago</string>
+
+
+    <string name="min_bpm">Min bpm</string>
+    <string name="average_bpm">Average</string>
+    <string name="max_bpm">Max bpm</string>
+    <string name="xxx">---</string>
+    <string name="min_pressure">Min pressure</string>
+    <string name="max_pressure">Max pressure</string>
+    <string name="min_temperature">Min Temp</string>
+    <string name="max_temperature">Max Temp</string>
+
 </resources>

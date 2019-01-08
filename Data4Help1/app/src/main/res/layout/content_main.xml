@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:text="@string/day"
             android:background="@drawable/button_shape_1"
-            android:textColor="@color/black"
+            android:textColor="@color/colorAccent"
             android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.AppCompat" />
 

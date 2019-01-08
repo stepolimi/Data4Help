@@ -20,41 +20,37 @@ import static com.data4help.data4help1.Config.MINMINPRESSURE;
 import static com.data4help.data4help1.Config.MINTEMPERATURE;
 import static com.data4help.data4help1.Config.SENDPARAMURL;
 
-public class HealthParamActivity extends Thread {
+class HealthParamActivity extends Thread {
 
     //this class should contain the sensor listener
 
-    public void startThread(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-            String url = "";
+    void startThread(){
+        new Thread(() -> {
 
-                do {
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    int heartBeat = createRandomBpm();
-                    int maxPressure = createRandomMaxPressure();
-                    int minPressure = createRandomMinPressure();
-                    Double temperature = createRandomTemperature();
+            do {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                int heartBeat = createRandomBpm();
+                int maxPressure = createRandomMaxPressure();
+                int minPressure = createRandomMinPressure();
+                float temperature = createRandomTemperature();
 
-                    JSONObject param = new JSONObject();
-                    try {
-                        param.put("userId", AuthToken.getId());
-                        param.put("heartBeat", heartBeat);
-                        param.put("minPressure", minPressure);
-                        param.put("maxPressure", maxPressure);
-                        param.put("temperature", temperature);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    JsonObjectRequest sendParam = new JsonObjectRequest(Request.Method.POST, SENDPARAMURL, param, response -> {}, volleyError -> {});
-                    MenuActivity.queue.add(sendParam);
-                } while (true);
-            }
+                JSONObject param = new JSONObject();
+                try {
+                    param.put("userId", AuthToken.getId());
+                    param.put("heartBeat", heartBeat);
+                    param.put("minPressure", minPressure);
+                    param.put("maxPressure", maxPressure);
+                    param.put("temperature", temperature);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                JsonObjectRequest sendParam = new JsonObjectRequest(Request.Method.POST, SENDPARAMURL, param, response -> {}, volleyError -> {});
+                MenuActivity.queue.add(sendParam);
+            } while (true);
         }).start();
     }
 
@@ -90,9 +86,9 @@ public class HealthParamActivity extends Thread {
      * @return a random value between 50 and 80. Those bounds are the typical one of a normal
      * min pressure.
      */
-    private Double createRandomTemperature() {
+    private Float createRandomTemperature() {
         Random random = new Random();
-        return random.nextDouble()*(MAXTEMPERATURE - MINTEMPERATURE) + MINTEMPERATURE;
+        return random.nextFloat()*(MAXTEMPERATURE - MINTEMPERATURE) + MINTEMPERATURE;
     }
 
 }

@@ -10,18 +10,16 @@ import android.widget.TextView;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.data4help.data4help1.AuthToken;
+import com.data4help.data4help1.activity.MenuActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Objects;
 
 import static com.data4help.data4help1.Config.DAILYHEALTHPARAMURL;
 import static com.data4help.data4help1.R.*;
@@ -30,7 +28,7 @@ import static com.data4help.data4help1.R.*;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DayFragment extends Fragment {
+public class DayFragment extends Fragment implements Runnable{
 
     private TextView minDayBpm;
     private TextView averageDayBmp;
@@ -43,16 +41,16 @@ public class DayFragment extends Fragment {
     private TextView maxDayTemperature;
 
     private JSONObject authUser;
-    public DayFragment() {}
+    private View view;
+
+    public DayFragment(){}
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(layout.fragment_day, container, false);
-
-        setAttributes(view);
-        getParameters();
+        view = inflater.inflate(layout.fragment_day, container, false);
+        this.run();
 
         return view;
     }
@@ -63,7 +61,6 @@ public class DayFragment extends Fragment {
     private void getParameters() {
         setUserId();
 
-        RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()).getApplicationContext());
 
         JsonObjectRequest dailyHealthParamReq = new JsonObjectRequest(Request.Method.POST, DAILYHEALTHPARAMURL, authUser ,
                 jsonObject -> {},
@@ -72,14 +69,14 @@ public class DayFragment extends Fragment {
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 switch (response.statusCode) {
                     case 200:
-                        String json = null;
                         try {
-                            json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                            String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                            setHealthParameters(json);
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
-                        setHealthParameters(json);
                         break;
+                        //TODO
                     case 403:
                         System.out.println("The access has been denied. Try again.");
                         break;
@@ -91,7 +88,7 @@ public class DayFragment extends Fragment {
                 return super.parseNetworkResponse(response);
             }
         };
-        queue.add(dailyHealthParamReq);
+        MenuActivity.queue.add(dailyHealthParamReq);
     }
 
     /**
@@ -100,7 +97,7 @@ public class DayFragment extends Fragment {
     private void setUserId() {
         authUser = new JSONObject();
         try {
-            authUser.put("userID", AuthToken.getId());
+            authUser.put("id", AuthToken.getId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -112,16 +109,26 @@ public class DayFragment extends Fragment {
      * Sets all health parameters obtained from the response
      */
     private void setHealthParameters(String json) {
-        //TODO
-        minDayBpm.setText("");
-        averageDayBmp.setText("");
-        maxDayBmp.setText("");
 
-        minDayPressure.setText("");
-        maxDayPressure.setText("");
+        try {
+            JSONObject jsonObj = new JSONObject(json);
+            minDayBpm.setText(jsonObj.getString("minHeartBeat"));
+            averageDayBmp.setText( jsonObj.getString("avgHeartBeat"));
+            maxDayBmp.setText(jsonObj.getString("maxHeartBeat"));
 
-        minDayTemperature.setText("");
-        maxDayTemperature.setText("");
+            minDayPressure.setText(jsonObj.getString("minMinPressure"));
+            maxDayPressure.setText(jsonObj.getString("maxMaxPressure"));
+
+            minDayTemperature.setText(jsonObj.getString("minTemperature"));
+            maxDayTemperature.setText(jsonObj.getString("maxTemperature"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
     }
 
     /**
@@ -139,5 +146,11 @@ public class DayFragment extends Fragment {
 
         minDayTemperature = view.findViewById(id.minDayTemperature);
         maxDayTemperature = view.findViewById(id.maxDayTemperature);
+    }
+
+    @Override
+    public void run() {
+        setAttributes(view);
+        getParameters();
     }
 }

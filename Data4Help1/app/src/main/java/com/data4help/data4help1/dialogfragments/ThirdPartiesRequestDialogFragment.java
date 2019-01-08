@@ -20,6 +20,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.data4help.data4help1.AuthToken;
 import com.data4help.data4help1.R.*;
+import com.data4help.data4help1.fragments.ThirdPartiesFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,11 +31,12 @@ import static com.data4help.data4help1.Config.ACCEPTORDENIEURL;
 
 public class ThirdPartiesRequestDialogFragment extends DialogFragment{
 
+    private boolean subscribed;
+
     public ThirdPartiesRequestDialogFragment(){}
 
-    public boolean subscribed = false;
-    public boolean locked = false;
     public TextView singlePositiveRequest;
+    private JSONObject acceptOrNot;
 
     @Override
     @SuppressLint("SetTextI18n")
@@ -46,6 +48,8 @@ public class ThirdPartiesRequestDialogFragment extends DialogFragment{
         singlePositiveRequest = dialogFragment.findViewById(id.singlePositiveRequest);
 
 
+        singlePositiveRequest.setText("The third party " + ThirdPartiesFragment.thirdPartyName + "would like to obtain your data for the following reason:\n+ " +
+                ThirdPartiesFragment.description+"\n"+ "To accept it click on the accept button, to refuse on the other." );
         buttonClicked(singleAcceptButton, true);
         buttonClicked(singleRefuseButton, false);
 
@@ -60,16 +64,8 @@ public class ThirdPartiesRequestDialogFragment extends DialogFragment{
     private void buttonClicked(Button button, boolean subscribed) {
         button.setOnClickListener(v -> {
             this.subscribed = subscribed;
-            try {
-                setAcceptOrNot();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
             sendResponse();
-            getDialog().dismiss();
-            locked = false;
-            //Objects.requireNonNull(getActivity()).getFragmentManager().findFragmentByTag("SingleRequestFragment");
-
+            this.dismiss();
         });
     }
 
@@ -79,7 +75,13 @@ public class ThirdPartiesRequestDialogFragment extends DialogFragment{
     private void sendResponse() {
         Context context = Objects.requireNonNull(getActivity()).getApplicationContext();
         RequestQueue queue = Volley.newRequestQueue(context);
-        JsonObjectRequest groupUserRequest = new JsonObjectRequest(Request.Method.POST, ACCEPTORDENIEURL,  null,
+
+        try {
+            setAcceptOrNot();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest groupUserRequest = new JsonObjectRequest(Request.Method.POST, ACCEPTORDENIEURL,  acceptOrNot,
                 response -> VolleyLog.v("Response:%n %s", response.toString()),
                 volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
             @Override
@@ -87,7 +89,6 @@ public class ThirdPartiesRequestDialogFragment extends DialogFragment{
                 switch (response.statusCode) {
                     case 200:
                         getDialog().dismiss();
-                        locked = false;
                         break;
                     //TODO: codici d'errore
                     case 403:
@@ -109,12 +110,13 @@ public class ThirdPartiesRequestDialogFragment extends DialogFragment{
      * Sets the JSONObject elements
      */
     private void setAcceptOrNot() throws JSONException {
-        JSONObject acceptOrNot = new JSONObject();
+         acceptOrNot = new JSONObject();
 
         acceptOrNot.put("userId", AuthToken.getId());
+        acceptOrNot.put("id", ThirdPartiesFragment.requestId);
         if(subscribed)
-            acceptOrNot.put("accept", true);
+            acceptOrNot.put("accepted", true);
         else
-            acceptOrNot.put("accept", false);
+            acceptOrNot.put("accepted", false);
     }
 }

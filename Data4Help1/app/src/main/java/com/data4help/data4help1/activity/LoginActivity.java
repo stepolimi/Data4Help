@@ -1,18 +1,18 @@
 package com.data4help.data4help1.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -21,6 +21,8 @@ import com.data4help.data4help1.AuthToken;
 import static com.data4help.data4help1.Config.EMPTYFIELDS;
 import static com.data4help.data4help1.Config.LOGINURL;
 import static com.data4help.data4help1.Config.SERVERERROR;
+import static com.data4help.data4help1.Config.SHORTPASSWORD;
+import static com.data4help.data4help1.Config.WRONGEMAIL;
 import static com.data4help.data4help1.R.*;
 
 import org.json.JSONException;
@@ -33,7 +35,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText email;
     private EditText password;
-    private TextView error;
 
     private String errorString;
     private boolean incompleteRequest = false;
@@ -46,7 +47,6 @@ public class LoginActivity extends AppCompatActivity {
 
         email = findViewById(id.email);
         password = findViewById(id.password);
-        error = findViewById(id.loginError);
         Button loginButton = findViewById(id.loginButton);
         View registerLink = findViewById(id.registerLink);
 
@@ -64,8 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                         loginReq = new JsonObjectRequest(Request.Method.POST, LOGINURL, credential,
                                 response -> {
                                 },
-                                volleyError -> {
-                                }) {
+                                volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())) {
                             @Override
                             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                                 switch (response.statusCode) {
@@ -75,8 +74,7 @@ public class LoginActivity extends AppCompatActivity {
                                             new AuthToken(json);
                                             System.out.println(json);
                                         } catch (UnsupportedEncodingException e) {
-                                            errorString = SERVERERROR;
-                                            incompleteRequest = true;
+                                            setErrorString(SERVERERROR);
                                         }
                                         startActivity(new Intent(LoginActivity.this, MenuActivity.class));
                                         break;
@@ -108,7 +106,14 @@ public class LoginActivity extends AppCompatActivity {
      * set text in the error label and cancel the request
      */
     private void cancelReq(String errorString) {
-        error.setText(errorString);
+        LoginActivity.this.runOnUiThread(() -> {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
+            alertDialogBuilder.setMessage(errorString);
+            alertDialogBuilder.setIcon(drawable.ic_exit);
+            alertDialogBuilder.setCancelable(true);
+            alertDialogBuilder.create().show();
+            });
+        incompleteRequest = false;
         loginReq.cancel();
     }
 
@@ -128,19 +133,40 @@ public class LoginActivity extends AppCompatActivity {
      * checks if the String that must be insert are empty or not: if empty an error will be thrown, if
      * not it will be put in the JSON Object.
      */
-    @SuppressLint("SetTextI18n")
     private void checkValue(String field, String value,JSONObject personalDetails){
-        if(value.isEmpty()){
-            errorString = EMPTYFIELDS;
-            incompleteRequest = true;
-        }
+        if(value.isEmpty())
+            setErrorString(EMPTYFIELDS);
         else {
+            if(field.equals("password") && (value.length()< 8 || value.length() > 20))
+                setErrorString(SHORTPASSWORD);
+            else if(field.equals("email") && !value.contains("@") && !value.contains(".") )
+                setErrorString(WRONGEMAIL);
             try {
                 personalDetails.put(field, value);
             } catch (JSONException e) {
-                errorString = SERVERERROR;
-                incompleteRequest = true;
+                setErrorString(SERVERERROR);
             }
         }
+    }
+
+    /**
+     * @param error is the error string
+     *
+     *              Sets the error label
+     */
+    private void setErrorString(String error) {
+        switch (error) {
+            case EMPTYFIELDS:
+                errorString = EMPTYFIELDS;
+                break;
+            case SERVERERROR:
+                errorString = SERVERERROR;
+                break;
+            case SHORTPASSWORD:
+                errorString = SHORTPASSWORD;
+                break;
+            case WRONGEMAIL:
+                errorString = WRONGEMAIL;
+        }incompleteRequest = true;
     }
 }

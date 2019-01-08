@@ -50,7 +50,8 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         }
 
         queue = Volley.newRequestQueue(MenuActivity.this);
-        new HealthParamActivity();
+        HealthParamActivity healthParamActivity = new HealthParamActivity();
+        healthParamActivity.startThread();
     }
 
 

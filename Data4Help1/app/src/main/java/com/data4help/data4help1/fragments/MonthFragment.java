@@ -32,7 +32,7 @@ import static com.data4help.data4help1.R.*;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MonthFragment extends Fragment {
+public class MonthFragment extends Fragment implements Runnable {
     private TextView minMonthBpm;
     private TextView averageMonthBmp;
     private TextView maxMonthBmp;
@@ -44,6 +44,7 @@ public class MonthFragment extends Fragment {
     private TextView maxMonthTemperature;
 
     private JSONObject authUser;
+    private View view;
 
     public MonthFragment() {
         // Required empty public constructor
@@ -53,10 +54,9 @@ public class MonthFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(layout.fragment_month, container, false);
+        view = inflater.inflate(layout.fragment_month, container, false);
 
-        setAttributes(view);
-        getParameters();
+        run();
 
         return view;
     }
@@ -77,13 +77,12 @@ public class MonthFragment extends Fragment {
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 switch (response.statusCode) {
                     case 200:
-                        String json = null;
                         try {
-                            json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                            String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                            setHealthParameters(json);
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
-                        setHealthParameters(json);
                         break;
                     case 403:
                         System.out.println("The access has been denied. Try again.");
@@ -105,7 +104,7 @@ public class MonthFragment extends Fragment {
     private void setUserId() {
         authUser = new JSONObject();
         try {
-            authUser.put("userID", AuthToken.getId());
+            authUser.put("id", AuthToken.getId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -118,16 +117,21 @@ public class MonthFragment extends Fragment {
      * Sets all health parameters obtained from the response
      */
     private void setHealthParameters(String json) {
-        //TODO
-        minMonthBpm.setText("");
-        averageMonthBmp.setText("");
-        maxMonthBmp.setText("");
 
-        minMonthPressure.setText("");
-        maxMonthPressure.setText("");
+        try {
+            JSONObject jsonObj = new JSONObject(json);
+            minMonthBpm.setText(jsonObj.getString("minHeartBeat"));
+            averageMonthBmp.setText( jsonObj.getString("avgHeartBeat"));
+            maxMonthBmp.setText(jsonObj.getString("maxHeartBeat"));
 
-        minMonthTemperature.setText("");
-        maxMonthTemperature.setText("");
+            minMonthPressure.setText(jsonObj.getString("minMinPressure"));
+            maxMonthPressure.setText(jsonObj.getString("maxMaxPressure"));
+
+            minMonthTemperature.setText(jsonObj.getString("minTemperature"));
+            maxMonthTemperature.setText(jsonObj.getString("maxTemperature"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -145,5 +149,11 @@ public class MonthFragment extends Fragment {
 
         minMonthTemperature = view.findViewById(id.minMonthTemperature);
         maxMonthTemperature = view.findViewById(id.maxMonthTemperature);
+    }
+
+    @Override
+    public void run() {
+        setAttributes(view);
+        getParameters();
     }
 }

@@ -4,12 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -29,17 +29,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.data4help.d4h_thirdparty.Config.EMPTYFIELDS;
-import static com.data4help.d4h_thirdparty.Config.INCORRECTPIVA;
-import static com.data4help.d4h_thirdparty.Config.PRESENCENUMBERORSYMBOLS;
-import static com.data4help.d4h_thirdparty.Config.REGISTRATIONURL;
-import static com.data4help.d4h_thirdparty.Config.SERVERERROR;
-import static com.data4help.d4h_thirdparty.Config.SHORTPASSWORD;
-import static com.data4help.d4h_thirdparty.Config.WRONGEMAIL;
+import static com.data4help.d4h_thirdparty.Config.*;
 import static com.data4help.d4h_thirdparty.R.*;
 
 
-public class RegistrationActivity extends AppCompatActivity {
+public class RegistrationActivity extends AppCompatActivity implements Runnable {
 
     private EditText name;
     private EditText typeSociety;
@@ -58,8 +52,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private Button registrationButton;
 
-    private TextView error;
-
     private JsonObjectRequest registrationReq;
     private RequestQueue queue;
     private ProgressDialog dialog;
@@ -72,53 +64,7 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(layout.registration);
 
-        setAttributes();
-        registrationButton.setOnClickListener(v -> {
-            JSONObject personalDetails = new JSONObject();
-            JSONObject credential = new JSONObject();
-
-            try {
-                setPersonalDetails(personalDetails);
-                setCredential(credential);
-            } catch (JSONException e) {
-                setErrorString(SERVERERROR);
-            }
-
-            setProgressDialog();
-            queue = Volley.newRequestQueue(RegistrationActivity.this);
-            registrationReq = new JsonObjectRequest(Request.Method.POST, REGISTRATIONURL, credential,
-                    response -> VolleyLog.v("Response:%n %s", response.toString()),
-                    volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
-                @Override
-                protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                    switch (response.statusCode) {
-                        case 200:
-                            try {
-                                String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                                new AuthToken(json);
-                                personalDetails.put("userId", AuthToken.getId());
-                            } catch (UnsupportedEncodingException | JSONException e) {
-                                setErrorString(SERVERERROR);
-                            }
-                            sendUserData(personalDetails);
-                            break;
-                        //TODO: altri errori
-                        case 403:
-                            System.out.println("The access has been denied. Try again.");
-                            break;
-                        case 401:
-                            System.out.println("The given email is already in the DB. Change it or login.");
-                            break;
-                    }
-                    finish();
-                    return super.parseNetworkResponse(response);
-                }
-            };
-            if(incompleteRequest)
-                cancelReq(errorString, registrationReq);
-            else
-            queue.add(registrationReq);
-        });
+        run();
     }
 
     /**
@@ -136,6 +82,7 @@ public class RegistrationActivity extends AppCompatActivity {
      * @param personalDetails is the object containing all personal details of the just created user
      */
     private void sendUserData(JSONObject personalDetails) {
+        dialog.dismiss();
         JsonObjectRequest thirdPartyDataReq = new JsonObjectRequest(Request.Method.POST, Config.PERSONALDATAURL, personalDetails,
                 response -> {},
                 volleyError -> {}){
@@ -170,11 +117,11 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     private void setPersonalDetails(JSONObject personalDetails) throws JSONException {
         checkValue("name", name.getText().toString(), personalDetails);
-        checkValue("typeOfSociety", typeSociety.getText().toString(), personalDetails);
+        checkValue("typeSociety", typeSociety.getText().toString(), personalDetails);
         JSONObject address = new JSONObject();
         setAddress(address);
         personalDetails.put("address", address);
-        checkNumber("pIva", pIva.getText().toString(), personalDetails);
+        checkValue("pIva", pIva.getText().toString(), personalDetails);
 
         checkPolicyBox();
     }
@@ -202,28 +149,28 @@ public class RegistrationActivity extends AppCompatActivity {
      * Checks if the number fields are empty or not
      */
     private void checkNumber(String field, String value, JSONObject address) {
-
         if(!value.isEmpty()) {
-            if(field.equals("pIva") && value.length()!= 11)
-                setErrorString(INCORRECTPIVA);
-            else {
-                try {
-                    address.put(field, Integer.parseInt(value));
-                } catch (JSONException e) {
-                    setErrorString(SERVERERROR);
-                }
+            try {
+                address.put(field, Integer.parseInt(value));
+            } catch (JSONException e) {
+                setErrorString(SERVERERROR);
             }
         }
         else
             setErrorString(EMPTYFIELDS);
-
     }
 
     /**
      * set text in the error label and cancel the request
      */
     private void cancelReq(String errorString, JsonObjectRequest request) {
-        error.setText(errorString);
+        RegistrationActivity.this.runOnUiThread(() -> {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RegistrationActivity.this);
+            alertDialogBuilder.setMessage(errorString);
+            alertDialogBuilder.setIcon(drawable.ic_exit);
+            alertDialogBuilder.setCancelable(true);
+            alertDialogBuilder.create().show();
+        });
         deleteParam();
         incompleteRequest = false;
         dialog.dismiss();
@@ -273,8 +220,9 @@ public class RegistrationActivity extends AppCompatActivity {
      * Puts the detected values in the credential object
      */
     private void setCredential(JSONObject credential) throws JSONException {
-        checkEmail(credential);
-        checkPassword(credential);
+            checkEmail(credential);
+            checkPassword(credential);
+
     }
 
     /**
@@ -283,20 +231,16 @@ public class RegistrationActivity extends AppCompatActivity {
      * Checks if the given email is correct or not
      */
     @SuppressLint("SetTextI18n")
-    private void checkEmail(JSONObject credentials) {
+    private void checkEmail(JSONObject credentials) throws JSONException {
         String mail = email.getText().toString();
         if(!mail.isEmpty()){
             String validEmail = "[a-zA-Z0-9+._%\\-]{1,256}" + "@" + "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" + "(" + "\\." +
                     "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" + ")+";
 
             Matcher matcher= Pattern.compile(validEmail).matcher(mail);
-            if(matcher.matches()) {
-                try {
+            if(matcher.matches())
                     credentials.put("email", mail);
-                } catch (JSONException e) {
-                    setErrorString(SERVERERROR);
-                }
-            }
+
             else setErrorString(WRONGEMAIL);
         }
         else setErrorString(EMPTYFIELDS);
@@ -344,7 +288,6 @@ public class RegistrationActivity extends AppCompatActivity {
         acceptPolicy = findViewById(id.acceptPolicy);
 
         registrationButton = findViewById(id.registrationButton);
-        error = findViewById(id.error);
     }
 
     /**
@@ -376,5 +319,55 @@ public class RegistrationActivity extends AppCompatActivity {
         incompleteRequest = true;
     }
 
+    @Override
+    public void run() {
+        setAttributes();
+        registrationButton.setOnClickListener(v -> {
+            JSONObject personalDetails = new JSONObject();
+            JSONObject credential = new JSONObject();
+
+            try {
+                setPersonalDetails(personalDetails);
+                setCredential(credential);
+            } catch (JSONException e) {
+                setErrorString(SERVERERROR);
+            }
+
+            setProgressDialog();
+            queue = Volley.newRequestQueue(RegistrationActivity.this);
+            registrationReq = new JsonObjectRequest(Request.Method.POST, REGISTRATIONURL, credential,
+                    response -> VolleyLog.v("Response:%n %s", response.toString()),
+                    volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
+                @Override
+                protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                    switch (response.statusCode) {
+                        case 200:
+                            try {
+                                String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                                new AuthToken(json);
+                                personalDetails.put("thirdPartyId", AuthToken.getId());
+                            } catch (UnsupportedEncodingException | JSONException e) {
+                                setErrorString(SERVERERROR);
+                            }
+                            sendUserData(personalDetails);
+                            break;
+                        //TODO: altri errori
+                        case 403:
+                            System.out.println("The access has been denied. Try again.");
+                            break;
+                        case 401:
+                            System.out.println("The given email is already in the DB. Change it or login.");
+                            break;
+                    }
+                    finish();
+                    return super.parseNetworkResponse(response);
+                }
+            };
+            if(incompleteRequest)
+                cancelReq(errorString, registrationReq);
+            else
+                queue.add(registrationReq);
+        });
+    }
 }
 

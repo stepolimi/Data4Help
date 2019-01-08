@@ -2,7 +2,6 @@ package com.data4help.data4help1.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -11,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -34,11 +34,14 @@ public class SettingsFragment extends Fragment {
 
     private EditText weight;
     private EditText height;
-    private EditText settingsError;
+    private TextView settingsError;
 
     private String errorString;
     private boolean incompleteRequest;
     private JsonObjectRequest settingsReq;
+
+    private static String setHeight = null;
+    private static String setWeight = null;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -76,11 +79,10 @@ public class SettingsFragment extends Fragment {
                     @Override
                     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                         switch (response.statusCode) {
-
                             case 200:
-                                HomeFragment.height.setText("Height: " + height + "cm" );
-                                HomeFragment.weight.setText("Height: " + weight + "kg" );
-                                startActivity(new Intent(context, HomeFragment.class));
+                                setHeight = height.getText().toString();
+                                setWeight = weight.getText().toString();
+                                Objects.requireNonNull(getActivity()).getFragmentManager().findFragmentByTag("HomeFragment");
                                 break;
                             //TODO: altri codici di error
                             case 403:
@@ -110,6 +112,13 @@ public class SettingsFragment extends Fragment {
         settingsReq.cancel();
     }
 
+    public static String getSetHeight() {
+        return setHeight;
+    }
+
+    public static String getSetWeight() {
+        return setWeight;
+    }
 }
 
 

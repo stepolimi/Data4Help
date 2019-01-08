@@ -14,6 +14,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.data4help.data4help1.AuthToken;
@@ -21,6 +22,7 @@ import com.data4help.data4help1.AuthToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
 import static com.data4help.data4help1.Config.YEARHEALTHPARAMURL;
@@ -29,7 +31,7 @@ import static com.data4help.data4help1.R.*;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class YearFragment extends Fragment {
+public class YearFragment extends Fragment implements Runnable {
     private TextView minYearBpm;
     private TextView averageYearBmp;
     private TextView maxYearBmp;
@@ -41,6 +43,7 @@ public class YearFragment extends Fragment {
     private TextView maxYearTemperature;
 
     private JSONObject authUser;
+    private View view;
 
     public YearFragment() {
         // Required empty public constructor
@@ -50,10 +53,8 @@ public class YearFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(layout.fragment_year, container, false);
-
-        setAttributes(view);
-        getParameters();
+        view = inflater.inflate(layout.fragment_year, container, false);
+        run();
 
         return view;
     }
@@ -64,7 +65,7 @@ public class YearFragment extends Fragment {
     private void setUserId() {
         authUser = new JSONObject();
         try {
-            authUser.put("userID", AuthToken.getId());
+            authUser.put("id", AuthToken.getId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -83,8 +84,12 @@ public class YearFragment extends Fragment {
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 switch (response.statusCode) {
                     case 200:
-                        System.out.println("funziona!!!");
-                        setHealthParameters();
+                        try {
+                            String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                            setHealthParameters(json);
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
                         break;
                     case 403:
                         System.out.println("The access has been denied. Try again.");
@@ -105,17 +110,21 @@ public class YearFragment extends Fragment {
      *
      * Sets all health parameters obtained from the response
      */
-    private void setHealthParameters() {
-        //TODO
-        minYearBpm.setText("");
-        averageYearBmp.setText("");
-        maxYearBmp.setText("");
+    private void setHealthParameters(String json) {
+        try {
+            JSONObject jsonObj = new JSONObject(json);
+            minYearBpm.setText(jsonObj.getString("minHeartBeat"));
+            averageYearBmp.setText( jsonObj.getString("avgHeartBeat"));
+            maxYearBmp.setText(jsonObj.getString("maxHeartBeat"));
 
-        minYearPressure.setText("");
-        maxYearPressure.setText("");
+            minYearPressure.setText(jsonObj.getString("minMinPressure"));
+            maxYearPressure.setText(jsonObj.getString("maxMaxPressure"));
 
-        minYearTemperature.setText("");
-        maxYearTemperature.setText("");
+            minYearTemperature.setText(jsonObj.getString("minTemperature"));
+            maxYearTemperature.setText(jsonObj.getString("maxTemperature"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -133,5 +142,12 @@ public class YearFragment extends Fragment {
 
         minYearTemperature = view.findViewById(id.minYearTemperature);
         maxYearTemperature = view.findViewById(id.maxYearTemperature);
+    }
+
+    @Override
+    public void run() {
+        setAttributes(view);
+        getParameters();
+
     }
 }

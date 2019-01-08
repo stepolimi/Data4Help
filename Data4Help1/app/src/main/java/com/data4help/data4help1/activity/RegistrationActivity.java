@@ -4,30 +4,22 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.TextView;
 
-
-import static com.data4help.data4help1.Config.EMPTYFIELDS;
-import static com.data4help.data4help1.Config.INCORRECTCOUNTRY;
-import static com.data4help.data4help1.Config.INCORRECTFISCALCODE;
-import static com.data4help.data4help1.Config.PERSONALDATAURL;
-import static com.data4help.data4help1.Config.PRESENCENUMBERORSYMBOLS;
-import static com.data4help.data4help1.Config.REGISTRATIONURL;
-import static com.data4help.data4help1.Config.SERVERERROR;
-import static com.data4help.data4help1.Config.SHORTPASSWORD;
-import static com.data4help.data4help1.Config.WRONGEMAIL;
+import static com.data4help.data4help1.Config.*;
 import static com.data4help.data4help1.R.*;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -37,10 +29,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RegistrationActivity extends AppCompatActivity {
+public class RegistrationActivity extends AppCompatActivity implements Runnable {
 
     private EditText name;
     private EditText surname;
@@ -61,8 +55,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private Button registrationButton;
 
-    private TextView error;
-
     private String errorString;
     private boolean incompleteRequest;
     private ProgressDialog dialog;
@@ -75,66 +67,7 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(layout.registration);
 
-
-        setAttributes();
-
-        registrationButton.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-            error.setText("");
-            setProgressDialog();
-            final JSONObject personalDetails = new JSONObject();
-            JSONObject credential = new JSONObject();
-
-            try {
-                setPersonalDetails(personalDetails);
-                setCredential(credential);
-            } catch (JSONException e) {
-                setErrorString(SERVERERROR);
-            }
-
-
-            queue = Volley.newRequestQueue(RegistrationActivity.this);
-            registrationReq = new JsonObjectRequest(Request.Method.POST, REGISTRATIONURL, credential,
-                    response -> {
-                    },
-                    volleyError -> {
-                    }) {
-                @Override
-                protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                    switch (response.statusCode) {
-                        case 200:
-                            try {
-                                String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                                new AuthToken(json);
-                                personalDetails.put("userId", AuthToken.getId());
-                                System.out.println(json);
-
-                            } catch (UnsupportedEncodingException | JSONException e) {
-                                setErrorString(SERVERERROR);
-                            }
-                            sendUserData(personalDetails);
-                            break;
-                        //TODO: altri errori
-                        case 403:
-                            System.out.println("The access has been denied. Try again.");
-                            break;
-                        case 401:
-                            System.out.println("The given email is already in the DB. Change it or login.");
-                            break;
-                    }
-                    finish();
-                    return super.parseNetworkResponse(response);
-                }
-            };
-            if (incompleteRequest)
-                cancelReq(errorString,registrationReq);
-            else
-                queue.add(registrationReq);
-        }
-    });
-
+        run();
     }
 
     /**
@@ -147,7 +80,6 @@ public class RegistrationActivity extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
-
 
     /**
      * @param personalDetails is the object containing all personal details of the just created user
@@ -166,12 +98,14 @@ public class RegistrationActivity extends AppCompatActivity {
                         startActivity(new Intent(RegistrationActivity.this, MenuActivity.class));
                         break;
                     //TODO: codici d'errore
-                    case 403:
-                        System.out.println("The access has been denied. Try again.");
+                    case 400:
+                        //BAD REQUEST
                         break;
                     case 401:
+                        //UNAUTHORIZED
                         System.out.println("The given email is already in the DB. Change it or login.");
                         break;
+
                 }
                 finish();
                 return super.parseNetworkResponse(response);
@@ -248,8 +182,28 @@ public class RegistrationActivity extends AppCompatActivity {
         checkNumber("number", number.getText().toString(), address);
         checkValue("city", city.getText().toString(), address);
         checkNumber("cap", cap.getText().toString(), address);
-        checkValue("region", region.getText().toString(), address);
+        checkRegion(address);
         checkValue("state", country.getText().toString(), address);
+    }
+
+    /**
+     * @param address is the JSONObject that must be filled
+     * @throws JSONException when something goes wrong
+     *
+     * Checks if the insert region is equal to an italian one named in english, the whole app talks english
+     */
+    private void checkRegion(JSONObject address) throws JSONException {
+        String reg = region.getText().toString().toLowerCase();
+        ArrayList<String> regions = new ArrayList<>();
+        Collections.addAll(regions,"lombardy","aosta valley", "liguria","piedmont", "emilia-romagna", "friuli-venezia-giulia",
+                "trentino-south tyrol", "veneto","lazio", "marche", "tuscany","umbria", "abruzzo", "apulia","basilicata","calabria,",
+                        "campania", "molise","sardinia","sicily");
+        for(String region: regions)
+            if(reg.equals(region)) {
+                address.put("region", reg);
+                return;
+            }
+        setErrorString(INCORRECTREGION);
     }
 
     /**
@@ -272,11 +226,17 @@ public class RegistrationActivity extends AppCompatActivity {
     /**
      * set text in the error label and cancel the request
      */
-    private void cancelReq(String errorText, JsonObjectRequest request) {
-        error.setText(errorText);
+    private void cancelReq(String errorString, JsonObjectRequest request) {
+        RegistrationActivity.this.runOnUiThread(() -> {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RegistrationActivity.this);
+            alertDialogBuilder.setMessage(errorString);
+            alertDialogBuilder.setIcon(drawable.ic_exit);
+            alertDialogBuilder.setCancelable(true);
+            alertDialogBuilder.create().show();
+        });
         request.cancel();
-        incompleteRequest = false;
         dialog.dismiss();
+        incompleteRequest = false;
         deleteParam();
     }
 
@@ -293,6 +253,8 @@ public class RegistrationActivity extends AppCompatActivity {
     private void checkValue(String field, String value, JSONObject personalDetails) throws JSONException {
         if (value.isEmpty())
             setErrorString(EMPTYFIELDS);
+        else if(field.equals("state") && !value.toLowerCase().equals("italy"))
+            setErrorString(INCORRECTCOUNTRY);
         else if(value.matches("[^A-Za-z]"))
             setErrorString(PRESENCENUMBERORSYMBOLS);
         else
@@ -308,7 +270,6 @@ public class RegistrationActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void checkFiscalCode(JSONObject personalDetails){
         String fc = fiscalCode.getText().toString().toLowerCase();
-        System.out.println(fc);
         if (fc.length() == 16) {
             String validFiscalCode = "[a-zA-Z]{6}"+"[0-9]{2}"+"[a-zA-Z]"+"[0-9]{2}"+"[a-zA-Z]"+"[0-9]{3}"+"[a-zA-Z]";
             Matcher matcher= Pattern.compile(validFiscalCode).matcher(fc);
@@ -329,9 +290,13 @@ public class RegistrationActivity extends AppCompatActivity {
      *                       <p>
      *                       Puts the detected values in the credential object
      */
-    private void setCredential(JSONObject credential) throws JSONException {
-        checkEmail(credential);
-        checkPassword(credential);
+    private void setCredential(JSONObject credential){
+        try {
+            checkEmail(credential);
+            checkPassword(credential);
+        } catch (JSONException e) {
+            setErrorString(SERVERERROR);
+        }
     }
 
     /**
@@ -340,21 +305,17 @@ public class RegistrationActivity extends AppCompatActivity {
      * Checks if the given email is correct or not
      */
     @SuppressLint("SetTextI18n")
-    private void checkEmail(JSONObject credentials) {
+    private void checkEmail(JSONObject credentials) throws JSONException {
         String mail = email.getText().toString();
         if(!mail.isEmpty()){
         String validEmail = "[a-zA-Z0-9+._%\\-]{1,256}" + "@" + "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" + "(" + "\\." +
                 "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" + ")+";
 
         Matcher matcher= Pattern.compile(validEmail).matcher(mail);
-        if(matcher.matches()) {
-            try {
+        if(matcher.matches())
                 credentials.put("email", mail);
-            } catch (JSONException e) {
-                setErrorString(SERVERERROR);
-            }
-        }
-        else setErrorString(WRONGEMAIL);
+        else
+            setErrorString(WRONGEMAIL);
         }
         else setErrorString(EMPTYFIELDS);
     }
@@ -365,7 +326,6 @@ public class RegistrationActivity extends AppCompatActivity {
      *                       <p>
      *                       Checks if the password is in the length range.
      */
-    @SuppressLint("SetTextI18n")
     private void checkPassword(JSONObject accountDetails) throws JSONException {
         String psw = password.getText().toString();
         if (psw.length() < 8 || psw.length() > 20) setErrorString(SHORTPASSWORD);
@@ -406,6 +366,11 @@ public class RegistrationActivity extends AppCompatActivity {
             case PRESENCENUMBERORSYMBOLS:
                 errorString = PRESENCENUMBERORSYMBOLS;
                 break;
+            case INCORRECTCOUNTRY:
+                errorString = INCORRECTCOUNTRY;
+                break;
+            case INCORRECTREGION:
+                errorString = INCORRECTREGION;
         }
         incompleteRequest = true;
     }
@@ -434,40 +399,66 @@ public class RegistrationActivity extends AppCompatActivity {
         acceptPolicy = findViewById(id.acceptPolicy);
 
         registrationButton = findViewById(id.registrationButton);
-        error = findViewById(id.error);
     }
 
+    @Override
+    public void run() {
+        setAttributes();
 
 
- /*   public class GetCoordinates extends AsyncTask<String, Void, String> {
-        ProgressDialog dialog = new ProgressDialog(RegistrationActivity.this);
+        registrationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setProgressDialog();
+                final JSONObject personalDetails = new JSONObject();
+                JSONObject credential = new JSONObject();
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            dialog.setMessage("Please wait....");
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            String response;
-            try {
-                String address = strings[0];
-                HttpDataHandler http = new HttpDataHandler();
-                String url = String.format("https://maps.googleapis.com/maps/api/geocode/json?address=%s", address);
-                response = http.getHTTPData(url);
-                if(!response.isEmpty()) {
-                    dialog.dismiss();
-                    System.out.println(response);
+                try {
+                    setPersonalDetails(personalDetails);
+                    setCredential(credential);
+                } catch (JSONException e) {
+                    setErrorString(SERVERERROR);
                 }
-                return response;
-            } catch (Exception ex) {
 
+
+                queue = Volley.newRequestQueue(RegistrationActivity.this);
+                registrationReq = new JsonObjectRequest(Request.Method.POST, REGISTRATIONURL, credential,
+                        response -> {
+                        },
+                        volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())) {
+                    @Override
+                    protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                        switch (response.statusCode) {
+                            case 200:
+                                try {
+                                    String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                                    new AuthToken(json);
+                                    personalDetails.put("userId", AuthToken.getId());
+                                    System.out.println(json);
+
+                                } catch (UnsupportedEncodingException | JSONException e) {
+                                    setErrorString(SERVERERROR);
+                                }
+                                sendUserData(personalDetails);
+                                break;
+                            //TODO: altri errori
+                            case 403:
+                                System.out.println("The access has been denied. Try again.");
+                                break;
+                            case 401:
+                                System.out.println("The given email is already in the DB. Change it or login.");
+                                break;
+                        }
+                        finish();
+                        return super.parseNetworkResponse(response);
+                    }
+                };
+                if (incompleteRequest)
+                    cancelReq(errorString, registrationReq);
+                else
+                    queue.add(registrationReq);
             }
-            return null;
-        }
-    }*/
+        });
+    }
 }
 

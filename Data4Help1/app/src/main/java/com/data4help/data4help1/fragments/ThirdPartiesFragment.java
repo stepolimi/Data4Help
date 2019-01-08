@@ -18,9 +18,12 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.data4help.data4help1.AuthToken;
 import com.data4help.data4help1.R.*;
 import com.data4help.data4help1.dialogfragments.ThirdPartiesRequestDialogFragment;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -29,6 +32,10 @@ import java.util.Objects;
 import static com.data4help.data4help1.Config.THIRDPARTYNOTIFICATIONURL;
 
 public class ThirdPartiesFragment  extends Fragment {
+
+    public static String requestId;
+    public static String thirdPartyName;
+    public static String description;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -49,13 +56,17 @@ public class ThirdPartiesFragment  extends Fragment {
 
         notificationButton.setOnClickListener((v)->{
             //TODO: devo sistemare tutto bene
-
+            JSONObject authId = new JSONObject();
+            try {
+                authId.put("id", AuthToken.getId());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             Context context = Objects.requireNonNull(getActivity()).getApplicationContext();
             RequestQueue queue = Volley.newRequestQueue(context);
-            JsonObjectRequest groupUserRequest = new JsonObjectRequest(Request.Method.POST, THIRDPARTYNOTIFICATIONURL,  null,
+            JsonObjectRequest groupUserRequest = new JsonObjectRequest(Request.Method.POST, THIRDPARTYNOTIFICATIONURL,  authId,
                     response -> VolleyLog.v("Response:%n %s", response.toString()),
-                    volleyError ->{
-                        VolleyLog.e("Error: "+ volleyError.getMessage());}){
+                    volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
                 @Override
                 protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                     switch (response.statusCode) {
@@ -83,14 +94,28 @@ public class ThirdPartiesFragment  extends Fragment {
     }
 
     private void createDialogFragment(String json) {
-        for(int i= 0; i < json.length(); i++){
-            ThirdPartiesRequestDialogFragment dialog = new ThirdPartiesRequestDialogFragment();
-            final FragmentManager fm = getFragmentManager();
-            dialog.show(Objects.requireNonNull(fm), "ThirdPartiesRequestDialogFragment");
-            dialog.locked = true;
-            while(dialog.locked)
-                System.out.println("in attesa");
+        System.out.println(json);
+        try {
+            JSONArray thirdPartyRequest = new JSONArray(json);
+            if(thirdPartyRequest.length() == 0){
+                //TODO dialog diverso
+            }
+            else {
+                for (int i = 0; i < thirdPartyRequest.length(); i++) {
+                    JSONObject jsonObject = thirdPartyRequest.getJSONObject(i);
+                    requestId = jsonObject.getString("requestId");
+                    thirdPartyName = jsonObject.getString("senderName");
+                    description = jsonObject.getString("description");
+
+                    ThirdPartiesRequestDialogFragment dialog = new ThirdPartiesRequestDialogFragment();
+                    final FragmentManager fm = getFragmentManager();
+                    dialog.show(Objects.requireNonNull(fm), "ThirdPartiesRequestDialogFragment");
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
     }
 
 

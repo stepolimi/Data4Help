@@ -3,15 +3,16 @@ package com.data4help.d4h_thirdparty.activity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.TextView;
+import android.widget.Button;
 
 import com.data4help.d4h_thirdparty.R.*;
 
 public class HomeActivity extends AppCompatActivity{
 
-    private TextView data;
-    private TextView singleRequest;
-    private TextView groupRequest;
+    private Button subscribedData;
+    private Button waitingData;
+    private Button singleRequest;
+    private Button groupRequest;
     private ViewPager viewPager;
 
     @Override
@@ -19,17 +20,19 @@ public class HomeActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(layout.home);
 
-        data = findViewById(id.data);
+        subscribedData = findViewById(id.subscribeData);
+        waitingData = findViewById(id.waitingData);
         singleRequest = findViewById(id.singleRequest);
         groupRequest = findViewById(id.groupRequest);
 
         viewPager = findViewById(id.mainPage);
-        PagerViewAdapter pagerAdapter = new PagerViewAdapter(getSupportFragmentManager());
+        HomePagerViewAdapter pagerAdapter = new HomePagerViewAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
 
-        setItem(data, 0);
-        setItem(groupRequest, 1);
-        setItem(singleRequest, 2);
+        setItem(subscribedData, 0);
+        setItem(waitingData, 1);
+        setItem(groupRequest, 2);
+        setItem(singleRequest, 3);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -42,6 +45,7 @@ public class HomeActivity extends AppCompatActivity{
             public void onPageScrollStateChanged(int position) {}
         });
 
+
     }
 
     /**
@@ -52,17 +56,16 @@ public class HomeActivity extends AppCompatActivity{
     public void changeTab(int position) {
         switch (position){
             case 0:
-                setColor(data, singleRequest, groupRequest);
+                setColor(subscribedData, waitingData, singleRequest, groupRequest);
                 break;
             case 1:
-                setColor(groupRequest, singleRequest, data);
+                setColor(waitingData, groupRequest, singleRequest, subscribedData);
                 break;
             case 2:
-                setColor(singleRequest, groupRequest, data);
+                setColor(groupRequest, singleRequest, subscribedData, waitingData);
                 break;
-            default:
-                setColor(data, singleRequest, groupRequest);
-                break;
+            case 3:
+                setColor(singleRequest, subscribedData, waitingData, groupRequest);
         }
     }
 
@@ -71,20 +74,21 @@ public class HomeActivity extends AppCompatActivity{
      * @param unselected1 is one of the textView not related to the fragment
      * @param unselected2 is one of the textView not related to the selected fragment
      */
-    private void setColor(TextView selected, TextView unselected1, TextView unselected2){
+    private void setColor(Button selected, Button unselected1, Button unselected2, Button unselected3){
         selected.setTextColor(getColor(color.colorAccent));
-        unselected1.setTextColor(getColor(color.greyDark));
-        unselected2.setTextColor(getColor(color.greyDark));
+        unselected1.setTextColor(getColor(color.black));
+        unselected2.setTextColor(getColor(color.black));
+        unselected3.setTextColor(getColor(color.black));
     }
 
     /**
-     * @param textView is the selected textVIew
+     * @param button is the selected textVIew
      * @param position is the fragment position associated to the selected text view
      *
      * Changes the fragment depending on the selected textView
      */
-    private void setItem(final TextView textView, final int position ) {
-        textView.setOnClickListener(v -> {
+    private void setItem(final Button button, final int position ) {
+        button.setOnClickListener(v -> {
             changeTab(position);
             viewPager.setCurrentItem(position);
         });
