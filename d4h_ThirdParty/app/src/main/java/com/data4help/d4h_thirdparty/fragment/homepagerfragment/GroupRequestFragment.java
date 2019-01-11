@@ -72,6 +72,7 @@ public class GroupRequestFragment extends Fragment implements Runnable {
 
     private String error;
     private boolean incompleteRequest = false;
+    private View view;
 
     public static String groupRequestID;
 
@@ -84,15 +85,18 @@ public class GroupRequestFragment extends Fragment implements Runnable {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(layout.fragment_group_request, container, false);
-        setAttributes(view);
-
-        run();
+        view = inflater.inflate(layout.fragment_group_request, container, false);
 
         return view;
     }
 
-
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed()) { // fragment is visible and have created
+            this.run();
+        }
+    }
 
     /**
      * @param groupRequest is the JSONObject that must be filled
@@ -207,6 +211,7 @@ public class GroupRequestFragment extends Fragment implements Runnable {
 
     @Override
     public void run() {
+        setAttributes(view);
         saveGroupRequestButton.setOnClickListener(v -> {
             //setProgressDialog();
             JSONObject groupRequest = new JSONObject();

@@ -1,10 +1,10 @@
 package com.data4help.data4help1.fragments;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +26,12 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
+import static com.data4help.data4help1.Config.BADREQUEST;
+import static com.data4help.data4help1.Config.INTERNALSERVERERROR;
+import static com.data4help.data4help1.Config.NOTFOUND;
 import static com.data4help.data4help1.Config.SERVERERROR;
 import static com.data4help.data4help1.Config.SETTINGSURL;
+import static com.data4help.data4help1.Config.UNAUTHORIZED;
 import static com.data4help.data4help1.R.*;
 
 public class SettingsFragment extends Fragment {
@@ -74,24 +78,15 @@ public class SettingsFragment extends Fragment {
                 RequestQueue queue = Volley.newRequestQueue(context);
                 settingsReq = new JsonObjectRequest(Request.Method.POST, SETTINGSURL, size,
                         response -> {},
-                        volleyError -> {}){
-                    @SuppressLint("SetTextI18n")
+                        volleyError -> getVolleyError(volleyError.networkResponse.statusCode)){
                     @Override
                     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                        switch (response.statusCode) {
-                            case 200:
-                                setHeight = height.getText().toString();
-                                setWeight = weight.getText().toString();
-                                Objects.requireNonNull(getActivity()).getFragmentManager().findFragmentByTag("HomeFragment");
-                                break;
-                            //TODO: altri codici di error
-                            case 403:
-                                System.out.println("The access has been denied. Try again.");
-                                break;
-                            case 401:
-                                System.out.println("The given email is already in the DB. Change it or login.");
-                                break;
+                        if (response.statusCode == 200) {
+                            setHeight = height.getText().toString();
+                            setWeight = weight.getText().toString();
+                            Objects.requireNonNull(getActivity()).getFragmentManager().findFragmentByTag("HomeFragment");
                         }
+
                         return super.parseNetworkResponse(response);
                     }
                 };
@@ -105,10 +100,25 @@ public class SettingsFragment extends Fragment {
     }
 
     /**
+     * @param errorString is the error that must be shown in the dialog
+     *
+     * Shows a dialog with the occurred error
+     */
+    private void createDialog(String errorString) {
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+        alertDialogBuilder.setMessage(errorString);
+        alertDialogBuilder.setIcon(drawable.ic_exit);
+        alertDialogBuilder.setCancelable(true);
+        alertDialogBuilder.create().show();
+    }
+
+    /**
      * set text in the error label and cancel the request
      */
     private void cancelReq(String errorString) {
         settingsError.setText(errorString);
+        incompleteRequest = false;
         settingsReq.cancel();
     }
 
@@ -119,6 +129,31 @@ public class SettingsFragment extends Fragment {
     public static String getSetWeight() {
         return setWeight;
     }
+
+    /**
+     * @param statusCode is the status code sent from the server
+     *
+     *                   Creates the dialog with a particular error
+     */
+    public void getVolleyError(int statusCode){
+        switch (statusCode){
+            case 400:
+                createDialog(BADREQUEST);
+                break;
+            case 401:
+                createDialog(UNAUTHORIZED);
+                break;
+            case 404:
+                createDialog(NOTFOUND);
+                break;
+            case 500:
+                createDialog(INTERNALSERVERERROR);
+                break;
+            default:
+                break;
+        }
+    }
+
 }
 
 

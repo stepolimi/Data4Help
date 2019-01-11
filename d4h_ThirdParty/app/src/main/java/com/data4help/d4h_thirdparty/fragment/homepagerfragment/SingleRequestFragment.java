@@ -58,6 +58,7 @@ public class SingleRequestFragment extends Fragment implements Runnable {
 
     private String error;
     private boolean incompleteRequest = false;
+    private View view;
 
     public SingleRequestFragment() {
         // Required empty public constructor
@@ -68,12 +69,17 @@ public class SingleRequestFragment extends Fragment implements Runnable {
     @SuppressLint("SetTextI18n")
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(com.data4help.d4h_thirdparty.R.layout.fragment_single_request, container, false);
-        setAttributes(view);
-
-        run();
+        view = inflater.inflate(com.data4help.d4h_thirdparty.R.layout.fragment_single_request, container, false);
 
         return view;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed()) { // fragment is visible and have created
+            this.run();
+        }
     }
 
 
@@ -166,6 +172,7 @@ public class SingleRequestFragment extends Fragment implements Runnable {
 
     @Override
     public void run() {
+        setAttributes(view);
         saveSingleRequestButton.setOnClickListener((v) -> {
             //setProgressDialog();
             JSONObject singleRequest = new JSONObject();

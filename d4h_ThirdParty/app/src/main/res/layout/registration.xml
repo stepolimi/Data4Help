@@ -65,20 +65,6 @@
         android:ems="10"
         android:hint="@string/type_of_society"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/fiscalCode"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="Autofill" />
-
-    <EditText
-        android:id="@+id/fiscalCode"
-        android:layout_width="310dp"
-        android:layout_height="55dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:hint="@string/fiscal_code"
-        android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/pIva"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

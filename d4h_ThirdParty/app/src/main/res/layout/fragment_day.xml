@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:context="com.data4help.d4h_thirdparty.activity.ShowDataActivity">
+    tools:context="com.data4help.d4h_thirdparty.activity.ShowGroupDataActivity">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
         android:layout_marginBottom="20dp">
 
         <TextView
-            android:id="@+id/minYesterdayBpm"
+            android:id="@+id/minDayBpm"
             android:layout_height="match_parent"
             android:layout_width="100dp"
             android:textAlignment="center"
@@ -54,7 +54,7 @@
             android:textSize="18sp"/>
 
         <TextView
-            android:id="@+id/averageYesterdayBpm"
+            android:id="@+id/averageDayBpm"
             android:layout_height="match_parent"
             android:layout_width="100dp"
             android:textAlignment="center"
@@ -67,7 +67,7 @@
             android:textSize="18sp"/>
 
         <TextView
-            android:id="@+id/maxYesterdayBpm"
+            android:id="@+id/maxDayBpm"
             android:layout_height="match_parent"
             android:layout_width="100dp"
             android:textAlignment="center"
@@ -108,7 +108,7 @@
         android:layout_marginBottom="20dp">
 
         <TextView
-            android:id="@+id/minYesterdayPressure"
+            android:id="@+id/minDayPressure"
             android:layout_height="match_parent"
             android:layout_width="100dp"
             android:textAlignment="center"
@@ -121,7 +121,7 @@
             android:textSize="18sp"/>
 
         <TextView
-            android:id="@+id/maxYesterdayPressure"
+            android:id="@+id/maxDayPressure"
             android:layout_height="match_parent"
             android:layout_width="100dp"
             android:textAlignment="center"
@@ -162,7 +162,7 @@
         android:layout_marginBottom="20dp">
 
         <TextView
-            android:id="@+id/minYesterdayTemperature"
+            android:id="@+id/minDayTemperature"
             android:layout_height="match_parent"
             android:layout_width="100dp"
             android:textAlignment="center"
@@ -175,7 +175,7 @@
             android:textSize="18sp"/>
 
         <TextView
-            android:id="@+id/maxYesterdayTemperature"
+            android:id="@+id/maxDayTemperature"
             android:layout_height="match_parent"
             android:layout_width="100dp"
             android:textAlignment="center"

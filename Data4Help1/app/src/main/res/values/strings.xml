@@ -132,6 +132,9 @@
     <string name="refuse">Refuse</string>
     <string name="subscribe">Accept</string>
     <string name="dialog_title">Data Request</string>
+    <string name="alert_title">Alert</string>
 
+    //URL DOMAIN
+    <string name="domain">192.168.1.110</string>
 
 </resources>

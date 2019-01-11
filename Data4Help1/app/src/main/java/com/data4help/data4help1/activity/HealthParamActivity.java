@@ -1,6 +1,5 @@
 package com.data4help.data4help1.activity;
 
-
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.data4help.data4help1.AuthToken;
@@ -26,7 +25,6 @@ class HealthParamActivity extends Thread {
 
     void startThread(){
         new Thread(() -> {
-
             do {
                 try {
                     Thread.sleep(10000);
@@ -46,7 +44,7 @@ class HealthParamActivity extends Thread {
                     param.put("maxPressure", maxPressure);
                     param.put("temperature", temperature);
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    interrupt();
                 }
                 JsonObjectRequest sendParam = new JsonObjectRequest(Request.Method.POST, SENDPARAMURL, param, response -> {}, volleyError -> {});
                 MenuActivity.queue.add(sendParam);

@@ -19,7 +19,6 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -75,10 +74,13 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
      * personal details added by the user
      */
     private void setProgressDialog() {
-        dialog = new ProgressDialog(RegistrationActivity.this);
-        dialog.setMessage("Please wait...");
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
+        RegistrationActivity.this.runOnUiThread(()->{
+            dialog = new ProgressDialog(RegistrationActivity.this);
+            dialog.setMessage(PLEASEWAIT);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+        });
+
     }
 
     /**
@@ -88,24 +90,12 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
         JsonObjectRequest userDataReq = new JsonObjectRequest(Request.Method.POST, PERSONALDATAURL, personalDetails,
                 response -> {
                 },
-                volleyError -> {
-                }) {
+                volleyError -> getVolleyError(volleyError.networkResponse.statusCode)) {
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                switch (response.statusCode) {
-                    case 200:
+                if (response.statusCode == 200) {
                         dialog.dismiss();
                         startActivity(new Intent(RegistrationActivity.this, MenuActivity.class));
-                        break;
-                    //TODO: codici d'errore
-                    case 400:
-                        //BAD REQUEST
-                        break;
-                    case 401:
-                        //UNAUTHORIZED
-                        System.out.println("The given email is already in the DB. Change it or login.");
-                        break;
-
                 }
                 finish();
                 return super.parseNetworkResponse(response);
@@ -120,19 +110,36 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
     /**
      * Clear all param in case of wrong answer
      */
-    private void deleteParam() {
-        email.getText().clear();
-        password.getText().clear();
-        name.getText().clear();
-        surname.getText().clear();
-        fiscalCode.getText().clear();
-        yearOfBirth.getText().clear();
-        street.getText().clear();
-        number.getText().clear();
-        city.getText().clear();
-        cap.getText().clear();
-        country.getText().clear();
-        region.getText().clear();
+    private void deleteParam(String errorString) {
+        RegistrationActivity.this.runOnUiThread(() -> {
+            email.getText().clear();
+            password.getText().clear();
+            name.getText().clear();
+            surname.getText().clear();
+            fiscalCode.getText().clear();
+            yearOfBirth.getText().clear();
+            street.getText().clear();
+            number.getText().clear();
+            city.getText().clear();
+            cap.getText().clear();
+            country.getText().clear();
+            region.getText().clear();
+            createDialog(errorString);
+        });
+    }
+
+
+    /**
+     * @param errorString is the error that must be shown in the dialog
+     *
+     * Shows a dialog with the occurred error
+     */
+    private void createDialog(String errorString) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RegistrationActivity.this);
+        alertDialogBuilder.setMessage(errorString);
+        alertDialogBuilder.setIcon(drawable.ic_exit);
+        alertDialogBuilder.setCancelable(true);
+        alertDialogBuilder.create().show();
     }
 
     /**
@@ -227,17 +234,10 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
      * set text in the error label and cancel the request
      */
     private void cancelReq(String errorString, JsonObjectRequest request) {
-        RegistrationActivity.this.runOnUiThread(() -> {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RegistrationActivity.this);
-            alertDialogBuilder.setMessage(errorString);
-            alertDialogBuilder.setIcon(drawable.ic_exit);
-            alertDialogBuilder.setCancelable(true);
-            alertDialogBuilder.create().show();
-        });
+        deleteParam(errorString);
         request.cancel();
         dialog.dismiss();
         incompleteRequest = false;
-        deleteParam();
     }
 
     /**
@@ -405,7 +405,6 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
     public void run() {
         setAttributes();
 
-
         registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -425,29 +424,19 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
                 registrationReq = new JsonObjectRequest(Request.Method.POST, REGISTRATIONURL, credential,
                         response -> {
                         },
-                        volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())) {
+                        volleyError -> getVolleyError(volleyError.networkResponse.statusCode)) {
                     @Override
                     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                        switch (response.statusCode) {
-                            case 200:
-                                try {
-                                    String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                                    new AuthToken(json);
-                                    personalDetails.put("userId", AuthToken.getId());
-                                    System.out.println(json);
-
-                                } catch (UnsupportedEncodingException | JSONException e) {
-                                    setErrorString(SERVERERROR);
-                                }
-                                sendUserData(personalDetails);
-                                break;
-                            //TODO: altri errori
-                            case 403:
-                                System.out.println("The access has been denied. Try again.");
-                                break;
-                            case 401:
-                                System.out.println("The given email is already in the DB. Change it or login.");
-                                break;
+                        if (response.statusCode == 200){
+                            try {
+                                String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                                new AuthToken(json);
+                                personalDetails.put("userId", AuthToken.getId());
+                                System.out.println(json);
+                            } catch (UnsupportedEncodingException | JSONException e) {
+                                setErrorString(SERVERERROR);
+                            }
+                            sendUserData(personalDetails);
                         }
                         finish();
                         return super.parseNetworkResponse(response);
@@ -459,6 +448,30 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
                     queue.add(registrationReq);
             }
         });
+    }
+
+    /**
+     * @param statusCode is the code sent byt the server
+     *
+     *                   Checks the code sent by the server and show a different error depending on it.
+     */
+    private void getVolleyError(int statusCode) {
+        switch (statusCode){
+            case 400:
+                deleteParam(BADREQUEST);
+                break;
+            case 401:
+                deleteParam(UNAUTHORIZED);
+                break;
+            case 404:
+                deleteParam(NOTFOUND);
+                break;
+            case 500:
+                deleteParam(INTERNALSERVERERROR);
+                break;
+            default:
+                break;
+        }
     }
 }
 

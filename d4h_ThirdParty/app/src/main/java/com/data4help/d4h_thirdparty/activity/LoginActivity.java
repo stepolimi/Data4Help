@@ -12,7 +12,6 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -38,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     private String errorString;
     private boolean incompleteRequest = false;
     private JSONObject credential;
-    private JsonObjectRequest jobReq;
+    private JsonObjectRequest loginReq;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,60 +49,76 @@ public class LoginActivity extends AppCompatActivity {
         Button loginButton = findViewById(id.loginButton);
         View registerLink = findViewById(id.registerLink);
 
-        loginButton.setOnClickListener((v) -> {
-                setCredential();
-                RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
-                jobReq = new JsonObjectRequest(Request.Method.POST, LOGINURL, credential,
-                        jsonObject -> System.out.print("hi"),
-                        volleyError -> VolleyLog.e("Error: " + volleyError.getMessage())) {
+        loginButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
                     @Override
-                    protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                        switch (response.statusCode) {
-                            case 200:
-                                String json = null;
-                                try {
-                                    json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                                } catch (UnsupportedEncodingException e) {
-                                    e.printStackTrace();
+                    public void run() {
+                        setCredential();
+                        RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+                        loginReq = new JsonObjectRequest(Request.Method.POST, LOGINURL, credential,
+                                jsonObject -> System.out.print("hi"),
+                                volleyError -> getVolleyError(volleyError.networkResponse.statusCode)) {
+                            @Override
+                            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                                if (response.statusCode == 200) {
+                                    try {
+                                        String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                                        new AuthToken(json);
+                                    } catch (UnsupportedEncodingException e) {
+                                        createDialog(SERVERERROR);
+                                    }
+                                    startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                                 }
-                                new AuthToken(json);
-                                startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                                break;
-                            //TODO
-                            case 400:
-                                System.out.println("The access has been denied. Try again.");
-                                break;
-                            case 401:
-                                System.out.println("The given email is already in the DB. Change it or login.");
-                                break;
-                        }
-                        finish();
-                        return super.parseNetworkResponse(response);
+                                finish();
+                                return super.parseNetworkResponse(response);
+                            }
+                        };
+                        if (incompleteRequest)
+                            cancelReq(errorString);
+                        else
+                            queue.add(loginReq);
                     }
-                };
-                if (incompleteRequest)
-                    cancelReq(errorString);
-                else
-                    queue.add(jobReq);
-        });
+                });
+            }});
 
         registerLink.setOnClickListener((v) -> startActivity(new Intent(LoginActivity.this, HomeActivity.class)));
 
     }
 
     /**
+     * Cancels all EditText texts
+     */
+    private void deleteEditText(String errorString) {
+        LoginActivity.this.runOnUiThread(() -> {
+            email.getText().clear();
+            password.getText().clear();
+            createDialog(errorString);
+        });
+    }
+
+    /**
+     * @param errorString is the error that must be shown in the dialog
+     *
+     * Shows a dialog with the occurred error
+     */
+    private void createDialog(String errorString) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
+        alertDialogBuilder.setMessage(errorString);
+        alertDialogBuilder.setIcon(drawable.ic_exit);
+        alertDialogBuilder.setCancelable(true);
+        alertDialogBuilder.create().show();
+    }
+
+    /**
      * set text in the error label and cancel the request
      */
     private void cancelReq(String errorString) {
-        LoginActivity.this.runOnUiThread(() -> {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
-            alertDialogBuilder.setMessage(errorString);
-            alertDialogBuilder.setIcon(drawable.ic_exit);
-            alertDialogBuilder.setCancelable(true);
-            alertDialogBuilder.create().show();
-        });
+        deleteEditText(errorString);
         incompleteRequest = false;
-        jobReq.cancel();
+        loginReq.cancel();
     }
 
     /**
@@ -125,7 +140,6 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void checkValue(String field, String value,JSONObject personalDetails){
         if(value.isEmpty()) {
-            System.out.println("funziona?");
             setErrorString(EMPTYFIELDS);
         }
         else {
@@ -160,6 +174,30 @@ public class LoginActivity extends AppCompatActivity {
             case WRONGEMAIL:
                 errorString = WRONGEMAIL;
         }incompleteRequest = true;
+    }
+
+    /**
+     * @param statusCode is the code sent byt the server
+     *
+     *                   Checks the code sent by the server and show a different error depending on it.
+     */
+    private void getVolleyError(int statusCode) {
+        switch (statusCode){
+            case 400:
+                deleteEditText(BADREQUEST);
+                break;
+            case 401:
+                deleteEditText(UNAUTHORIZED);
+                break;
+            case 404:
+                deleteEditText(NOTFOUND);
+                break;
+            case 500:
+                deleteEditText(INTERNALSERVERERROR);
+                break;
+            default:
+                break;
+        }
     }
 }
 

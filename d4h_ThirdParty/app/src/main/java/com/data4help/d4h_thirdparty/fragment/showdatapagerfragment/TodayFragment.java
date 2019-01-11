@@ -1,5 +1,7 @@
 package com.data4help.d4h_thirdparty.fragment.showdatapagerfragment;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -14,25 +16,33 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import com.data4help.d4h_thirdparty.AuthToken;
 import com.data4help.d4h_thirdparty.R.*;
+import com.data4help.d4h_thirdparty.activity.ShowGroupDataActivity;
+import com.data4help.d4h_thirdparty.activity.ShowSingleDataActivity;
 
 public class TodayFragment extends Fragment implements Runnable{
 
-    private TextView minTodayBpm;
-    private TextView averageTodayBmp;
-    private TextView maxTodayBmp;
 
-    private TextView minTodayPressure;
-    private TextView maxTodayPressure;
+    public static Map<Integer, Map<String, String>> sevenDaysOfARequest;
+    private TextView minDayBpm;
+    private TextView averageDayBmp;
+    private TextView maxDayBmp;
 
-    private TextView minTodayTemperature;
-    private TextView maxTodayTemperature;
+    private TextView minDayPressure;
+    private TextView maxDayPressure;
+
+    private TextView minDayTemperature;
+    private TextView maxDayTemperature;
 
     private JSONObject authUser;
     private View view;
@@ -43,11 +53,13 @@ public class TodayFragment extends Fragment implements Runnable{
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(layout.fragment_today, container, false);
+        view = inflater.inflate(layout.fragment_day, container, false);
+        System.out.println("oggi");
         this.run();
 
         return view;
     }
+
 
     /**
      * Asks the daily health parameters of the user
@@ -82,7 +94,7 @@ public class TodayFragment extends Fragment implements Runnable{
                 return super.parseNetworkResponse(response);
             }
         };
-        //ShowDataActivity.queue.add(dailyHealthParamReq);
+        //ShowGroupDataActivity.queue.add(dailyHealthParamReq);
     }
 
     /**
@@ -102,23 +114,80 @@ public class TodayFragment extends Fragment implements Runnable{
      *
      * Sets all health parameters obtained from the response
      */
+    @SuppressLint("UseSparseArrays")
     private void setHealthParameters(String json) {
-
+        sevenDaysOfARequest = new HashMap<>();
         try {
-            JSONObject jsonObj = new JSONObject(json);
-            minTodayBpm.setText(jsonObj.getString("minHeartBeat"));
-            averageTodayBmp.setText( jsonObj.getString("avgHeartBeat"));
-            maxTodayBmp.setText(jsonObj.getString("maxHeartBeat"));
-
-            minTodayPressure.setText(jsonObj.getString("minMinPressure"));
-            maxTodayPressure.setText(jsonObj.getString("maxMaxPressure"));
-
-            minTodayTemperature.setText(jsonObj.getString("minTemperature"));
-            maxTodayTemperature.setText(jsonObj.getString("maxTemperature"));
-        } catch (JSONException e) {
-            e.printStackTrace();
+            JSONArray sevenDaysHealthParam = new JSONArray(json);
+            for (int i = 0; i < sevenDaysHealthParam.length(); i++) {
+                JSONObject param = sevenDaysHealthParam.getJSONObject(i);
+                Map<String, String> data = new HashMap<>();
+                switch (i) {
+                    case 0:
+                        setContextParam(param);
+                        break;
+                    default:
+                        if(i == 1)
+                            setTodayFragmentParam(param);
+                        setData(param, data);
+                        break;
+                }
+                sevenDaysOfARequest.put(i,data);
+            }
+        } catch (JSONException e1) {
+            e1.printStackTrace();
         }
     }
+
+    /**
+     * @param param is the JSONObject that contains all personal detail
+     * @throws JSONException is something wrong occurs
+     *
+     * calls a method in the main activity
+     */
+    private void setContextParam(JSONObject param) throws JSONException {
+        Context context = Objects.requireNonNull(getActivity()).getApplicationContext();
+        if(context instanceof ShowGroupDataActivity)
+            ShowGroupDataActivity.setRequestParam(param);
+        else if (context instanceof ShowSingleDataActivity)
+            ShowSingleDataActivity.setRequestParam(param);
+    }
+
+    /**
+     * @param param is the JSONObject that contains all health params
+     * @throws JSONException is something wrong occurs
+     *
+     * sets all param in the textViews
+     */
+    private void setTodayFragmentParam(JSONObject param) throws JSONException {
+        minDayBpm.setText(param.getString("minHeartBeat"));
+        averageDayBmp.setText( param.getString("avgHeartBeat"));
+        maxDayBmp.setText(param.getString("maxHeartBeat"));
+
+        minDayPressure.setText(param.getString("minMinPressure"));
+        maxDayPressure.setText(param.getString("maxMaxPressure"));
+
+        minDayTemperature.setText(param.getString("minTemperature"));
+        maxDayTemperature.setText(param.getString("maxTemperature"));
+    }
+
+    /**
+     * @param param is the JSONObject that contains all params
+     * @param data is the HashMap that must be filled
+     *
+     *              Sets all health params of a day in a map
+     */
+    private void setData(JSONObject param, Map<String, String> data) throws JSONException {
+        data.put("minHeartBeat", param.getString("minHeartBeat"));
+        data.put("avgHeartBeat", param.getString("avgHeartBeat"));
+        data.put("maxHeartBeat", param.getString("maxHeartBeat"));
+        data.put("minMinPressure", param.getString("minMinPressure"));
+        data.put("maxMaxPressure", param.getString("maxMaxPressure"));
+        data.put("minTemperature", param.getString("avgHeartBeat"));
+        data.put("maxTemperature", param.getString("maxTemperature"));
+    }
+
+
 
     /**
      * @param view is this
@@ -126,15 +195,15 @@ public class TodayFragment extends Fragment implements Runnable{
      * Sets all attributes
      */
     private void setAttributes(View view) {
-        minTodayBpm = view.findViewById(id.minTodayBpm);
-        averageTodayBmp = view.findViewById(id.averageTodayBpm);
-        maxTodayBmp = view.findViewById(id.maxTodayBpm);
+        minDayBpm = view.findViewById(id.minDayBpm);
+        averageDayBmp = view.findViewById(id.averageDayBpm);
+        maxDayBmp = view.findViewById(id.maxDayBpm);
 
-        minTodayPressure = view.findViewById(id.minTodayPressure);
-        maxTodayPressure = view.findViewById(id.maxTodayPressure);
+        minDayPressure = view.findViewById(id.minDayPressure);
+        maxDayPressure = view.findViewById(id.maxDayPressure);
 
-        minTodayTemperature = view.findViewById(id.minTodayTemperature);
-        maxTodayTemperature = view.findViewById(id.maxTodayTemperature);
+        minDayTemperature = view.findViewById(id.minDayTemperature);
+        maxDayTemperature = view.findViewById(id.maxDayTemperature);
     }
 
     @Override

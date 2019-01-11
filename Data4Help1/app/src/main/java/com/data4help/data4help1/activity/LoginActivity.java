@@ -12,16 +12,19 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.data4help.data4help1.AuthToken;
 
+import static com.data4help.data4help1.Config.BADREQUEST;
 import static com.data4help.data4help1.Config.EMPTYFIELDS;
+import static com.data4help.data4help1.Config.INTERNALSERVERERROR;
 import static com.data4help.data4help1.Config.LOGINURL;
+import static com.data4help.data4help1.Config.NOTFOUND;
 import static com.data4help.data4help1.Config.SERVERERROR;
 import static com.data4help.data4help1.Config.SHORTPASSWORD;
+import static com.data4help.data4help1.Config.UNAUTHORIZED;
 import static com.data4help.data4help1.Config.WRONGEMAIL;
 import static com.data4help.data4help1.R.*;
 
@@ -64,27 +67,17 @@ public class LoginActivity extends AppCompatActivity {
                         loginReq = new JsonObjectRequest(Request.Method.POST, LOGINURL, credential,
                                 response -> {
                                 },
-                                volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())) {
+                                volleyError -> getVolleyError(volleyError.networkResponse.statusCode)){
                             @Override
                             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                                switch (response.statusCode) {
-                                    case 200:
-                                        try {
-                                            String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                                            new AuthToken(json);
-                                            System.out.println(json);
-                                        } catch (UnsupportedEncodingException e) {
-                                            setErrorString(SERVERERROR);
-                                        }
-                                        startActivity(new Intent(LoginActivity.this, MenuActivity.class));
-                                        break;
-                                    //TODO
-                                    case 403:
-                                        System.out.println("The access has been denied. Try again.");
-                                        break;
-                                    case 401:
-                                        System.out.println("The given email is already in the DB. Change it or login.");
-                                        break;
+                                if(response.statusCode == 200) {
+                                    try {
+                                        String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                                        new AuthToken(json);
+                                    } catch (UnsupportedEncodingException e) {
+                                        createDialog(SERVERERROR);
+                                    }
+                                    startActivity(new Intent(LoginActivity.this, MenuActivity.class));
                                 }
                                 finish();
                                 return super.parseNetworkResponse(response);
@@ -99,20 +92,38 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        registerLink.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, RegistrationActivity.class)));
+        registerLink.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, MenuActivity.class)));
+    }
+
+    /**
+     * Cancels all EditText texts
+     */
+    private void deleteEditText(String errorString) {
+        LoginActivity.this.runOnUiThread(() -> {
+            email.getText().clear();
+            password.getText().clear();
+            createDialog(errorString);
+        });
+    }
+
+    /**
+     * @param errorString is the error that must be shown in the dialog
+     *
+     * Shows a dialog with the occurred error
+     */
+    private void createDialog(String errorString) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
+        alertDialogBuilder.setMessage(errorString);
+        alertDialogBuilder.setIcon(drawable.ic_exit);
+        alertDialogBuilder.setCancelable(true);
+        alertDialogBuilder.create().show();
     }
 
     /**
      * set text in the error label and cancel the request
      */
     private void cancelReq(String errorString) {
-        LoginActivity.this.runOnUiThread(() -> {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
-            alertDialogBuilder.setMessage(errorString);
-            alertDialogBuilder.setIcon(drawable.ic_exit);
-            alertDialogBuilder.setCancelable(true);
-            alertDialogBuilder.create().show();
-            });
+        deleteEditText(errorString);
         incompleteRequest = false;
         loginReq.cancel();
     }
@@ -168,5 +179,29 @@ public class LoginActivity extends AppCompatActivity {
             case WRONGEMAIL:
                 errorString = WRONGEMAIL;
         }incompleteRequest = true;
+    }
+
+    /**
+     * @param statusCode is the code sent byt the server
+     *
+     *                   Checks the code sent by the server and show a different error depending on it.
+     */
+    private void getVolleyError(int statusCode) {
+        switch (statusCode){
+            case 400:
+                deleteEditText(BADREQUEST);
+                break;
+            case 401:
+                deleteEditText(UNAUTHORIZED);
+                break;
+            case 404:
+                deleteEditText(NOTFOUND);
+                break;
+            case 500:
+                deleteEditText(INTERNALSERVERERROR);
+                break;
+            default:
+                break;
+        }
     }
 }

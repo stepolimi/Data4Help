@@ -1,6 +1,7 @@
 package com.data4help.d4h_thirdparty.dialogfragment;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -17,6 +18,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.data4help.d4h_thirdparty.AuthToken;
 import com.data4help.d4h_thirdparty.R.*;
+import com.data4help.d4h_thirdparty.activity.ShowGroupDataActivity;
 import com.data4help.d4h_thirdparty.fragment.homepagerfragment.GroupRequestFragment;
 
 import org.json.JSONException;
@@ -50,6 +52,9 @@ public class GroupPositiveRequestDialogFragment extends DialogFragment{
         });
 
         groupRefuseButton.setOnClickListener(v -> {
+            Intent intent= new Intent(getActivity(),ShowGroupDataActivity.class);
+
+            startActivity(intent);
             getDialog().dismiss();
         });
 

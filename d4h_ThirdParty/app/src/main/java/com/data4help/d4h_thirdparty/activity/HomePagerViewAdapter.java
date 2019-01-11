@@ -21,12 +21,16 @@ class HomePagerViewAdapter extends FragmentPagerAdapter{
     public Fragment getItem(int position) {
         switch (position){
             case 0:
+                System.out.println("home");
                 return new HomeSubscribedRequestFragment();
             case 1:
+                System.out.println("waiting");
                 return new WaitingUserAnswerFragment();
             case 2:
+                System.out.println("group");
                 return new GroupRequestFragment();
             case 3:
+                System.out.println("single");
                 return new SingleRequestFragment();
             default:
                 return null;

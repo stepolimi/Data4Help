@@ -8,31 +8,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.data4help.d4h_thirdparty.AuthToken;
+import java.util.HashMap;
+import java.util.Objects;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.data4help.d4h_thirdparty.R.*;
 
-import java.io.UnsupportedEncodingException;
+import static com.data4help.d4h_thirdparty.Config.DAYTWO;
 
 public class YesterdayFragment extends Fragment implements Runnable{
 
-    private TextView minYesterdayBpm;
-    private TextView averageYesterdayBmp;
-    private TextView maxYesterdayBmp;
+    private TextView minDayBpm;
+    private TextView averageDayBmp;
+    private TextView maxDayBmp;
 
-    private TextView minYesterdayPressure;
-    private TextView maxYesterdayPressure;
+    private TextView minDayPressure;
+    private TextView maxDayPressure;
 
-    private TextView minYesterdayTemperature;
-    private TextView maxYesterdayTemperature;
+    private TextView minDayTemperature;
+    private TextView maxDayTemperature;
 
-    private JSONObject authUser;
     private View view;
 
     public YesterdayFragment(){}
@@ -41,81 +35,35 @@ public class YesterdayFragment extends Fragment implements Runnable{
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(com.data4help.d4h_thirdparty.R.layout.fragment_yesterday, container, false);
-        this.run();
-
+        view =  inflater.inflate(layout.fragment_day, container, false);
         return view;
+
     }
 
-    /**
-     * Asks the daily health parameters of the user
-     */
-    private void getParameters() {
-        setUserId();
-
-
-        JsonObjectRequest dailyHealthParamReq = new JsonObjectRequest(Request.Method.POST, null, authUser ,
-                jsonObject -> {},
-                volleyError -> {}){
-            @Override
-            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                switch (response.statusCode) {
-                    case 200:
-                        try {
-                            String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                            setHealthParameters(json);
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
-                        break;
-                    //TODO
-                    case 403:
-                        System.out.println("The access has been denied. Try again.");
-                        break;
-                    case 401:
-                        System.out.println("The given email is already in the DB. Change it or login.");
-                        break;
-
-                }
-                return super.parseNetworkResponse(response);
-            }
-        };
-        //ShowDataActivity.queue.add(dailyHealthParamReq);
-    }
-
-    /**
-     * Sets the JSONObject containing the user di
-     */
-    private void setUserId() {
-        authUser = new JSONObject();
-        try {
-            authUser.put("id", AuthToken.getId());
-        } catch (JSONException e) {
-            e.printStackTrace();
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed()) { // fragment is visible and have created
+            System.out.println("ieri");
+            this.run();
         }
     }
 
     /**
-     * @param json is the response
      *
      * Sets all health parameters obtained from the response
      */
-    private void setHealthParameters(String json) {
+    private void setHealthParameters() {
+        HashMap<String,String> data = new HashMap<>(Objects.requireNonNull(TodayFragment.sevenDaysOfARequest.get(DAYTWO)));
+        minDayBpm.setText(data.get("minHeartBeat"));
+        averageDayBmp.setText(data.get("avgHeartBeat"));
+        maxDayBmp.setText(data.get("maxHeartBeat"));
+        
+        minDayPressure.setText(data.get("minMinPressure"));
+        maxDayPressure.setText(data.get("maxMaxPressure"));
 
-        try {
-            JSONObject jsonObj = new JSONObject(json);
-            minYesterdayBpm.setText(jsonObj.getString("minHeartBeat"));
-            averageYesterdayBmp.setText( jsonObj.getString("avgHeartBeat"));
-            maxYesterdayBmp.setText(jsonObj.getString("maxHeartBeat"));
-
-            minYesterdayPressure.setText(jsonObj.getString("minMinPressure"));
-            maxYesterdayPressure.setText(jsonObj.getString("maxMaxPressure"));
-
-            minYesterdayTemperature.setText(jsonObj.getString("minTemperature"));
-            maxYesterdayTemperature.setText(jsonObj.getString("maxTemperature"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        minDayTemperature.setText(data.get("minTemperature"));
+        maxDayTemperature.setText(data.get("maxTemperature"));
     }
 
     /**
@@ -124,20 +72,20 @@ public class YesterdayFragment extends Fragment implements Runnable{
      * Sets all attributes
      */
     private void setAttributes(View view) {
-        minYesterdayBpm = view.findViewById(com.data4help.d4h_thirdparty.R.id.minYesterdayBpm);
-        averageYesterdayBmp = view.findViewById(com.data4help.d4h_thirdparty.R.id.averageYesterdayBpm);
-        maxYesterdayBmp = view.findViewById(com.data4help.d4h_thirdparty.R.id.maxYesterdayBpm);
+        minDayBpm = view.findViewById(id.minDayBpm);
+        averageDayBmp = view.findViewById(id.averageDayBpm);
+        maxDayBmp = view.findViewById(id.maxDayBpm);
 
-        minYesterdayPressure = view.findViewById(com.data4help.d4h_thirdparty.R.id.minYesterdayPressure);
-        maxYesterdayPressure = view.findViewById(com.data4help.d4h_thirdparty.R.id.maxYesterdayPressure);
+        minDayPressure = view.findViewById(id.minDayPressure);
+        maxDayPressure = view.findViewById(id.maxDayPressure);
 
-        minYesterdayTemperature = view.findViewById(com.data4help.d4h_thirdparty.R.id.minYesterdayTemperature);
-        maxYesterdayTemperature = view.findViewById(com.data4help.d4h_thirdparty.R.id.maxYesterdayTemperature);
+        minDayTemperature = view.findViewById(id.minDayTemperature);
+        maxDayTemperature = view.findViewById(id.maxDayTemperature);
     }
 
     @Override
     public void run() {
         setAttributes(view);
-        getParameters();
+        //setHealthParameters();
     }
 }

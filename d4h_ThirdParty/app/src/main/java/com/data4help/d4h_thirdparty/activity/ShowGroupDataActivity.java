@@ -5,10 +5,14 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.data4help.d4h_thirdparty.R.*;
 
-public class ShowDataActivity extends AppCompatActivity {
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class ShowGroupDataActivity extends AppCompatActivity {
 
     private Button today;
     private Button yesterday;
@@ -18,13 +22,20 @@ public class ShowDataActivity extends AppCompatActivity {
     private Button fiveDaysAgo;
     private Button sixDaysAgo;
 
+    private static TextView ageRange;
+    private static TextView heightRange;
+    private static TextView weightRange;
+    private static TextView sexRange;
+    private static TextView addressRange;
+
     private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(com.data4help.d4h_thirdparty.R.layout.show_data);
+        setContentView(com.data4help.d4h_thirdparty.R.layout.show_group_data);
 
+        runOnUiThread(() -> {
         setAttributes();
 
         viewPager = findViewById(id.dataPage);
@@ -41,12 +52,19 @@ public class ShowDataActivity extends AppCompatActivity {
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float v, int i1) {}
+            public void onPageScrolled(int position, float v, int i1) {
+            }
+
             @Override
-            public void onPageSelected(int position) { changeTab(position); }
+            public void onPageSelected(int position) {
+                changeTab(position);
+            }
+
             @Override
-            public void onPageScrollStateChanged(int position) {}
+            public void onPageScrollStateChanged(int position) {
+            }
         });
+    });
     }
 
 
@@ -126,5 +144,37 @@ public class ShowDataActivity extends AppCompatActivity {
         fourDaysAgo = findViewById(id.fourDaysButton);
         fiveDaysAgo = findViewById(id.fiveDaysButton);
         sixDaysAgo = findViewById(id.sixDaysButton);
+        ageRange = findViewById(id.ageRange);
+        heightRange = findViewById(id.heightRange);
+        weightRange = findViewById(id.weightRange);
+        sexRange = findViewById(id.sexRange);
+        addressRange = findViewById(id.addressRange);
+
+    }
+
+    /**
+     * @param param is the JSONObject that must be filled
+     *
+     * Sets all param associated to the request done
+     */
+    public static void setRequestParam(JSONObject param) throws JSONException {
+        String age = param.getString("minAge") + "-" + param.getString("maxAge");
+        ageRange.setText(age);
+
+        String weight = param.getString("minWeight") + "-" + param.getString("maxWeight");
+        weightRange.setText(weight);
+
+        String height = param.getString("minHeight") + "-" + param.getString("maxHeight");
+        heightRange.setText(height);
+
+        String sex = param.getString("sex");
+        if(sex.equals("male") || sex.equals("female"))
+            sex = "male - female";
+        sexRange.setText(sex);
+
+        String address = param.getString("state") + "-" + param.getString("region");
+        addressRange.setText(address);
+
+
     }
 }

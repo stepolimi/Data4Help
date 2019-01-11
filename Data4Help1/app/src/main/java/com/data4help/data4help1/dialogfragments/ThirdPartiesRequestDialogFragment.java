@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,10 +29,18 @@ import org.json.JSONObject;
 import java.util.Objects;
 
 import static com.data4help.data4help1.Config.ACCEPTORDENIEURL;
+import static com.data4help.data4help1.Config.BADREQUEST;
+import static com.data4help.data4help1.Config.INTERNALSERVERERROR;
+import static com.data4help.data4help1.Config.NOTFOUND;
+import static com.data4help.data4help1.Config.SERVERERROR;
+import static com.data4help.data4help1.Config.UNAUTHORIZED;
 
 public class ThirdPartiesRequestDialogFragment extends DialogFragment{
 
     private boolean subscribed;
+    private boolean incompleteRequest = false;
+    private final FragmentManager fm = getFragmentManager();
+    private JsonObjectRequest groupUserRequest;
 
     public ThirdPartiesRequestDialogFragment(){}
 
@@ -79,29 +88,44 @@ public class ThirdPartiesRequestDialogFragment extends DialogFragment{
         try {
             setAcceptOrNot();
         } catch (JSONException e) {
-            e.printStackTrace();
+              incompleteRequest = true;
         }
-        JsonObjectRequest groupUserRequest = new JsonObjectRequest(Request.Method.POST, ACCEPTORDENIEURL,  acceptOrNot,
+        groupUserRequest = new JsonObjectRequest(Request.Method.POST, ACCEPTORDENIEURL,  acceptOrNot,
                 response -> VolleyLog.v("Response:%n %s", response.toString()),
-                volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
+                volleyError -> getVolleyError(volleyError.networkResponse.statusCode)){
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                switch (response.statusCode) {
-                    case 200:
-                        getDialog().dismiss();
-                        break;
-                    //TODO: codici d'errore
-                    case 403:
-                        System.out.println("The access has been denied. Try again.");
-                        break;
-                    case 401:
-                        System.out.println("The given email is already in the DB. Change it or login.");
-                        break;
-                }
+               if (response.statusCode== 200) 
+                   getDialog().dismiss();
+              
                 return super.parseNetworkResponse(response);
             }
         };
-        queue.add(groupUserRequest);
+        if(incompleteRequest)
+            cancelReq();
+        else
+            queue.add(groupUserRequest);
+    }
+
+
+    /**
+     * set text in the error label and cancel the request
+     */
+    private void cancelReq() {
+        raiseGeneralDialogFragment(SERVERERROR);
+        incompleteRequest = false;
+        groupUserRequest.cancel();
+    }
+
+    /**
+     * @param text is the text that must be shown in the dialog fragment
+     *
+     *             creates a new dialog fragment with the given text
+     */
+    private void raiseGeneralDialogFragment(String text) {
+        GeneralDialogFragment dialogFragment = new GeneralDialogFragment();
+        GeneralDialogFragment.setText(text);
+        dialogFragment.show(Objects.requireNonNull(fm), "GeneralDialogFragment");
     }
 
     /**
@@ -118,5 +142,30 @@ public class ThirdPartiesRequestDialogFragment extends DialogFragment{
             acceptOrNot.put("accepted", true);
         else
             acceptOrNot.put("accepted", false);
+    }
+
+
+    /**
+     * @param statusCode is the status code sent from the server
+     *
+     *                   Creates the dialog with a particular error
+     */
+    public void getVolleyError(int statusCode){
+        switch (statusCode){
+            case 400:
+                raiseGeneralDialogFragment(BADREQUEST);
+                break;
+            case 401:
+                raiseGeneralDialogFragment(UNAUTHORIZED);
+                break;
+            case 404:
+                raiseGeneralDialogFragment(NOTFOUND);
+                break;
+            case 500:
+                raiseGeneralDialogFragment(INTERNALSERVERERROR);
+                break;
+            default:
+                break;
+        }
     }
 }

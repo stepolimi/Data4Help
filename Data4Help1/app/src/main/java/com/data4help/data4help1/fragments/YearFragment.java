@@ -59,6 +59,14 @@ public class YearFragment extends Fragment implements Runnable {
         return view;
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed()) { // fragment is visible and have created
+            this.run();
+        }
+    }
+
     /**
      * Sets the JSONObject containing the user di
      */

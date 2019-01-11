@@ -50,9 +50,16 @@ public class DayFragment extends Fragment implements Runnable{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(layout.fragment_day, container, false);
-        this.run();
 
         return view;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed()) { // fragment is visible and have created
+            this.run();
+        }
     }
 
     /**

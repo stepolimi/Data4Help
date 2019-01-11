@@ -21,6 +21,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.data4help.d4h_thirdparty.AuthToken;
 import com.data4help.d4h_thirdparty.Config;
+import com.data4help.d4h_thirdparty.TypeOfSociety;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +38,6 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
 
     private EditText name;
     private EditText typeSociety;
-    private EditText fiscalCode;
     private EditText pIva;
     private EditText street;
     private EditText number;
@@ -72,10 +72,12 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
      * personal details added by the user
      */
     private void setProgressDialog() {
-        dialog = new ProgressDialog(RegistrationActivity.this);
-        dialog.setMessage("Please wait...");
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
+        RegistrationActivity.this.runOnUiThread(() -> {
+            dialog = new ProgressDialog(RegistrationActivity.this);
+            dialog.setMessage(PLEASEWAIT);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+        });
     }
 
     /**
@@ -85,20 +87,12 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
         dialog.dismiss();
         JsonObjectRequest thirdPartyDataReq = new JsonObjectRequest(Request.Method.POST, Config.PERSONALDATAURL, personalDetails,
                 response -> {},
-                volleyError -> {}){
+                volleyError -> getVolleyError(volleyError.networkResponse.statusCode)){
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                switch(response.statusCode){
-                    case 200:
-                        startActivity(new Intent(RegistrationActivity.this, HomeActivity.class));
-                        break;
-                    //TODO: codici d'errore
-                    case 403:
-                        System.out.println("The access has been denied. Try again.");
-                        break;
-                    case 401:
-                        System.out.println("The given email is already in the DB. Change it or login.");
-                        break;
+                if (response.statusCode == 200) {
+                    dialog.dismiss();
+                    startActivity(new Intent(RegistrationActivity.this, HomeActivity.class));
                 }
                 finish();
                 return super.parseNetworkResponse(response);
@@ -117,13 +111,27 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
      */
     private void setPersonalDetails(JSONObject personalDetails) throws JSONException {
         checkValue("name", name.getText().toString(), personalDetails);
-        checkValue("typeSociety", typeSociety.getText().toString(), personalDetails);
+        checkTypeSociety(typeSociety.getText().toString(), personalDetails);
         JSONObject address = new JSONObject();
         setAddress(address);
         personalDetails.put("address", address);
         checkValue("pIva", pIva.getText().toString(), personalDetails);
 
         checkPolicyBox();
+    }
+
+    /**
+     * @param typeOfSociety is the string written by the user
+     * @param personalDetails is the JSON object that must be filled
+     * @throws JSONException is something goes wrong
+     *
+     * Checks if the type of society is one of the requested ones
+     */
+    private void checkTypeSociety(String typeOfSociety, JSONObject personalDetails) throws JSONException {
+        if(TypeOfSociety.evaluate(typeOfSociety))
+            personalDetails.put("typeOfSociety", typeOfSociety);
+        else
+            setErrorString(EMPTYFIELDS);
     }
 
     /**
@@ -164,35 +172,10 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
      * set text in the error label and cancel the request
      */
     private void cancelReq(String errorString, JsonObjectRequest request) {
-        RegistrationActivity.this.runOnUiThread(() -> {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RegistrationActivity.this);
-            alertDialogBuilder.setMessage(errorString);
-            alertDialogBuilder.setIcon(drawable.ic_exit);
-            alertDialogBuilder.setCancelable(true);
-            alertDialogBuilder.create().show();
-        });
-        deleteParam();
-        incompleteRequest = false;
         dialog.dismiss();
+        deleteParam(errorString);
+        incompleteRequest = false;
         request.cancel();
-    }
-
-    /**
-     * Clear all param in case of wrong answer
-     */
-    private void deleteParam() {
-        email.getText().clear();
-        password.getText().clear();
-        name.getText().clear();
-        typeSociety.getText().clear();
-        fiscalCode.getText().clear();
-        pIva.getText().clear();
-        street.getText().clear();
-        number.getText().clear();
-        city.getText().clear();
-        cap.getText().clear();
-        country.getText().clear();
-        region.getText().clear();
     }
 
     /**
@@ -274,7 +257,6 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
     private void setAttributes() {
         name = findViewById(id.name);
         typeSociety = findViewById(id.typeSociety);
-        fiscalCode = findViewById(id.fiscalCode);
         pIva = findViewById(id.pIva);
         street = findViewById(id.street);
         number = findViewById(id.number);
@@ -337,27 +319,18 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
             queue = Volley.newRequestQueue(RegistrationActivity.this);
             registrationReq = new JsonObjectRequest(Request.Method.POST, REGISTRATIONURL, credential,
                     response -> VolleyLog.v("Response:%n %s", response.toString()),
-                    volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
+                    volleyError -> getVolleyError(volleyError.networkResponse.statusCode)){
                 @Override
                 protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                    switch (response.statusCode) {
-                        case 200:
-                            try {
-                                String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                                new AuthToken(json);
-                                personalDetails.put("thirdPartyId", AuthToken.getId());
-                            } catch (UnsupportedEncodingException | JSONException e) {
-                                setErrorString(SERVERERROR);
+                    if (response.statusCode == 200) {
+                        try {
+                            String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                            new AuthToken(json);
+                            personalDetails.put("thirdPartyId", AuthToken.getId());
+                        } catch (UnsupportedEncodingException | JSONException e) {
+                            createDialog(SERVERERROR);
                             }
                             sendUserData(personalDetails);
-                            break;
-                        //TODO: altri errori
-                        case 403:
-                            System.out.println("The access has been denied. Try again.");
-                            break;
-                        case 401:
-                            System.out.println("The given email is already in the DB. Change it or login.");
-                            break;
                     }
                     finish();
                     return super.parseNetworkResponse(response);
@@ -368,6 +341,63 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
             else
                 queue.add(registrationReq);
         });
+    }
+
+    /**
+     * Clear all param in case of wrong answer
+     */
+    private void deleteParam(String errorString) {
+        RegistrationActivity.this.runOnUiThread(() -> {
+            email.getText().clear();
+            password.getText().clear();
+            name.getText().clear();
+            typeSociety.getText().clear();
+            pIva.getText().clear();
+            street.getText().clear();
+            number.getText().clear();
+            city.getText().clear();
+            cap.getText().clear();
+            country.getText().clear();
+            region.getText().clear();
+            createDialog(errorString);
+        });
+    }
+
+    /**
+     * @param errorString is the error that must be shown in the dialog
+     *
+     * Shows a dialog with the occurred error
+     */
+    private void createDialog(String errorString) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RegistrationActivity.this);
+        alertDialogBuilder.setMessage(errorString);
+        alertDialogBuilder.setIcon(drawable.ic_exit);
+        alertDialogBuilder.setCancelable(true);
+        alertDialogBuilder.create().show();
+    }
+
+    /**
+     * @param statusCode is the code sent byt the server
+     *
+     *                   Checks the code sent by the server and show a different error depending on it.
+     */
+    private void getVolleyError(int statusCode) {
+        switch (statusCode){
+            case 400:
+                createDialog(BADREQUEST);
+                break;
+            case 401:
+                createDialog(UNAUTHORIZED);
+                break;
+            case 404:
+                createDialog(NOTFOUND);
+                break;
+            case 500:
+                createDialog(INTERNALSERVERERROR);
+                break;
+            default:
+                break;
+        }
     }
 }
 

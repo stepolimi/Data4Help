@@ -20,6 +20,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.data4help.data4help1.AuthToken;
 import com.data4help.data4help1.R.*;
+import com.data4help.data4help1.dialogfragments.GeneralDialogFragment;
 import com.data4help.data4help1.dialogfragments.ThirdPartiesRequestDialogFragment;
 
 import org.json.JSONArray;
@@ -29,13 +30,23 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
+import static com.data4help.data4help1.Config.BADREQUEST;
+import static com.data4help.data4help1.Config.INTERNALSERVERERROR;
+import static com.data4help.data4help1.Config.NOREQUESTS;
+import static com.data4help.data4help1.Config.NOTFOUND;
+import static com.data4help.data4help1.Config.SERVERERROR;
 import static com.data4help.data4help1.Config.THIRDPARTYNOTIFICATIONURL;
+import static com.data4help.data4help1.Config.UNAUTHORIZED;
 
 public class ThirdPartiesFragment  extends Fragment {
 
     public static String requestId;
     public static String thirdPartyName;
     public static String description;
+    
+    private boolean incompleteRequest = false;
+    private final FragmentManager fm = getFragmentManager();
+    private JsonObjectRequest groupUserRequest;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -45,7 +56,6 @@ public class ThirdPartiesFragment  extends Fragment {
 
         Button notificationButton = view.findViewById(id.notificationButton);
 
-        //TODO: si potrebbe fare un get all third party associated to the user
         setOnButtonCLick(notificationButton);
 
 
@@ -55,52 +65,70 @@ public class ThirdPartiesFragment  extends Fragment {
     private void setOnButtonCLick(Button notificationButton) {
 
         notificationButton.setOnClickListener((v)->{
-            //TODO: devo sistemare tutto bene
             JSONObject authId = new JSONObject();
             try {
                 authId.put("id", AuthToken.getId());
             } catch (JSONException e) {
-                e.printStackTrace();
+                incompleteRequest = false;
             }
             Context context = Objects.requireNonNull(getActivity()).getApplicationContext();
             RequestQueue queue = Volley.newRequestQueue(context);
-            JsonObjectRequest groupUserRequest = new JsonObjectRequest(Request.Method.POST, THIRDPARTYNOTIFICATIONURL,  authId,
+            groupUserRequest = new JsonObjectRequest(Request.Method.POST, THIRDPARTYNOTIFICATIONURL,  authId,
                     response -> VolleyLog.v("Response:%n %s", response.toString()),
-                    volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
+                    volleyError -> getVolleyError(volleyError.networkResponse.statusCode)){
                 @Override
                 protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                    switch (response.statusCode) {
-                        case 200:
-                            try {
-                                String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                                createDialogFragment(json);
-                            } catch (UnsupportedEncodingException e) {
-                                //TODO
-                            }
-                            break;
-                        //TODO
-                        case 403:
-                            System.out.println("The access has been denied. Try again.");
-                            break;
-                        case 401:
-                            System.out.println("The given email is already in the DB. Change it or login.");
-                            break;
+                    if (response.statusCode == 200) {
+                        try {
+                            String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                            createDialogFragment(json);
+                        } catch (UnsupportedEncodingException e) {
+                            createDialogFragment(SERVERERROR);
+                        }
                     }
                     return super.parseNetworkResponse(response);
                 }
                 };
-            queue.add(groupUserRequest);
+            if(incompleteRequest)
+                cancelReq();
+            else
+                queue.add(groupUserRequest);
         });
     }
 
+    /**
+     * set text in the error label and cancel the request
+     */
+    private void cancelReq() {
+        raiseGeneralDialogFragment(SERVERERROR);
+        incompleteRequest = false;
+        groupUserRequest.cancel();
+    }
+
+    /**
+     * @param text is the text that must be shown in the dialog fragment
+     *             
+     *             creates a new dialog fragment with the given text
+     */
+    private void raiseGeneralDialogFragment(String text) {
+        GeneralDialogFragment dialogFragment = new GeneralDialogFragment();
+        GeneralDialogFragment.setText(text);
+        dialogFragment.show(Objects.requireNonNull(fm), "GeneralDialogFragment");
+    }
+
+    /**
+     * @param json is the string coming from the server
+     *             
+     *             Creates an error dialog if the string is empty; if not create a new dialog for every single request coming
+     *             from the server
+     */
     private void createDialogFragment(String json) {
         System.out.println(json);
         try {
-            JSONArray thirdPartyRequest = new JSONArray(json);
-            if(thirdPartyRequest.length() == 0){
-                //TODO dialog diverso
-            }
+            if(json.isEmpty())
+                raiseGeneralDialogFragment(NOREQUESTS);
             else {
+                JSONArray thirdPartyRequest = new JSONArray(json);
                 for (int i = 0; i < thirdPartyRequest.length(); i++) {
                     JSONObject jsonObject = thirdPartyRequest.getJSONObject(i);
                     requestId = jsonObject.getString("requestId");
@@ -108,12 +136,11 @@ public class ThirdPartiesFragment  extends Fragment {
                     description = jsonObject.getString("description");
 
                     ThirdPartiesRequestDialogFragment dialog = new ThirdPartiesRequestDialogFragment();
-                    final FragmentManager fm = getFragmentManager();
                     dialog.show(Objects.requireNonNull(fm), "ThirdPartiesRequestDialogFragment");
                 }
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            GeneralDialogFragment.setText(SERVERERROR);
         }
 
     }
@@ -126,5 +153,29 @@ public class ThirdPartiesFragment  extends Fragment {
      */
     private void setTextViewThirdParty(JSONObject thirdParty) {
         //TODO
+    }
+
+    /**
+     * @param statusCode is the code sent byt the server
+     *
+     *                   Checks the code sent by the server and show a different error depending on it.
+     */
+    private void getVolleyError(int statusCode) {
+        switch (statusCode){
+            case 400:
+                raiseGeneralDialogFragment(BADREQUEST);
+                break;
+            case 401:
+                raiseGeneralDialogFragment(UNAUTHORIZED);
+                break;
+            case 404:
+                raiseGeneralDialogFragment(NOTFOUND);
+                break;
+            case 500:
+                raiseGeneralDialogFragment(INTERNALSERVERERROR);
+                break;
+            default:
+                break;
+        }
     }
 }

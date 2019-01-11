@@ -18,7 +18,6 @@ public class ShowDataPagerViewAdapter extends FragmentPagerAdapter {
         super(fm);
     }
 
-
     @Override
     public Fragment getItem(int i) {
         switch (i){
@@ -41,6 +40,7 @@ public class ShowDataPagerViewAdapter extends FragmentPagerAdapter {
         }
 
     }
+
 
     @Override
     public int getCount() {
