@@ -18,6 +18,10 @@ public class ThirdPartyDao {
     @PersistenceContext(unitName = "client-unit", type = PersistenceContextType.EXTENDED)
     private EntityManager entityManager = DaoBase.getDaoBase().getEntityManager();
 
+    public void updateDB(){
+        entityManager.flush();
+    }
+
     public void addThirdParty(ThirdParty thirdParty) throws Exception {
         entityManager.persist(thirdParty);
     }
@@ -85,6 +89,13 @@ public class ThirdPartyDao {
 
     public ThirdPartyCredential getThirdPartyCredential(String id) throws Exception{
         Query query = entityManager.createQuery("SELECT t from ThirdPartyCredential t where t.id like :thirdPartyId").setParameter("thirdPartyId", id);
+        if(query.getResultList().isEmpty())
+            return null;
+        return (ThirdPartyCredential) query.getSingleResult();
+    }
+
+    public ThirdPartyCredential getThirdPartyCredentialByMail(String mail) throws Exception{
+        Query query = entityManager.createQuery("SELECT t from ThirdPartyCredential t where t.email like :thirdPartyId").setParameter("thirdPartyId", mail);
         if(query.getResultList().isEmpty())
             return null;
         return (ThirdPartyCredential) query.getSingleResult();

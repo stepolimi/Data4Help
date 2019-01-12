@@ -11,55 +11,72 @@ import javax.ws.rs.core.Response;
 
 @Path("thirdParties")
 public interface ThirdPartyService {
-    @GET
+    @POST
     @Path("/login")
     @Consumes("application/json")
     @Produces("application/json")
     Response login(ThirdPartyCredential credential);
 
-    @PUT
+    @POST
     @Path("/registration")
     @Consumes("application/json")
     @Produces("application/json")
     Response registration(ThirdPartyCredential credential);
 
 
-    @PUT
-    @Path("insertPersonalData")
+    @POST
+    @Path("/insertPersonalData")
     @Consumes("application/json")
-    Response insertPersonalData(@QueryParam("id") String id, ThirdPartyData thirdPartyData);
+    Response insertPersonalData(ThirdPartyData thirdPartyData);
 
     @POST
-    @Path("createUserRequest")
+    @Path("/createUserRequest")
     @Consumes("application/json")
-    Response createUserRequest(@QueryParam("id") String id, RequestUser request);
+    Response createUserRequest(RequestUser request);
 
     @POST
-    @Path("createGroupRequest")
+    @Path("/createGroupRequest")
     @Consumes("application/json")
-    Response createGroupRequest(@QueryParam("id") String id, RequestGroup request, RequestAttributes attributes);
+    Response createGroupRequest(RequestGroup request);
 
-    @GET
-    @Path("getGroupData")
-    @Consumes("application/json")
-    @Produces("application/json")
-    Response getGroupData(@QueryParam("id") String id, String requestId);
-
-    @GET
-    @Path("getUserData")
+    @POST
+    @Path("/getGroupData")
     @Consumes("application/json")
     @Produces("application/json")
-    Response getUserData(@QueryParam("id") String id, String requestId);
+    Response getGroupData(RequestGroup request);
 
-    @GET
-    @Path("getAcquiredUserData")
+    @POST
+    @Path("/getUserData")
+    @Consumes("application/json")
+    @Produces("application/json")
+    Response getUserData(RequestUser request);
+
+    @POST
+    @Path("/getAcquiredUserData")
     @Consumes("application/java")
     @Produces("application/java")
-    Response getAcquiredUserData(@QueryParam("id") String id);
+    Response getAcquiredUserData(String thirdPartyId);
 
-    @GET
-    @Path("getAcquiredGroupData")
+    @POST
+    @Path("/getAcquiredGroupData")
     @Consumes("application/java")
     @Produces("application/java")
-    Response getAcquiredGroupData(@QueryParam("id") String id);
+    Response getAcquiredGroupData(String thirdPartyId);
+
+    @POST
+    @Path("/subscribeUser")
+    @Consumes("application/json")
+    Response subscribeUser(RequestUser request);
+
+    @POST
+    @Path("/subscribeGroup")
+    @Consumes("application/json")
+    Response subscribeGroup(RequestGroup request);
+
+    @POST
+    @Path("/getPendingRequests")
+    @Consumes("application/json")
+    @Produces("application/json")
+    Response getPendingRequests(String thirdPartyId);
+
 }

@@ -13,7 +13,7 @@ public class GroupUsersData {
     @OneToOne
     private GroupOfUsers group;
 
-    @OneToMany
+    @OneToMany (cascade = CascadeType.ALL)
     private List<AnonymousUserData> userData = new ArrayList<>();
 
     public void setGroup(GroupOfUsers group) {

@@ -1,5 +1,7 @@
 package com.d4h.application.model.user;
 
+import com.d4h.application.model.thirdParty.ThirdParty;
+
 import javax.persistence.*;
 
 @Entity
@@ -8,7 +10,7 @@ public class Address {
     private String id;
 
     private int cap;
-    private int num;
+    private int number;
     private String street;
     private String city;
     private String region;
@@ -17,20 +19,29 @@ public class Address {
     @OneToOne (cascade = CascadeType.ALL)
     private User user;
 
-    public int getCap() {
-        return cap;
+    @OneToOne (cascade = CascadeType.ALL)
+    private ThirdParty thirdParty;
+
+    public ThirdParty getThirdParty() {
+        return thirdParty;
     }
+
+    public void setThirdParty(ThirdParty thirdParty) {
+        this.thirdParty = thirdParty;
+    }
+
+    public int getCap() { return cap; }
 
     public void setCap(int cap) {
         this.cap = cap;
     }
 
     public int getNum() {
-        return num;
+        return number;
     }
 
     public void setNum(int num) {
-        this.num = num;
+        this.number = num;
     }
 
     public String getStreet() {

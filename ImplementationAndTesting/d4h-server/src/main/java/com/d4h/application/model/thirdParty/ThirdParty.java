@@ -1,12 +1,16 @@
 package com.d4h.application.model.thirdParty;
 
+import com.d4h.application.model.groupOfUsers.GroupOfUsers;
 import com.d4h.application.model.groupOfUsers.GroupUsersData;
 import com.d4h.application.model.request.RequestGroup;
 import com.d4h.application.model.request.RequestUser;
+import com.d4h.application.model.user.User;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 public class ThirdParty {
@@ -14,23 +18,22 @@ public class ThirdParty {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private ThirdPartyCredential credential;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private ThirdPartyData data;
 
-    //todo: mettere acquiredUserData e groupUserData all'invio dei dati.
-    @OneToMany
+    @OneToMany (cascade = CascadeType.ALL)
     private List<AcquiredUserData> acquiredUserData = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany (cascade = CascadeType.ALL)
     private List<GroupUsersData> groupUsersData = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany (cascade = CascadeType.ALL)
     private List<RequestGroup> groupRequests = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany (cascade = CascadeType.ALL)
     private List<RequestUser> userRequests = new ArrayList<>();
 
     public void setAcquiredUserData(List<AcquiredUserData> acquiredUserData) {
@@ -91,15 +94,15 @@ public class ThirdParty {
         this.id = id;
     }
 
-    public void addUserData(AcquiredUserData data){
-        acquiredUserData.add(data);
-    }
-
-    public void addGroupUsers(GroupUsersData data){
+    public void addGroupUsersData(GroupUsersData data){
         groupUsersData.add(data);
     }
 
     public void addUserRequest(RequestUser requestUser) { userRequests.add(requestUser); }
 
     public void addGroupRequest(RequestGroup requestGroup) { groupRequests.add(requestGroup); }
+
+    public void removeAcquiredUserData(AcquiredUserData acquiredUserData) { this.acquiredUserData.remove(acquiredUserData); }
+
+    public void removeGroupUsersData(GroupUsersData groupUsersData) { this.groupUsersData.remove(groupUsersData); }
 }

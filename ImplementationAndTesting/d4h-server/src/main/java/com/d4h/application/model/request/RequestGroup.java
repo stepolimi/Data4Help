@@ -16,15 +16,32 @@ public class RequestGroup implements Request {
     @ManyToOne
     private ThirdParty sender;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private RequestAttributes attributes;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private GroupOfUsers groupOfUsers;
 
-    private String motivation;
     private boolean accepted;
     private boolean pending;
+    private String thirdPartyId;
+    private boolean subscribed;
+
+    public boolean isSubscribed() {
+        return subscribed;
+    }
+
+    public void setSubscribed(boolean subscribed) {
+        this.subscribed = subscribed;
+    }
+
+    public String getThirdPartyId() {
+        return thirdPartyId;
+    }
+
+    public void setThirdPartyId(String thirdPartyId) {
+        this.thirdPartyId = thirdPartyId;
+    }
 
     public boolean isPending() {
         return pending;
@@ -58,16 +75,6 @@ public class RequestGroup implements Request {
     @Override
     public boolean isAccepted() {
         return accepted;
-    }
-
-    @Override
-    public String getMotivation() {
-        return motivation;
-    }
-
-    @Override
-    public void setMotivation(String motivation) {
-        this.motivation = motivation;
     }
 
     public RequestAttributes getAttributes() {

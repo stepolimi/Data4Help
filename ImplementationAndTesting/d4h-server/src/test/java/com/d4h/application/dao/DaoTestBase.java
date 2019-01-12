@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import javax.ejb.embeddable.EJBContainer;
 
 public class DaoTestBase {
-    static EJBContainer container;
+    static public EJBContainer container;
 
      @BeforeAll
      public static void setUp() {
@@ -17,6 +17,5 @@ public class DaoTestBase {
      @AfterAll
      public static void tearDown() {
          container.close();
-
      }
 }

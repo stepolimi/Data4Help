@@ -7,8 +7,6 @@ public interface Request {
     void setAccepted(boolean accepted);
     boolean isAccepted();
 
-    void setMotivation(String motivation);
-    String getMotivation();
 
     void setSender(ThirdParty sender);
     ThirdParty getSender();

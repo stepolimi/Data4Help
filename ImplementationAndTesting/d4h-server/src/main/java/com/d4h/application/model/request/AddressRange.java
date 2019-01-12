@@ -10,10 +10,11 @@ public class AddressRange {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
-    private String nation;
-    private String province;
-    private String city;
     private int cap;
+    private String street;
+    private String city;
+    private String region;
+    private String state;
 
     public int getCap() {
         return cap;
@@ -31,20 +32,28 @@ public class AddressRange {
         this.city = city;
     }
 
-    public String getProvince() {
-        return province;
+    public String getStreet() {
+        return street;
     }
 
-    public void setProvince(String province) {
-        this.province = province;
+    public void setStreet(String street) {
+        this.street = street;
     }
 
-    public String getNation() {
-        return nation;
+    public String getRegion() {
+        return region;
     }
 
-    public void setNation(String nation) {
-        this.nation = nation;
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     public String getId() {

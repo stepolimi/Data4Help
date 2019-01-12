@@ -10,7 +10,7 @@ public class RequestAttributes {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private AddressRange addressRange;
 
     @OneToOne

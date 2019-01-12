@@ -16,10 +16,12 @@
  */
 package com.d4h.application;
 
+import com.d4h.application.rest.impl.ThirdPartyServiceImpl;
 import com.d4h.application.rest.impl.UserServiceImpl;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +32,7 @@ import java.util.Set;
 public class ApplicationConfig extends Application {
 
     public Set<Class<?>> getClasses() {
-        return new HashSet<>(Collections.singletonList(UserServiceImpl.class));
+        return new HashSet<>(Arrays.asList(UserServiceImpl.class, ThirdPartyServiceImpl.class));
     }
 
 }

@@ -6,6 +6,7 @@ import com.d4h.application.model.user.Address;
 import com.d4h.application.model.user.HealthParameters;
 import com.d4h.application.model.user.UserCredential;
 import com.d4h.application.model.user.UserData;
+import org.json.JSONObject;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -13,68 +14,66 @@ import javax.ws.rs.core.Response;
 @Path("/users")
 public interface UserService {
 
-    @GET
+    @POST
     @Path("/login")
     @Consumes("application/json")
     @Produces("application/json")
     Response login(UserCredential credential);
 
-    @PUT
+    @POST
     @Path("/registration")
     @Consumes("application/json")
     @Produces("application/json")
     Response registration(UserCredential credential);
 
-    @GET
-    Response users();
-
-    @PUT
-    @Path("insertPersonalData")
+    @POST
+    @Path("/insertPersonalData")
     @Consumes("application/json")
-    Response insertPersonalData(@QueryParam("id") String id, UserData userData);
-
-    @PUT
-    @Path("insertWeightHeight")
-    @Consumes("application/json")
-    Response insertWeightHeight(@QueryParam("id") String id, int weight, int height);
-
-    @PUT
-    @Path("insertAddress")
-    @Consumes("application/json")
-    Response insertAddress(@QueryParam("id") String id, Address address);
-
-    @PUT
-    @Path("insertHealthParam")
-    @Consumes("application/json")
-    Response addHealthParam(@QueryParam("id") String id, HealthParameters healthParameters);
-
-    @GET
-    @Path("getDailyHealthParam")
-    @Consumes("application/json")
-    @Produces("application/json")
-    Response getDailyHealthParam(@QueryParam("id") String id);
-
-    @GET
-    @Path("getWeeklyHealthParam")
-    @Consumes("application/json")
-    @Produces("application/json")
-    Response getWeeklyHealthParam(@QueryParam("id") String id);
-
-    @GET
-    @Path("getMonthlyHealthParam")
-    @Consumes("application/json")
-    @Produces("application/json")
-    Response getMonthlyHealthParam(@QueryParam("id") String id);
-
-    @GET
-    @Path("getRequests")
-    @Consumes("application/json")
-    @Produces("application/json")
-    Response getRequests(@QueryParam("id") String id);
+    Response insertPersonalData(UserData userData);
 
     @POST
-    @Path("respondRequest")
+    @Path("/insertWeightHeight")
     @Consumes("application/json")
-    Response respondRequest(@QueryParam("id") String id, String requestId, boolean accepted);
+    Response insertWeightHeight(UserData userData);
+
+    @POST
+    @Path("/addHealthParam")
+    @Consumes("application/json")
+    Response addHealthParam(HealthParameters healthParameters);
+
+    @POST
+    @Path("/getDailyHealthParam")
+    @Consumes("application/json")
+    @Produces("application/json")
+    Response getDailyHealthParam(String userId);
+
+    @POST
+    @Path("/getWeeklyHealthParam")
+    @Consumes("application/json")
+    @Produces("application/json")
+    Response getWeeklyHealthParam(String userId);
+
+    @POST
+    @Path("/getMonthlyHealthParam")
+    @Consumes("application/json")
+    @Produces("application/json")
+    Response getMonthlyHealthParam(String userId);
+
+    @POST
+    @Path("/getYearHealthParam")
+    @Consumes("application/json")
+    @Produces("application/json")
+    Response getYearHealthParam(String userId);
+
+    @POST
+    @Path("/getRequests")
+    @Consumes("application/json")
+    @Produces("application/json")
+    Response getRequests(String userId);
+
+    @POST
+    @Path("/respondRequest")
+    @Consumes("application/json")
+    Response respondRequest(RequestUser requestUser);
 
 }

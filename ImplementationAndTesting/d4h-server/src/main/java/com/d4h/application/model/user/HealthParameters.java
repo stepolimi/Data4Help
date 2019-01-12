@@ -11,12 +11,22 @@ public class HealthParameters {
     private String id;
 
     private int heartBeat;
-    private int veinPressure;
-    private float temperature;
+    private int minPressure;
+    private int maxPressure;
+    private double temperature;
     private Date date;
+    private String userId;
 
     @ManyToOne (cascade = CascadeType.ALL)
     private User user;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public int getHeartBeat() {
         return heartBeat;
@@ -34,19 +44,27 @@ public class HealthParameters {
         this.user = user;
     }
 
-    public int getVeinPressure() {
-        return veinPressure;
+    public int getMinPressure() {
+        return minPressure;
     }
 
-    public void setVeinPressure(int veinPressure) {
-        this.veinPressure = veinPressure;
+    public void setMinPressure(int minPressure) {
+        this.minPressure = minPressure;
     }
 
-    public float getTemperature() {
+    public int getMaxPressure() {
+        return maxPressure;
+    }
+
+    public void setMaxPressure(int maxPressure) {
+        this.maxPressure = maxPressure;
+    }
+
+    public double getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(int temperature) {
+    public void setTemperature(double temperature) {
         this.temperature = temperature;
     }
 

@@ -18,6 +18,10 @@ public class GroupOfUsersDao {
     @PersistenceContext(unitName = "client-unit", type = PersistenceContextType.EXTENDED)
     private EntityManager entityManager = DaoBase.getDaoBase().getEntityManager();
 
+    public void updateDB(){
+        entityManager.flush();
+    }
+
     //groupOfUsers
     public void addGroupOfUsers(GroupOfUsers groupOfUsers) throws Exception {
         entityManager.persist(groupOfUsers);

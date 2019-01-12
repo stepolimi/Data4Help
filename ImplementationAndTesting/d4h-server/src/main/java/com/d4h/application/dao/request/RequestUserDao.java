@@ -16,6 +16,10 @@ public class RequestUserDao {
     @PersistenceContext(unitName = "client-unit", type = PersistenceContextType.EXTENDED)
     private EntityManager entityManager = DaoBase.getDaoBase().getEntityManager();
 
+    public void updateDB(){
+        entityManager.flush();
+    }
+
     //requestUser
     public void addRequestUser(RequestUser requestUser) throws Exception {
         entityManager.persist(requestUser);

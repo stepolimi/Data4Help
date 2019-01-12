@@ -14,7 +14,7 @@ public class AcquiredUserData {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
-    @OneToMany
+    @OneToMany (cascade = CascadeType.ALL)
     private List<HealthParameters> healthParams = new ArrayList<>();
 
     @OneToOne
@@ -45,5 +45,7 @@ public class AcquiredUserData {
     }
 
     public void addHealthParameters(List<HealthParameters> healthParameters) { healthParams.addAll(healthParameters); }
+
+    public void setHealthParams(List<HealthParameters> healthParams) { this.healthParams = healthParams; }
 
 }

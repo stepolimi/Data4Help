@@ -17,11 +17,12 @@ public class UserData {
 
     private String name;
     private String surname;
-    private Date dateOfBirth;
+    private int yearOfBirth;
     private int height;
     private int weight;
     private Sex sex;
     private Status status;
+    private String userId;
 
     @OneToOne (cascade = CascadeType.ALL)
     private Address address;
@@ -57,12 +58,12 @@ public class UserData {
         this.weight = weight;
     }
 
-    public Date getDateOfBirth() {
-        return dateOfBirth;
+    public int getYearOfBirth() {
+        return yearOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    public void setYearOfBirth(int yearOfBirth) {
+        this.yearOfBirth = yearOfBirth;
     }
 
     public Sex getSex() {
@@ -111,5 +112,13 @@ public class UserData {
 
     public void setWearable(List<Wearable> wearable) {
         this.wearable = wearable;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

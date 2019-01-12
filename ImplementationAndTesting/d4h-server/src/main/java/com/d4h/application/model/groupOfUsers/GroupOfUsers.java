@@ -12,10 +12,10 @@ public class GroupOfUsers {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private RequestGroup request;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private GroupUsersData groupUsersData;
 
     @ManyToMany

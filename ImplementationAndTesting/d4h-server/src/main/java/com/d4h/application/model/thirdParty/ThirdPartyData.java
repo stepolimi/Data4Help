@@ -1,5 +1,7 @@
 package com.d4h.application.model.thirdParty;
 
+import com.d4h.application.model.user.Address;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,12 +11,31 @@ public class ThirdPartyData {
     private String id;
 
     private String name;
-    private int fiscalCode;
-    private int pIva;
-    private TypeOfSociety type;
+    private String pIva;
+    private String typeSociety;
+    private String thirdPartyId;
 
     @OneToOne
     private ThirdParty thirdParty;
+
+    @OneToOne (cascade = CascadeType.ALL)
+    private Address address;
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public String getThirdPartyId() {
+        return thirdPartyId;
+    }
+
+    public void setThirdPartyId(String thirdPartyId) {
+        this.thirdPartyId = thirdPartyId;
+    }
 
     public ThirdParty getThirdParty() {
         return thirdParty;
@@ -24,29 +45,22 @@ public class ThirdPartyData {
         this.thirdParty = thirdParty;
     }
 
-    public TypeOfSociety getType() {
-        return type;
+    public String getType() {
+        return typeSociety;
     }
 
-    public void setType(TypeOfSociety type) {
-        this.type = type;
+    public void setType(String type) {
+        this.typeSociety = type;
     }
 
-    public int getpIva() {
+    public String getpIva() {
         return pIva;
     }
 
-    public void setpIva(int pIva) {
+    public void setpIva(String pIva) {
         this.pIva = pIva;
     }
 
-    public int getFiscalCode() {
-        return fiscalCode;
-    }
-
-    public void setFiscalCode(int fiscalCode) {
-        this.fiscalCode = fiscalCode;
-    }
 
     public String getName() {
         return name;
