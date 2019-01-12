@@ -32,11 +32,13 @@ public class HomeFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.content_main, container, false);
 
+
         setAttributes(view);
 
         viewPager = view.findViewById(R.id.healthFragment);
         PagerViewAdapter pagerAdapter = new PagerViewAdapter(getFragmentManager());
         viewPager.setAdapter(pagerAdapter);
+        pagerAdapter.getItem(0);
 
 
         setItem(day, 0);
@@ -75,7 +77,6 @@ public class HomeFragment extends Fragment {
     private void changeTab(int position) {
         switch (position){
             case 0:
-                System.out.println("enter?");
                 setColor(day, week, month, year);
                 break;
             case 1:
@@ -88,7 +89,6 @@ public class HomeFragment extends Fragment {
                 setColor(year, day, week, month);
                 break;
             default:
-                System.out.println("entri qui?");
                 setColor(day, week, month, year);
                 break;
         }
@@ -120,6 +120,16 @@ public class HomeFragment extends Fragment {
         month = view.findViewById(R.id.monthButton);
         year = view.findViewById(R.id.yearButton);
 
+        TextView weight = view.findViewById(R.id.homeWeight);
+        TextView height = view.findViewById(R.id.homeHeight);
+        if(SettingsFragment.getSetHeight() != null) {
+            String text = "Height: " + SettingsFragment.getSetHeight() + " cm";
+            height.setText(text);
+        }
+        if(SettingsFragment.getSetWeight()!= null){
+            String text = "Weight: " + SettingsFragment.getSetWeight() + " kg";
+            weight.setText(text);
+        }
         setDate(view);
     }
 

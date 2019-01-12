@@ -1,0 +1,17 @@
+To install and run our software it is necessary to download Ultimate IntellJ Idea and docker. By using docker we have been able to cancel the whole process of downloading, installing and setting both server and database; both are simulated in dockers defined in the dockerfile. We have worked on Fedora 29, the following instructions, especially for what is related to Docker, are strictly related to this Linux platform.\\
+The following steps are necessary to correctely run our software:
+\begin{itemize}
+	\item Download the Ultimate IntellJ version which can be found at the following link:\\
+ 		\url{https://www.jetbrains.com/idea/download/#section=windows}
+
+	\item For docker follow the prompt command explained in the next link:\\
+		\url{https://developer.fedoraproject.org/tools/docker/docker-installation.html}\\
+
+	\item To run the server code the following prompt commands must be executed:\\
+		\begin{itemize}
+			\item \textbf{ mvn clean install} : to correctly build the maven project;
+			\item \textbf{ sudo systemctl start docker} : because of the sudo command it will be necessary to confirm the 					command by inserting the password. This command is fundamental to start up the docker deamon,	
+			\item \textbf{ docker-compose up - -build} : to build the docker which will contain the container for both server 					and DB.\\N:B The space between - - is incorrect, here it has been added jsut to show the presence of two - -.
+		\end{itemize}
+\end{itemize}
+More details can be found in the server's ReadMe which includes some more docker commands that might be useful in case of problems, such as having some dockers that already work on the prefixed doors 8080 and 3306.

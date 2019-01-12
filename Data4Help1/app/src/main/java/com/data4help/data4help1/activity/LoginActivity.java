@@ -1,39 +1,47 @@
 package com.data4help.data4help1.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.data4help.data4help1.AuthToken;
 
+import static com.data4help.data4help1.Config.BADREQUEST;
+import static com.data4help.data4help1.Config.EMPTYFIELDS;
+import static com.data4help.data4help1.Config.INTERNALSERVERERROR;
+import static com.data4help.data4help1.Config.LOGINURL;
+import static com.data4help.data4help1.Config.NOTFOUND;
+import static com.data4help.data4help1.Config.SERVERERROR;
+import static com.data4help.data4help1.Config.SHORTPASSWORD;
+import static com.data4help.data4help1.Config.UNAUTHORIZED;
+import static com.data4help.data4help1.Config.WRONGEMAIL;
 import static com.data4help.data4help1.R.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText email;
     private EditText password;
-    private TextView error;
-
-    private String url = "http://192.168.0.143:8080/d4h-server-0.0.1-SNAPSHOT/api/users";
 
     private String errorString;
     private boolean incompleteRequest = false;
-    private JSONObject credential;
-    private JsonObjectRequest jobReq;
+    private JsonObjectRequest loginReq;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,56 +50,88 @@ public class LoginActivity extends AppCompatActivity {
 
         email = findViewById(id.email);
         password = findViewById(id.password);
-        error = findViewById(id.loginError);
         Button loginButton = findViewById(id.loginButton);
         View registerLink = findViewById(id.registerLink);
 
-        loginButton.setOnClickListener((v)-> {
-            setCredential();
-            RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
-            jobReq = new JsonObjectRequest(Request.Method.GET, url, credential,
-                    jsonObject -> System.out.print("hi"),
-                    volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
-                @Override
-                protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                    switch (response.statusCode) {
-                        case 200:
-                            System.out.println("funziona!!!");
-                            startActivity(new Intent(LoginActivity.this, MenuActivity.class));
-                            break;
-                        case 403:
-                            System.out.println("The access has been denied. Try again.");
-                            break;
-                        case 401:
-                            System.out.println("The given email is already in the DB. Change it or login.");
-                            break;
+        loginButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        JSONObject credential = new JSONObject();
+                        setCredential(credential);
+                        System.out.println(credential.toString());
+                        RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+                        loginReq = new JsonObjectRequest(Request.Method.POST, LOGINURL, credential,
+                                response -> {
+                                },
+                                volleyError -> getVolleyError(volleyError.networkResponse.statusCode)){
+                            @Override
+                            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                                if(response.statusCode == 200) {
+                                    try {
+                                        String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                                        new AuthToken(json);
+                                    } catch (UnsupportedEncodingException e) {
+                                        createDialog(SERVERERROR);
+                                    }
+                                    startActivity(new Intent(LoginActivity.this, MenuActivity.class));
+                                }
+                                finish();
+                                return super.parseNetworkResponse(response);
+                            }
+                        };
+                        if (incompleteRequest)
+                            cancelReq(errorString);
+                        else
+                            queue.add(loginReq);
                     }
-                    finish();
-                    return super.parseNetworkResponse(response);
-                }
-            };
-            if(incompleteRequest)
-                cancelReq(errorString);
-            else
-                queue.add(jobReq);
+                }).start();
+            }
         });
 
         registerLink.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, MenuActivity.class)));
     }
 
     /**
+     * Cancels all EditText texts
+     */
+    private void deleteEditText(String errorString) {
+        LoginActivity.this.runOnUiThread(() -> {
+            email.getText().clear();
+            password.getText().clear();
+            createDialog(errorString);
+        });
+    }
+
+    /**
+     * @param errorString is the error that must be shown in the dialog
+     *
+     * Shows a dialog with the occurred error
+     */
+    private void createDialog(String errorString) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
+        alertDialogBuilder.setMessage(errorString);
+        alertDialogBuilder.setIcon(drawable.ic_exit);
+        alertDialogBuilder.setCancelable(true);
+        alertDialogBuilder.create().show();
+    }
+
+    /**
      * set text in the error label and cancel the request
      */
     private void cancelReq(String errorString) {
-        error.setText(errorString);
-        jobReq.cancel();
+        deleteEditText(errorString);
+        incompleteRequest = false;
+        loginReq.cancel();
     }
 
     /**
      * Sets the attributes in the JSONObject
      */
-    private void setCredential() {
-        credential = new JSONObject();
+    private void setCredential(JSONObject credential) {
         checkValue("email", email.getText().toString(), credential);
         checkValue("password",password.getText().toString(), credential);
     }
@@ -104,19 +144,64 @@ public class LoginActivity extends AppCompatActivity {
      * checks if the String that must be insert are empty or not: if empty an error will be thrown, if
      * not it will be put in the JSON Object.
      */
-    @SuppressLint("SetTextI18n")
     private void checkValue(String field, String value,JSONObject personalDetails){
-        if(value.isEmpty()){
-            errorString = "Some fields are empty. You must fill all of them!";
-            incompleteRequest = true;
-        }
+        if(value.isEmpty())
+            setErrorString(EMPTYFIELDS);
         else {
+            if(field.equals("password") && (value.length()< 8 || value.length() > 20))
+                setErrorString(SHORTPASSWORD);
+            else if(field.equals("email") && !value.contains("@") && !value.contains(".") )
+                setErrorString(WRONGEMAIL);
             try {
                 personalDetails.put(field, value);
             } catch (JSONException e) {
-                errorString = "Server problem. Try again later.";
-                incompleteRequest = true;
+                setErrorString(SERVERERROR);
             }
+        }
+    }
+
+    /**
+     * @param error is the error string
+     *
+     *              Sets the error label
+     */
+    private void setErrorString(String error) {
+        switch (error) {
+            case EMPTYFIELDS:
+                errorString = EMPTYFIELDS;
+                break;
+            case SERVERERROR:
+                errorString = SERVERERROR;
+                break;
+            case SHORTPASSWORD:
+                errorString = SHORTPASSWORD;
+                break;
+            case WRONGEMAIL:
+                errorString = WRONGEMAIL;
+        }incompleteRequest = true;
+    }
+
+    /**
+     * @param statusCode is the code sent byt the server
+     *
+     *                   Checks the code sent by the server and show a different error depending on it.
+     */
+    private void getVolleyError(int statusCode) {
+        switch (statusCode){
+            case 400:
+                deleteEditText(BADREQUEST);
+                break;
+            case 401:
+                deleteEditText(UNAUTHORIZED);
+                break;
+            case 404:
+                deleteEditText(NOTFOUND);
+                break;
+            case 500:
+                deleteEditText(INTERNALSERVERERROR);
+                break;
+            default:
+                break;
         }
     }
 }

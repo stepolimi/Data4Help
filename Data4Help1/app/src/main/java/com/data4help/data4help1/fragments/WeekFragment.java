@@ -1,6 +1,6 @@
 package com.data4help.data4help1.fragments;
 
-
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -13,22 +13,25 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.data4help.data4help1.AuthToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
+import static com.data4help.data4help1.Config.WEEKLYHEALTHPARAMURL;
 import static com.data4help.data4help1.R.*;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class WeekFragment extends Fragment {
+public class WeekFragment extends Fragment implements Runnable {
     private TextView minWeekBpm;
     private TextView averageWeekBmp;
     private TextView maxWeekBmp;
@@ -39,40 +42,65 @@ public class WeekFragment extends Fragment {
     private TextView minWeekTemperature;
     private TextView maxWeekTemperature;
 
-    public WeekFragment() {
-        // Required empty public constructor
-    }
+    private JSONObject authUser;
+    private View view;
+
+    public WeekFragment() {}
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(layout.fragment_week, container, false);
-
-        setAttributes(view);
-        getParameters();
+        view = inflater.inflate(layout.fragment_week, container, false);
 
         return view;
     }
 
-    private void getParameters() {
-        JSONObject authUser = new JSONObject();
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed()) { // fragment is visible and have created
+            this.run();
+        }
+    }
+
+    /**
+     * Sets the JSONObject containing the user di
+     */
+    private void setUserId() {
+        authUser = new JSONObject();
         try {
-            authUser.put("authid", "authID");
+            authUser.put("id", AuthToken.getId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()).getApplicationContext());
-        String url = "";
-        JsonObjectRequest jobReq = new JsonObjectRequest(Request.Method.GET, url, authUser ,
-                jsonObject -> System.out.print("hi"),
-                volleyError -> VolleyLog.e("Error: "+ volleyError.getMessage())){
+    }
+
+
+    /**
+     * Asks the daily health parameters of the user
+     */
+    private void getParameters() {
+        setUserId();
+
+        Context context = Objects.requireNonNull(getActivity()).getApplicationContext();
+
+        RequestQueue queue = Volley.newRequestQueue(context);
+        JsonObjectRequest jobReq = new JsonObjectRequest(Request.Method.POST, WEEKLYHEALTHPARAMURL, authUser ,
+                jsonObject -> {},
+                volleyError -> {}){
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 switch (response.statusCode) {
                     case 200:
-                        System.out.println("funziona!!!");
-                        setHealthParameters();
+
+                        try {
+                            String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                            setHealthParameters(json);
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                        //TODO
                         break;
                     case 403:
                         System.out.println("The access has been denied. Try again.");
@@ -88,17 +116,26 @@ public class WeekFragment extends Fragment {
         queue.add(jobReq);
     }
 
-    private void setHealthParameters() {
-        //TODO
-        minWeekBpm.setText("");
-        averageWeekBmp.setText("");
-        maxWeekBmp.setText("");
 
-        minWeekPressure.setText("");
-        maxWeekPressure.setText("");
+    /**
+     *
+     * Sets all health parameters obtained from the response
+     */
+    private void setHealthParameters(String json) {
+        try {
+            JSONObject jsonObj = new JSONObject(json);
+            minWeekBpm.setText(jsonObj.getString("minHeartBeat"));
+            averageWeekBmp.setText( jsonObj.getString("avgHeartBeat"));
+            maxWeekBmp.setText(jsonObj.getString("maxHeartBeat"));
 
-        minWeekTemperature.setText("");
-        maxWeekTemperature.setText("");
+            minWeekPressure.setText(jsonObj.getString("minMinPressure"));
+            maxWeekPressure.setText(jsonObj.getString("maxMaxPressure"));
+
+            minWeekTemperature.setText(jsonObj.getString("minTemperature"));
+            maxWeekTemperature.setText(jsonObj.getString("maxTemperature"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -118,4 +155,10 @@ public class WeekFragment extends Fragment {
         maxWeekTemperature = view.findViewById(id.maxWeekTemperature);
     }
 
+    @Override
+    public void run() {
+        setAttributes(view);
+        getParameters();
+
+    }
 }

@@ -1,18 +1,18 @@
 package com.data4help.data4help1;
 
 public class AuthToken {
-    private String id;
+    private static String id;
 
     public AuthToken(String id){
-        this.id = id;
+        AuthToken.id = id;
     }
 
-    public String getId() {
+    public static String getId() {
         return id;
     }
 
     public void setId(String id) {
-        this.id = id;
+        AuthToken.id = id;
     }
 }
 

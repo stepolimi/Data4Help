@@ -12,13 +12,13 @@
 
     <Button
         android:id="@+id/notificationButton"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/save"
+        android:text="@string/notification_request"
         android:background="@drawable/button_shape"
         android:textColor="@color/black"
         android:textStyle="bold"
+        android:layout_marginBottom="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

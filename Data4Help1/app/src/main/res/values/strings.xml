@@ -9,7 +9,7 @@
     <string name="surname">Surname*</string>
     <string name="name">Name*</string>
     <string name="address">Address*</string>
-    <string name="birthday">Date Of Birth: gg/mm/aaaa*</string>
+    <string name="birthday">Year Of Birth: yyyy*</string>
     <string name="sex">Sex*</string>
     <string name="female">Female</string>
     <string name="male">Male</string>
@@ -118,6 +118,7 @@
     <string name="region">Region*</string>
     <string name="country">Country*</string>
     <string name="save">Save</string>
+    <string name="notification_request">Get notification</string>
 
     <string name="min_bpm">Min bpm</string>
     <string name="average_bpm">Average</string>
@@ -129,6 +130,11 @@
     <string name="max_temperature">Max Temp</string>
 
     <string name="refuse">Refuse</string>
-    <string name="subscribe">Subscribe</string>
+    <string name="subscribe">Accept</string>
     <string name="dialog_title">Data Request</string>
+    <string name="alert_title">Alert</string>
+
+    //URL DOMAIN
+    <string name="domain">192.168.1.110</string>
+
 </resources>

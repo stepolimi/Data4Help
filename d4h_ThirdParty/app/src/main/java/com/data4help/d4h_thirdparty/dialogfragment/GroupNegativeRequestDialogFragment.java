@@ -1,6 +1,5 @@
 package com.data4help.d4h_thirdparty.dialogfragment;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -18,7 +17,6 @@ public class GroupNegativeRequestDialogFragment extends DialogFragment {
     public GroupNegativeRequestDialogFragment() {}
 
     @Override
-    @SuppressLint("SetTextI18n")
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View dialogFragment = inflater.inflate(R.layout.group_negative_request_popup, container, false);
 

@@ -12,33 +12,46 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.data4help.data4help1.fragments.AsosFragment;
 import com.data4help.data4help1.fragments.HomeFragment;
 import com.data4help.data4help1.fragments.SettingsFragment;
 import com.data4help.data4help1.fragments.ThirdPartiesFragment;
 
+import static com.data4help.data4help1.R.id.*;
+import static com.data4help.data4help1.R.layout.*;
+import static com.data4help.data4help1.R.string.*;
+
 public class MenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static RequestQueue queue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(com.data4help.data4help1.R.layout.activity_main);
+        setContentView(activity_main);
 
         Toolbar toolbar = findViewById(com.data4help.data4help1.R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = findViewById(com.data4help.data4help1.R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, com.data4help.data4help1.R.string.navigation_drawer_open, com.data4help.data4help1.R.string.navigation_drawer_close);
+                this, drawer, toolbar, navigation_drawer_open, navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(com.data4help.data4help1.R.id.nav_view);
+        NavigationView navigationView = findViewById(nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         if(savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(com.data4help.data4help1.R.id.frame_container, new HomeFragment()).commit();
-            navigationView.setCheckedItem(com.data4help.data4help1.R.id.nav_heart);
+            getSupportFragmentManager().beginTransaction().replace(frame_container, new HomeFragment()).commit();
+            navigationView.setCheckedItem(nav_heart);
         }
+
+        queue = Volley.newRequestQueue(MenuActivity.this);
+        HealthParamActivity healthParamActivity = new HealthParamActivity();
+        healthParamActivity.startThread();
     }
 
 
@@ -53,8 +66,8 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         Fragment fragment = fragmentChoice(menuItem.getItemId());
         assert fragment != null;
-        getSupportFragmentManager().beginTransaction().replace(com.data4help.data4help1.R.id.frame_container, fragment).commit();
-        DrawerLayout drawer =findViewById(com.data4help.data4help1.R.id.drawer_layout);
+        getSupportFragmentManager().beginTransaction().replace(frame_container, fragment).commit();
+        DrawerLayout drawer =findViewById(drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -66,13 +79,13 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     @Nullable
     private Fragment fragmentChoice(int itemId) {
         switch (itemId) {
-            case com.data4help.data4help1.R.id.nav_heart:
+            case nav_heart:
                 return new HomeFragment();
-            case com.data4help.data4help1.R.id.nav_hospital:
+            case nav_hospital:
                 return new AsosFragment();
-            case com.data4help.data4help1.R.id.nav_pocket:
+            case nav_pocket:
                 return new ThirdPartiesFragment();
-            case com.data4help.data4help1.R.id.nav_settings:
+            case nav_settings:
                 return new SettingsFragment();
             default:
                 return null;
@@ -81,7 +94,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     }
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(com.data4help.data4help1.R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
