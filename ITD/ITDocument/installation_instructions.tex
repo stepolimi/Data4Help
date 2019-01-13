@@ -20,7 +20,7 @@ The following steps are necessary to correctely run our software on Fedora:
 		\begin{itemize}
 			\item \textbf{selinux} and then \textbf{sudo setenforce 0}: to disactivate the security and let docker work;
 			\item \textbf{sudo dnf install docker docker-compose}: to install the docker compose package;
-			\item \textbf{sudo groupadd docker && sudo gpasswd -a ${USER} docker}
+			\item \textbf{sudo groupadd docker \&\& sudo gpasswd -a \${USER} docker}
 			\item \textbf{newgrp docker}
 			\item \textbf{docker run}
 			\item \textbf{ mvn clean install -DskipTests} : to correctly build the maven project;
@@ -41,7 +41,7 @@ More details can be found in the server's ReadMe which includes some more docker
 The following steps are necessary to correctely run our software on Fedora:
 \begin{itemize}
 	\item Download the \textbf{Ultimate IntellJ} version which can be found at the following link:\\
- 		\url{https://www.jetbrains.com/idea/download/#section=windows}
+ 		\url{https://www.jetbrains.com/idea/download/\#section=windows}
 
 	\item Download \textbf{Android Studio} for simulate the two clients, the latest version can be found at the following link:\\
 		\url{https://developer.android.com/studio/}
@@ -59,7 +59,7 @@ The following steps are necessary to correctely run our software on Fedora:
 	\item To run the server code the following prompt commands must be executed:\\
 		\begin{itemize}
 			\item To run the  Maven project by using the Maven Docker image directly, pass a Maven command to docker 					run:\\
-\textit{$ docker run -it --rm --name my-maven-project -v "$(pwd)":/usr/src/mymaven -w /usr/src/mymaven maven:3.3-jdk-8 mvn clean install -DskipTests};
+\textit{\$ docker run -it --rm --name my-maven-project -v "\$(pwd)":/usr/src/mymaven -w /usr/src/mymaven maven:3.3-jdk-8 mvn clean install -DskipTests};
 			\item \textbf{start docker}this command is fundamental to start up the docker deamon;	
 			\item \textbf{ docker-compose up - -build} : to build the docker which will contain the container for both server 					and DB.\\N:B The space between - - is incorrect, here it has been added jsut to show the presence of two - -.
 		\end{itemize}
@@ -86,18 +86,10 @@ The following steps are necessary to correctely run our software on Fedora:
 		\url{https://developer.android.com/studio/intro/}
 
 	\item To run the server code the following prompt commands must be executed:\\
-		\begin{itemize}
-			\item To run the  Maven project by using the Maven Docker image directly, pass a Maven command to docker 					run:\\
-\textit{$ docker run -it --rm --name my-maven-project -v "$(pwd)":/usr/src/mymaven -w /usr/src/mymaven maven:3.3-jdk-8 mvn clean install -DskipTests};
-			\item \textbf{start docker}this command is fundamental to start up the docker deamon;	
-			\item \textbf{ docker-compose up - -build} : to build the docker which will contain the container for both server 					and DB.\\N:B The space between - - is incorrect, here it has been added jsut to show the presence of two - -.
-		\end{itemize}
-
-	\item To run the server code the following prompt commands must be executed:\\
 	
 		\begin{itemize}
 			\item To run the  Maven project by using the Maven Docker image directly, pass a Maven command to docker 					run:\\
-\textit{$ docker run -it --rm --name my-maven-project -v "$(pwd)":/usr/src/mymaven -w /usr/src/mymaven maven:3.3-jdk-8 mvn clean install -DskipTests};
+\textit{\$ docker run -it --rm --name my-maven-project -v "\$(pwd)":/usr/src/mymaven -w /usr/src/mymaven maven:3.3-jdk-8 mvn clean install -DskipTests};
 			\item \textbf{ sudo systemctl start docker} : because of the sudo command it will be necessary to confirm the 					command by inserting the password. This command is fundamental to start up the docker deamon,	
 			\item \textbf{ docker-compose up - -build} : to build the docker which will contain the container for both server 					and DB.\\N:B The space between - - is incorrect, here it has been added jsut to show the presence of two - -.
 		\end{itemize}
