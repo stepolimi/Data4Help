@@ -31,6 +31,7 @@ import com.android.volley.toolbox.Volley;
 import com.data4help.d4h_thirdparty.AuthToken;
 import com.data4help.d4h_thirdparty.R.*;
 import com.data4help.d4h_thirdparty.activity.ShowGroupDataActivity;
+import com.data4help.d4h_thirdparty.activity.ShowSingleSubUserDataActivity;
 import com.data4help.d4h_thirdparty.fragment.homepagerfragment.GroupRequestFragment;
 
 import static com.data4help.d4h_thirdparty.Config.BADREQUEST;
@@ -160,7 +161,7 @@ public class TodayGroupFragment extends Fragment implements Runnable{
     private void setContextParam(JSONObject param){
         Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
             try {
-                ShowGroupDataActivity.setGroupRequestParam(param);
+                ((ShowGroupDataActivity)Objects.requireNonNull(getActivity())).setGroupRequestParam(param);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

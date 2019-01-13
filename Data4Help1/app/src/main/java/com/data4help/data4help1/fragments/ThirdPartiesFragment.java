@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.data4help.data4help1.AuthToken;
 import com.data4help.data4help1.R.*;
-import com.data4help.data4help1.dialogfragments.GeneralDialogFragment;
 import com.data4help.data4help1.dialogfragments.ThirdPartiesRequestDialogFragment;
 
 import org.json.JSONArray;
@@ -100,22 +100,11 @@ public class ThirdPartiesFragment  extends Fragment {
      * set text in the error label and cancel the request
      */
     private void cancelReq() {
-        raiseGeneralDialogFragment(SERVERERROR);
+        createDialog(SERVERERROR);
         incompleteRequest = false;
         groupUserRequest.cancel();
     }
 
-    /**
-     * @param text is the text that must be shown in the dialog fragment
-     *             
-     *             creates a new dialog fragment with the given text
-     */
-    private void raiseGeneralDialogFragment(String text) {
-        FragmentManager fm = getFragmentManager();
-        GeneralDialogFragment dialogFragment = new GeneralDialogFragment();
-        GeneralDialogFragment.setText(text);
-        dialogFragment.show(Objects.requireNonNull(fm), "GeneralDialogFragment");
-    }
 
     /**
      * @param json is the string coming from the server
@@ -128,7 +117,7 @@ public class ThirdPartiesFragment  extends Fragment {
         try {
             JSONArray thirdPartyRequest = new JSONArray(json);
             if(thirdPartyRequest.length() == 0)
-                raiseGeneralDialogFragment(NOREQUESTS);
+                createDialog(NOREQUESTS);
             else {
                 for (int i = 0; i < thirdPartyRequest.length(); i++) {
                     JSONObject jsonObject = thirdPartyRequest.getJSONObject(i);
@@ -140,18 +129,28 @@ public class ThirdPartiesFragment  extends Fragment {
                     System.out.println(requestId);
                     System.out.println(thirdPartyName);
                     System.out.println(description);
-                    System.out.println("ciao");
                     FragmentManager fm = getFragmentManager();
                     ThirdPartiesRequestDialogFragment dialog = new ThirdPartiesRequestDialogFragment();
                     dialog.show(Objects.requireNonNull(fm), "ThirdPartiesRequestDialogFragment");
                 }
             }
         } catch (JSONException e) {
-            GeneralDialogFragment.setText(SERVERERROR);
+            createDialog(SERVERERROR);
         }
 
     }
 
+    /**
+     *
+     * Shows a dialog with the occurred error
+     */
+    private void createDialog(String error) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+        alertDialogBuilder.setMessage(error);
+        alertDialogBuilder.setIcon(drawable.ic_exit);
+        alertDialogBuilder.setCancelable(true);
+        alertDialogBuilder.create().show();
+    }
 
     /**
      * @param statusCode is the code sent byt the server
@@ -161,16 +160,16 @@ public class ThirdPartiesFragment  extends Fragment {
     private void getVolleyError(int statusCode) {
         switch (statusCode){
             case 400:
-                raiseGeneralDialogFragment(BADREQUEST);
+                createDialog(BADREQUEST);
                 break;
             case 401:
-                raiseGeneralDialogFragment(UNAUTHORIZED);
+                createDialog(UNAUTHORIZED);
                 break;
             case 404:
-                raiseGeneralDialogFragment(NOTFOUND);
+                createDialog(NOTFOUND);
                 break;
             case 500:
-                raiseGeneralDialogFragment(INTERNALSERVERERROR);
+                createDialog(INTERNALSERVERERROR);
                 break;
             default:
                 break;

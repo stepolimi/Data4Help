@@ -38,7 +38,7 @@ public class ShowSingleSubUserDataActivity extends AppCompatActivity {
             setAttributes();
 
             viewPager = findViewById(id.dataPage);
-            ShowUserDataPagerViewAdapter pagerAdapter = new ShowUserDataPagerViewAdapter(getSupportFragmentManager());
+            ShowSingleSubUserDataPagerViewAdapter pagerAdapter = new ShowSingleSubUserDataPagerViewAdapter(getSupportFragmentManager());
             viewPager.setAdapter(pagerAdapter);
 
             setItem(today, 0);

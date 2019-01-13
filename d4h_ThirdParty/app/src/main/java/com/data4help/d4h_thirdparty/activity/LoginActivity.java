@@ -68,7 +68,6 @@ public class LoginActivity extends AppCompatActivity {
                                         try {
                                             String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
                                             new AuthToken(json);
-                                            System.out.println("ciao");
                                         } catch (UnsupportedEncodingException e) {
                                             createDialog(SERVERERROR);
                                         }

@@ -14,12 +14,13 @@ import android.widget.TextView;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.data4help.d4h_thirdparty.AuthToken;
 import com.data4help.d4h_thirdparty.R.*;
 import com.data4help.d4h_thirdparty.activity.ShowSingleDataActivity;
-import com.data4help.d4h_thirdparty.fragment.homepagerfragment.GroupRequestFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -83,6 +84,7 @@ public class SinglePositiveRequestDialogFragment extends DialogFragment{
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()));
         JsonObjectRequest subscribeGroupReq = new JsonObjectRequest(Request.Method.POST, SUBSCRIBEUSERURL, subscribeRequest,
                 response -> {},
                 volleyError ->
@@ -92,13 +94,12 @@ public class SinglePositiveRequestDialogFragment extends DialogFragment{
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 switch(response.statusCode){
                     case 200:
-                        Objects.requireNonNull(getActivity()).getFragmentManager().findFragmentByTag("WaitingUserAnswerFragment");
                         break;
                 }
                 return super.parseNetworkResponse(response);
             }
         };
-        GroupRequestFragment.queue.add(subscribeGroupReq);
+        queue.add(subscribeGroupReq);
     }
 
     /**

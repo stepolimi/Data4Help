@@ -20,11 +20,11 @@ public class ShowGroupSubDataActivity  extends AppCompatActivity {
     private Button fiveDaysAgo;
     private Button sixDaysAgo;
 
-    private static TextView ageRange;
-    private static TextView heightRange;
-    private static TextView weightRange;
-    private static TextView sexRange;
-    private static TextView addressRange;
+    private  TextView ageRange;
+    private  TextView heightRange;
+    private  TextView weightRange;
+    private  TextView sexRange;
+    private  TextView addressRange;
     private ViewPager viewPager;
 
     @Override
@@ -132,7 +132,7 @@ public class ShowGroupSubDataActivity  extends AppCompatActivity {
      *
      * Sets all param associated to the request done
      */
-    public static void setGroupRequestParam(JSONObject param) throws JSONException {
+    public void setGroupRequestParam(JSONObject param) throws JSONException {
         String age = param.getString("minAge") + "-" + param.getString("maxAge");
         ageRange.setText(age);
 
@@ -142,10 +142,12 @@ public class ShowGroupSubDataActivity  extends AppCompatActivity {
         String height = param.getString("minHeight") + "-" + param.getString("maxHeight");
         heightRange.setText(height);
 
-        String sex = param.getString("sex");
-        if(sex.equals("male") || sex.equals("female"))
-            sex = "male - female";
-        sexRange.setText(sex);
+        if(param.getString("sex")!= null) {
+            String sex = param.getString("sex");
+            if (sex.equals("male") || sex.equals("female"))
+                sex = "male - female";
+            sexRange.setText(sex);
+        }
 
         String address = param.getString("state") + "-" + param.getString("region");
         addressRange.setText(address);

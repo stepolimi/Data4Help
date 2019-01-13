@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.data4help.data4help1.AuthToken;
 import com.data4help.data4help1.R.*;
+import com.data4help.data4help1.activity.LoginActivity;
 import com.data4help.data4help1.fragments.ThirdPartiesFragment;
 
 import org.json.JSONException;
@@ -57,8 +59,8 @@ public class ThirdPartiesRequestDialogFragment extends DialogFragment{
         singlePositiveRequest = dialogFragment.findViewById(id.singlePositiveRequest);
 
 
-        singlePositiveRequest.setText("The third party " + ThirdPartiesFragment.thirdPartyName + "would like to obtain your data for the following reason:\n+ " +
-                ThirdPartiesFragment.description+"\n"+ "To accept it click on the accept button, to refuse on the other." );
+        singlePositiveRequest.setText("The third party " + ThirdPartiesFragment.thirdPartyName + " would like to obtain your data for the following reason:\n " +
+                ThirdPartiesFragment.description + "\n" + "To accept it click on the accept button, to refuse on the other." );
         buttonClicked(singleAcceptButton, true);
         buttonClicked(singleRefuseButton, false);
 
@@ -115,20 +117,22 @@ public class ThirdPartiesRequestDialogFragment extends DialogFragment{
      * set text in the error label and cancel the request
      */
     private void cancelReq() {
-        raiseGeneralDialogFragment(SERVERERROR);
+        createDialog(SERVERERROR);
         incompleteRequest = false;
         groupUserRequest.cancel();
     }
 
+
     /**
-     * @param text is the text that must be shown in the dialog fragment
      *
-     *             creates a new dialog fragment with the given text
+     * Shows a dialog with the occurred error
      */
-    private void raiseGeneralDialogFragment(String text) {
-        GeneralDialogFragment dialogFragment = new GeneralDialogFragment();
-        GeneralDialogFragment.setText(text);
-        dialogFragment.show(Objects.requireNonNull(fm), "GeneralDialogFragment");
+    private void createDialog(String error) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+        alertDialogBuilder.setMessage(error);
+        alertDialogBuilder.setIcon(drawable.ic_exit);
+        alertDialogBuilder.setCancelable(true);
+        alertDialogBuilder.create().show();
     }
 
     /**
@@ -156,16 +160,16 @@ public class ThirdPartiesRequestDialogFragment extends DialogFragment{
     public void getVolleyError(int statusCode){
         switch (statusCode){
             case 400:
-                raiseGeneralDialogFragment(BADREQUEST);
+                createDialog(BADREQUEST);
                 break;
             case 401:
-                raiseGeneralDialogFragment(UNAUTHORIZED);
+                createDialog(UNAUTHORIZED);
                 break;
             case 404:
-                raiseGeneralDialogFragment(NOTFOUND);
+                createDialog(NOTFOUND);
                 break;
             case 500:
-                raiseGeneralDialogFragment(INTERNALSERVERERROR);
+                createDialog(INTERNALSERVERERROR);
                 break;
             default:
                 break;

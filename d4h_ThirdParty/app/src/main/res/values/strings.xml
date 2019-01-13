@@ -55,7 +55,7 @@
     <string name="single_negative_response">The single user has refused your request.</string>
     <string name="group_negative_response">There are not enough users to accept your request.</string>
 
-    <string name="sent_to_user">The request as been sent to the user. To check his/her answer goes in the Data area and click the
+    <string name="sent_to_user">The request as been sent to the user. To check his/her answer goes in the Waiting Users Answer area and click the
     notification button.</string>
     <string name="wrong_fiscal_code">The insert fiscal code or number is not in the DB. Try with a different one.</string>
     <string name="notification_request">Get notification</string>
@@ -93,4 +93,6 @@
 
     //URL DOMAIN
     <string name="domain">192.168.1.110</string>
+    <string name="user_sub_title">Users Subscribed Requests</string>
+    <string name="group_sub_title">Group Subscribed Requests</string>
 </resources>

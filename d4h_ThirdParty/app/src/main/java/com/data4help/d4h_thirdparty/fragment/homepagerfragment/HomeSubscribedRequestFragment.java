@@ -42,6 +42,7 @@ import static com.data4help.d4h_thirdparty.Config.UNAUTHORIZED;
 
 import com.data4help.d4h_thirdparty.R.*;
 import com.data4help.d4h_thirdparty.activity.ShowGroupSubDataActivity;
+import com.data4help.d4h_thirdparty.activity.ShowSingleSubUserDataActivity;
 
 public class HomeSubscribedRequestFragment extends Fragment{
 
@@ -51,6 +52,32 @@ public class HomeSubscribedRequestFragment extends Fragment{
     private static int buttonGroupId;
     private static int buttonUserId;
     private boolean incompleteRequest = false;
+
+    private Button userButton1;
+    private Button userButton2;
+    private Button userButton3;
+    private Button userButton4;
+    private Button userButton5;
+    private Button userButton6;
+    private Button userButton7;
+    private Button userButton8;
+    private Button userButton9;
+    private Button userButton10;
+    private Button userButton11;
+    private Button userButton0;
+
+    private Button groupButton1;
+    private Button groupButton2;
+    private Button groupButton3;
+    private Button groupButton4;
+    private Button groupButton5;
+    private Button groupButton6;
+    private Button groupButton7;
+    private Button groupButton8;
+    private Button groupButton9;
+    private Button groupButton10;
+    private Button groupButton11;
+    private Button groupButton0;
 
     public static int getButtonGroupId() {
         return buttonGroupId;
@@ -84,11 +111,91 @@ public class HomeSubscribedRequestFragment extends Fragment{
 
         subscribedGroupButtons = view.findViewById(id.subscribedGroupButtons);
         subscribedUserButtons = view.findViewById(id.subscribedUserButtons);
-
+        setAttributes(view);
         doGroupRequest();
         doSingleUserRequest();
 
+        activateButtons();
         return view;
+    }
+
+    private void activateButtons() {
+        onClickButton(userButton1);
+        onClickButton(userButton2);
+        onClickButton(userButton3);
+        onClickButton(userButton4);
+        onClickButton(userButton5);
+        onClickButton(userButton6);
+        onClickButton(userButton7);
+        onClickButton(userButton8);
+        onClickButton(userButton9);
+        onClickButton(userButton10);
+        onClickButton(userButton11);
+        onClickButton(userButton0);
+
+        onClickGroupButton(groupButton1);
+        onClickGroupButton(groupButton2);
+        onClickGroupButton(groupButton3);
+        onClickGroupButton(groupButton4);
+        onClickGroupButton(groupButton5);
+        onClickGroupButton(groupButton6);
+        onClickGroupButton(groupButton7);
+        onClickGroupButton(groupButton8);
+        onClickGroupButton(groupButton9);
+        onClickGroupButton(groupButton10);
+        onClickGroupButton(groupButton11);
+        onClickGroupButton(groupButton0);
+
+    }
+
+    private void onClickGroupButton(Button groupButton) {
+        groupButton.setOnClickListener((v)->{
+            if(!groupButton.getText().toString().isEmpty()) {
+                buttonGroupId = Integer.parseInt(groupButton.getText().toString());
+                Intent intent = new Intent(getActivity(), ShowGroupSubDataActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    @SuppressLint("ResourceType")
+    private void onClickButton(Button userButton) {
+        userButton.setOnClickListener((v)->{
+            if(!userButton.getText().toString().isEmpty()) {
+                buttonUserId = Integer.parseInt(userButton.getText().toString());
+                Intent intent = new Intent(getActivity(), ShowSingleSubUserDataActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void setAttributes(View view) {
+        userButton1 = view.findViewById(id.userButton1);
+        userButton2 = view.findViewById(id.userButton2);
+        userButton3 = view.findViewById(id.userButton3);
+        userButton4 = view.findViewById(id.userButton4);
+        userButton5 = view.findViewById(id.userButton5);
+        userButton6 = view.findViewById(id.userButton6);
+        userButton7 = view.findViewById(id.userButton7);
+        userButton8 = view.findViewById(id.userButton8);
+        userButton9 = view.findViewById(id.userButton9);
+        userButton10 = view.findViewById(id.userButton10);
+        userButton11 = view.findViewById(id.userButton11);
+        userButton0 = view.findViewById(id.userButton0);
+
+
+        groupButton1 = view.findViewById(id.groupButton1);
+        groupButton2 = view.findViewById(id.groupButton2);
+        groupButton3 = view.findViewById(id.groupButton3);
+        groupButton4 = view.findViewById(id.groupButton4);
+        groupButton5 = view.findViewById(id.groupButton5);
+        groupButton6 = view.findViewById(id.groupButton6);
+        groupButton7 = view.findViewById(id.groupButton7);
+        groupButton8 = view.findViewById(id.groupButton8);
+        groupButton9 = view.findViewById(id.groupButton9);
+        groupButton10 = view.findViewById(id.groupButton10);
+        groupButton11 = view.findViewById(id.groupButton11);
+        groupButton0 = view.findViewById(id.groupButton0);
     }
 
     private void activateUserButton() {
@@ -99,7 +206,6 @@ public class HomeSubscribedRequestFragment extends Fragment{
                 startActivity(intent);
             });
         }
-        activateGroupButton();
     }
 
     private void activateGroupButton() {
@@ -110,7 +216,6 @@ public class HomeSubscribedRequestFragment extends Fragment{
                 startActivity(intent);
             });
         }
-        activateUserButton();
     }
 
     /**
@@ -154,24 +259,63 @@ public class HomeSubscribedRequestFragment extends Fragment{
             for(int i = 0; i < allUsers.length(); i++){
                 JSONObject user = allUsers.getJSONObject(i);
                 userParams.put(i, user);
+
                 createUserButtons(i);
             }
         } catch (JSONException e) {
             createDialog(SERVERERROR);
         }
+        //activateUserButton();
     }
 
     @SuppressLint("SetTextI18n")
     private void createUserButtons(int i) {
         Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
-            Button button = new Button(getActivity());
-            button.setGravity(Gravity.CENTER_HORIZONTAL);
+            switch(i){
+                case 0:
+                    userButton0.setText(String.valueOf(i) );
+                    break;
+                case 1:
+                    userButton1.setText(String.valueOf(i));
+                    break;
+                case 2:
+                    userButton2.setText(String.valueOf(i));
+                    break;
+                case 3:
+                    userButton3.setText(String.valueOf(i));
+                    break;
+                case 4:
+                    userButton4.setText(String.valueOf(i));
+                    break;
+                case 5:
+                    userButton5.setText(String.valueOf(i));
+                    break;
+                case 6:
+                    userButton6.setText(String.valueOf(i));
+                    break;
+                case 7:
+                    userButton7.setText(String.valueOf(i));
+                    break;
+                case 8:
+                    userButton8.setText(String.valueOf(i));
+                    break;
+                case 9:
+                    userButton9.setText(String.valueOf(i));
+                    break;
+                case 10:
+                    userButton10.setText(String.valueOf(i));
+                    break;
+                case 11:
+                    userButton11.setText(String.valueOf(i));
+                    break;
+                default:
+                    Button button = new Button(getActivity());
+                    button.setText("User" + String.valueOf(i));
 
-            button.setId(i);
-            button.setText("User "+ String.valueOf(i));
-            button.setBackground(Drawable.createFromPath("drawable-v24/health_param_shape.xml"));
+                    subscribedUserButtons.addView(button);
+                    break;
+            }
 
-            subscribedUserButtons.addView(button);
         });
     }
 
@@ -180,8 +324,6 @@ public class HomeSubscribedRequestFragment extends Fragment{
      */
     private void doGroupRequest() {
         JSONObject obj= setAuthTokenObject();
-
-        System.out.println(obj.toString());
         RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()).getApplicationContext());
         JsonObjectRequest getSubscribedGroupRequest = new JsonObjectRequest(Request.Method.POST, GETSUBSCRIBEDGROUPDATAURL, obj,
                 response -> {
@@ -195,6 +337,7 @@ public class HomeSubscribedRequestFragment extends Fragment{
                 if (response.statusCode == 200) {
                     try {
                         String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                        System.out.println(json);
                         saveGroupsParam(json);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
@@ -207,6 +350,8 @@ public class HomeSubscribedRequestFragment extends Fragment{
             cancelReq(getSubscribedGroupRequest);
         }
         queue.add(getSubscribedGroupRequest);
+
+        //activateGroupButton();
     }
 
     @SuppressLint("UseSparseArrays")
@@ -230,14 +375,53 @@ public class HomeSubscribedRequestFragment extends Fragment{
     @SuppressLint("SetTextI18n")
     private void createGroupButtons(int i) {
         Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
-            Button button = new Button(getActivity());
-            button.setGravity(Gravity.CENTER_HORIZONTAL);
+                    switch(i) {
+                        case 0:
+                            groupButton0.setText(String.valueOf(i));
+                            break;
+                        case 1:
+                            groupButton1.setText(String.valueOf(i));
+                            break;
+                        case 2:
+                            groupButton2.setText(String.valueOf(i));
+                            break;
+                        case 3:
+                            groupButton3.setText(String.valueOf(i));
+                            break;
+                        case 4:
+                            groupButton4.setText(String.valueOf(i));
+                            break;
+                        case 5:
+                            groupButton5.setText(String.valueOf(i));
+                            break;
+                        case 6:
+                            groupButton6.setText(String.valueOf(i));
+                            break;
+                        case 7:
+                            groupButton7.setText(String.valueOf(i));
+                            break;
+                        case 8:
+                            groupButton8.setText(String.valueOf(i));
+                            break;
+                        case 9:
+                            groupButton9.setText(String.valueOf(i));
+                            break;
+                        case 10:
+                            groupButton10.setText(String.valueOf(i));
+                            break;
+                        case 11:
+                            groupButton11.setText(String.valueOf(i));
+                            break;
+                        default:
+                            Button button = new Button(getActivity());
+                            button.setGravity(Gravity.CENTER_HORIZONTAL);
+                            button.setId(i);
+                            button.setText(String.valueOf(i));
+                            button.setBackground(Drawable.createFromPath("drawable-v24/health_param_shape.xml"));
+                            subscribedGroupButtons.addView(button);
+                            break;
+                    }
 
-            button.setId(i);
-            button.setText("Group "+ String.valueOf(i));
-            button.setBackground(Drawable.createFromPath("drawable-v24/health_param_shape.xml"));
-
-            subscribedGroupButtons.addView(button);
         });
     }
 

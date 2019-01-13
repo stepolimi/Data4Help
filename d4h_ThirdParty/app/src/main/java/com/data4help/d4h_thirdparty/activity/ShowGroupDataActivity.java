@@ -22,11 +22,11 @@ public class ShowGroupDataActivity extends AppCompatActivity {
     private Button fiveDaysAgo;
     private Button sixDaysAgo;
 
-    private static TextView ageRange;
-    private static TextView heightRange;
-    private static TextView weightRange;
-    private static TextView sexRange;
-    private static TextView addressRange;
+    private  TextView ageRange;
+    private  TextView heightRange;
+    private  TextView weightRange;
+    private TextView sexRange;
+    private TextView addressRange;
     private ViewPager viewPager;
 
     @Override
@@ -41,13 +41,6 @@ public class ShowGroupDataActivity extends AppCompatActivity {
         ShowGroupDataPagerViewAdapter pagerAdapter = new ShowGroupDataPagerViewAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
 
-        /*setItem(today, 0);
-        setItem(yesterday, 1);
-        setItem(twoDaysAgo, 2);
-        setItem(threeDaysAgo, 3);
-        setItem(fourDaysAgo, 4);
-        setItem(fiveDaysAgo, 5);
-        setItem(sixDaysAgo, 6);*/
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -153,7 +146,7 @@ public class ShowGroupDataActivity extends AppCompatActivity {
      *
      * Sets all param associated to the request done
      */
-    public static void setGroupRequestParam(JSONObject param) throws JSONException {
+    public void setGroupRequestParam(JSONObject param) throws JSONException {
         String age = param.getString("minAge") + "-" + param.getString("maxAge");
         ageRange.setText(age);
 

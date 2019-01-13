@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.data4help.d4h_thirdparty.activity.ShowSingleDataActivity;
+import com.data4help.d4h_thirdparty.activity.ShowSingleSubUserDataActivity;
 import com.data4help.d4h_thirdparty.fragment.homepagerfragment.HomeSubscribedRequestFragment;
 
 import org.json.JSONArray;
@@ -89,7 +90,9 @@ public class TodaySingleSubUserFragment  extends Fragment implements Runnable {
      * calls a method in the main activity
      */
     private void setContextParam(String name, String surname,int yearOfBirth, int height, int weight, String sex, String fiscalCode){
-        ((ShowSingleDataActivity)Objects.requireNonNull(getActivity())).setRequestParam(name, surname, yearOfBirth, height, weight, sex, fiscalCode);
+        System.out.println(name);
+        System.out.println(surname);
+        ((ShowSingleSubUserDataActivity)Objects.requireNonNull(getActivity())).setRequestParam(name, surname, yearOfBirth, height, weight, sex, fiscalCode);
     }
 
     /**

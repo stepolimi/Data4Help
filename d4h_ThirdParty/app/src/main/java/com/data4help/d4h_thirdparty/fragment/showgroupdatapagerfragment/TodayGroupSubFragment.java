@@ -36,6 +36,7 @@ public class TodayGroupSubFragment extends Fragment implements Runnable {
     private TextView minDayTemperature;
     private TextView maxDayTemperature;
 
+
     public TodayGroupSubFragment(){}
 
     @Override
@@ -91,7 +92,7 @@ public class TodayGroupSubFragment extends Fragment implements Runnable {
     private void setContextParam(JSONObject param){
         Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
             try {
-                ShowGroupSubDataActivity.setGroupRequestParam(param);
+                ((ShowGroupSubDataActivity)Objects.requireNonNull(getActivity())).setGroupRequestParam(param);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -154,5 +155,6 @@ public class TodayGroupSubFragment extends Fragment implements Runnable {
 
         minDayTemperature = view.findViewById(com.data4help.d4h_thirdparty.R.id.minDayTemperature);
         maxDayTemperature = view.findViewById(com.data4help.d4h_thirdparty.R.id.maxDayTemperature);
+
     }
 }

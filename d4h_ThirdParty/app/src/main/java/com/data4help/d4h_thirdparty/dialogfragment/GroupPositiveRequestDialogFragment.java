@@ -14,9 +14,11 @@ import android.widget.TextView;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.data4help.d4h_thirdparty.AuthToken;
 import com.data4help.d4h_thirdparty.R.*;
 import com.data4help.d4h_thirdparty.activity.ShowGroupDataActivity;
@@ -78,6 +80,7 @@ public class GroupPositiveRequestDialogFragment extends DialogFragment{
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()).getApplicationContext());
         JsonObjectRequest subscribeGroupReq = new JsonObjectRequest(Request.Method.POST, SUBSCRIBEGROUPURL, subscribeRequest,
                 response -> VolleyLog.v("Response:%n %s", response.toString()),
                 volleyError ->
@@ -93,7 +96,7 @@ public class GroupPositiveRequestDialogFragment extends DialogFragment{
                 return super.parseNetworkResponse(response);
             }
         };
-        GroupRequestFragment.queue.add(subscribeGroupReq);
+        queue.add(subscribeGroupReq);
     }
 
     /**

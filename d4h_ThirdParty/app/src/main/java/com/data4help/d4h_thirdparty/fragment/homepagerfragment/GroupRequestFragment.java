@@ -65,7 +65,7 @@ public class GroupRequestFragment extends Fragment implements Runnable {
     private Button saveGroupRequestButton;
 
     private JsonObjectRequest groupUserRequest;
-    public static RequestQueue queue;
+    public RequestQueue queue;
 
     private GroupPositiveRequestDialogFragment positiveDialog;
 

@@ -82,7 +82,6 @@ public class WaitingUserAnswerFragment extends Fragment {
             } catch (JSONException e) {
                 createDialog(SERVERERROR);
             }
-            System.out.println("Boh " + authId.toString());
             RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()));
             JsonObjectRequest seeAcceptedSingleRequest = new JsonObjectRequest(Request.Method.POST, GETPENDINGREQUESTURL, authId,
                     response -> {
@@ -117,12 +116,14 @@ public class WaitingUserAnswerFragment extends Fragment {
     private void selectButton() {
         for (int i = 0; i < singleUserRequestsButtons.getChildCount(); i++) {
             id = String.valueOf(singleUserRequestsButtons.getChildAt(i).getId());
+
             singleUserRequestsButtons.getChildAt(i).setOnClickListener((v) -> {
                 FragmentManager fm = getFragmentManager();
                 SinglePositiveRequestDialogFragment dialogFragment = new SinglePositiveRequestDialogFragment();
                 dialogFragment.setIdRequest(id);
 
                 dialogFragment.show(Objects.requireNonNull(fm), "SinglePositiveRequestDialogFragment");
+
             });
 
         }
@@ -149,13 +150,14 @@ public class WaitingUserAnswerFragment extends Fragment {
     private void createButtons(String json){
 
         Objects.requireNonNull(getActivity()).runOnUiThread(()-> {
-            System.out.println(json);
             try {
                 JSONArray thirdPartyRequest = new JSONArray(json);
                 if (thirdPartyRequest.length() == 0) createDialog(NOSINGLEUSERREQUESTS);
                 else {
                     for (int i = 0; i < thirdPartyRequest.length(); i++) {
+
                         JSONObject jsonObject = thirdPartyRequest.getJSONObject(i);
+
                         Button button = new Button(getActivity());
                         button.setGravity(Gravity.CENTER_HORIZONTAL);
 
