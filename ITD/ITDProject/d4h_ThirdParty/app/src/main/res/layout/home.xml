@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryLight"
+    tools:context="com.data4help.d4h_thirdparty.activity.HomeActivity">
+
+    <LinearLayout
+        android:layout_height="70dp"
+        android:layout_width="wrap_content">
+
+        <Button
+            android:id="@+id/subscribeData"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:textSize="15sp"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:background="@drawable/menu_shape"
+            android:textColor="@color/colorAccent"
+            android:text="@string/subscribed_data" />
+
+        <Button
+            android:id="@+id/waitingData"
+            android:layout_width="110dp"
+            android:layout_height="match_parent"
+            android:textAllCaps="false"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:background="@drawable/menu_shape"
+            android:text="@string/waiting_data" />
+
+        <Button
+            android:id="@+id/groupRequest"
+            android:layout_width="110dp"
+            android:layout_height="match_parent"
+            android:textAllCaps="false"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:background="@drawable/menu_shape"
+            android:text="@string/group_request" />
+
+        <Button
+            android:id="@+id/singleRequest"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:textAllCaps="false"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:background="@drawable/menu_shape"
+            android:text="@string/single_request" />
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/mainPage"
+        android:layout_marginTop="70dp"
+        android:layout_width="match_parent"
+        android:layout_height="750dp" />
+
+</RelativeLayout>

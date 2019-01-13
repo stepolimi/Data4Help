@@ -1,0 +1,9 @@
+<tomee>
+    <Resource id="jdbc/db" type="javax.sql.DataSource">
+        jdbcDriver = org.mariadb.jdbc.Driver
+        jdbcUrl = jdbc:mariadb://db:3306/mydb
+        jtaManaged = true
+        password = admin
+        userName = admin
+    </Resource>
+</tomee>
