@@ -1,11 +1,20 @@
-To install and run our software it is necessary to download Ultimate IntellJ Idea and docker. By using docker we have been able to cancel the whole process of downloading, installing and setting both server and database; both are simulated in dockers defined in the dockerfile. We have worked on Fedora 29, the following instructions, especially for what is related to Docker, are strictly related to this Linux platform.\\
-The following steps are necessary to correctely run our software:
+To install and run our software it is necessary to download Ultimate IntellJ Idea and docker. By using docker we have been able to cancel the whole process of downloading, installing and setting both server and database; both are simulated in dockers defined in the dockerfile.
+
+\section{Linux - Fedora}
+We have worked on Fedora 29, the following instructions, especially for what is related to Docker, are strictly related to this Linux platform.\\
+The following steps are necessary to correctely run our software on Fedora:
 \begin{itemize}
-	\item Download the Ultimate IntellJ version which can be found at the following link:\\
+	\item Download the \textbf{Ultimate IntellJ} version which can be found at the following link:\\
  		\url{https://www.jetbrains.com/idea/download/#section=windows}
+
+	\item Download \textbf{Android Studio} for simulate the two clients, the latest version can be found at the following link:\\
+		\url{https://developer.android.com/studio/}
+		To correctly install this software follow the steps at the following link:\\
+		\url{https://developer.android.com/studio/intro/}
 
 	\item For docker follow the prompt command explained in the next link:\\
 		\url{https://developer.fedoraproject.org/tools/docker/docker-installation.html}\\
+		\url{//TODO: docker compose}%TODO
 
 	\item To run the server code the following prompt commands must be executed:\\
 		\begin{itemize}
@@ -13,5 +22,89 @@ The following steps are necessary to correctely run our software:
 			\item \textbf{ sudo systemctl start docker} : because of the sudo command it will be necessary to confirm the 					command by inserting the password. This command is fundamental to start up the docker deamon,	
 			\item \textbf{ docker-compose up - -build} : to build the docker which will contain the container for both server 					and DB.\\N:B The space between - - is incorrect, here it has been added jsut to show the presence of two - -.
 		\end{itemize}
+
+	\item To run the client code it is necessary to:
+		\begin{itemize}
+			\item go in \textit{config.class} and modify the domain in URL string (of course it will have to be the domain on 					which the server works);
+			\item go in the \textit{networksecurityconfig.xm}l to modify the URL string as in config.class.
+			\item run the app on an emulator phone.
+		\end{itemize} 
 \end{itemize}
 More details can be found in the server's ReadMe which includes some more docker commands that might be useful in case of problems, such as having some dockers that already work on the prefixed doors 8080 and 3306.
+
+\section{Windows}
+The following steps are necessary to correctely run our software on Fedora:
+\begin{itemize}
+	\item Download the \textbf{Ultimate IntellJ} version which can be found at the following link:\\
+ 		\url{https://www.jetbrains.com/idea/download/#section=windows}
+
+	\item Download \textbf{Android Studio} for simulate the two clients, the latest version can be found at the following link:\\
+		\url{https://developer.android.com/studio/}
+
+		To correctly install this software follow the steps at the following link:\\
+		\url{https://developer.android.com/studio/intro/}
+
+	\item To correctly download and install docker follow the instruction explained in the folowing link:\\
+		\begin{itemize}
+		\item if you have Windows 10 Pro, Education, Enterprise download it at: \url{https://docs.docker.com/docker-for-					windows/install/}\\
+		\item if you have lower versions download it at \url{https://docs.docker.com/toolbox/toolbox_install_windows/}
+		\end{itemize}
+	When installing the docker remember that you will need to install also the docker-compose which is give for free in Windows 			and OS docker installation.
+
+	\item To run the server code the following prompt commands must be executed:\\
+		\begin{itemize}
+			\item To run the  Maven project by using the Maven Docker image directly, pass a Maven command to docker 					run:\\
+\textit{$ docker run -it --rm --name my-maven-project -v "$(pwd)":/usr/src/mymaven -w /usr/src/mymaven maven:3.3-jdk-8 mvn clean install -DskipTests};
+			\item \textbf{ sudo systemctl start docker} : because of the sudo command it will be necessary to confirm the 					command by inserting the password. This command is fundamental to start up the docker deamon,	
+			\item \textbf{ docker-compose up - -build} : to build the docker which will contain the container for both server 					and DB.\\N:B The space between - - is incorrect, here it has been added jsut to show the presence of two - -.
+		\end{itemize}
+
+	
+	\item To run the client code it is necessary to:
+		\begin{itemize}
+			\item go in \textit{config.class} and modify the domain in URL string (of course it will have to be the domain on 					which the server works);
+			\item go in the  \textit{networksecurityconfig.xml}  to modify the URL string as in config.class.
+			\item run the app on an emulator phone.
+		\end{itemize} 
+\end{itemize}
+
+\subsection{Mac OS}
+The following steps are necessary to correctely run our software on Fedora:
+\begin{itemize}
+	\item Download the \textbf{Ultimate IntellJ} version which can be found at the following link:\\
+ 		\url{https://www.jetbrains.com/idea/download/#section=windows}
+
+	\item Download \textbf{Android Studio} for simulate the two clients, the latest version can be found at the following link:\\
+		\url{https://developer.android.com/studio/}
+
+		To correctly install this software follow the steps at the following link:\\
+		\url{https://developer.android.com/studio/intro/}
+
+	\item To correctly download and install docker follow the instruction explained in the folowing link:\\
+		\begin{itemize}
+		\item if you have macOS El Capitan 10.11 and newer macOS releases  download it at: \url{https://docs.docker.com/				docker-for-mac/install/}\\
+		\item if you have lower versions download it at \url{https://docs.docker.com/toolbox/toolbox_install_mac/}
+		\end{itemize}
+	When installing the docker remember that you will need to install also the docker-compose which is give for free in Windows 			and OS docker installation.
+
+
+	\item To run the server code the following prompt commands must be executed:\\
+	
+		\begin{itemize}
+			\item To run the  Maven project by using the Maven Docker image directly, pass a Maven command to docker 					run:\\
+\textit{$ docker run -it --rm --name my-maven-project -v "$(pwd)":/usr/src/mymaven -w /usr/src/mymaven maven:3.3-jdk-8 mvn clean install -DskipTests};
+			\item \textbf{ sudo systemctl start docker} : because of the sudo command it will be necessary to confirm the 					command by inserting the password. This command is fundamental to start up the docker deamon,	
+			\item \textbf{ docker-compose up - -build} : to build the docker which will contain the container for both server 					and DB.\\N:B The space between - - is incorrect, here it has been added jsut to show the presence of two - -.
+		\end{itemize}
+
+	
+	\item To run the client code it is necessary to:
+		\begin{itemize}
+			\item go in \textit{config.class} and modify the domain in URL string (of course it will have to be the domain on 					which the server works);
+			\item go in the  \textit{networksecurityconfig.xml}  to modify the URL string as in config.class.
+			\item run the app on an emulator phone.
+		\end{itemize} 
+\end{itemize}
+
+For more details on Docker and Docker compose look at this link:\\
+\url{https://docs.docker.com/}

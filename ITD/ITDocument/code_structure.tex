@@ -1,0 +1,18 @@
+The whole project has been devided in three different subproject:\\
+\begin{itemize}
+	\item \textbf{Server: } the server has been implemented in a Maven project with JavaEE specification. It is formed by:
+		\begin{itemize}
+			\item  model classes, which are all classes mapped to percistence elements by the OpenJpa API. Those classes 					contains only getter and setter methods;
+			\item DAO classes have the objective to interact with the DB by requiring, adding, delating and updating data;
+			\item  service classes which contains all the REST methods and the agorithms related to internal operations;
+			\item support classes to do all stuffs in a well written way.
+		\end{itemize}
+
+	\item \textbf{Client: } both clients have been written in Android studio creating two different gradle projects. Both are formed by:			\begin{itemize}
+			\item  activity classes which have been used has major containers for fragment and which have the aim to do all 					basics operation required;
+			\item fragment classes implement all functions required by fragments, evere class layed down on an activity class 				and is usually called by a menu class or a pagerView class;
+			\item dialog fragment classes  implement dialog fragments which are shown when some particular occasions occurs;
+			\item support classes to do all stuffs in a well written way.
+		\end{itemize}
+
+\end{itemize}For more details it is possible to read the Design Document in which class diagram, sequence diagrams and more information related to the overall structure can be found.Those may be a little different in names but the structure has been respected has much as possible.
