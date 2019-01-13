@@ -6,6 +6,9 @@ import com.d4h.application.model.user.User;
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * Contains all the users that respects the restrictions of a group of users data request.
+ */
 @Entity
 public class GroupOfUsers {
 
@@ -18,7 +21,7 @@ public class GroupOfUsers {
     @OneToOne (cascade = CascadeType.ALL)
     private GroupUsersData groupUsersData;
 
-    @ManyToMany
+    @ManyToMany (cascade = CascadeType.ALL)
     private List<User> users;
 
     public List<User> getUsers() {

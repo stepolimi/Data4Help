@@ -13,7 +13,7 @@ public class ThirdPartyCredential {
     private String email;
     private String password;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private ThirdParty thirdParty;
 
     public ThirdParty getThirdParty() {

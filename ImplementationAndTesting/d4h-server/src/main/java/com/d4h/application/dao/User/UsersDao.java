@@ -38,6 +38,10 @@ public class UsersDao extends DaoBase {
         entityManager.remove(user);
     }
 
+    public void deleteUsers() throws Exception{
+        Query query = entityManager.createQuery("DELETE from User");
+    }
+
     public List<User> getUsers() throws Exception {
         Query query = entityManager.createQuery("SELECT u from User as u");
         return query.getResultList();

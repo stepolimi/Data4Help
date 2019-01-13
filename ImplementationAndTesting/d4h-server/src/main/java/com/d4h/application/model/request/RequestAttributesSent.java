@@ -2,6 +2,9 @@ package com.d4h.application.model.request;
 
 import com.d4h.application.model.user.Sex;
 
+/**
+ * Contains the restrictions of a group of users data request to be sent to the third parties.
+ */
 public class RequestAttributesSent {
     private int minHeight;
     private int maxHeight;

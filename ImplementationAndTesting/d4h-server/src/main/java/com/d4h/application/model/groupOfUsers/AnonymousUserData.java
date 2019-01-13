@@ -6,13 +6,16 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Contains the health parameters of the users for a group of users data request.
+ */
 @Entity
 public class AnonymousUserData {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
-    @OneToMany
+    @OneToMany (cascade = CascadeType.ALL)
     private List<HealthParameters> healthParams = new ArrayList<>();
 
     public String getId() {

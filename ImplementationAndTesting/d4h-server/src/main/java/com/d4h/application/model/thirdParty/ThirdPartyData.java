@@ -18,7 +18,7 @@ public class ThirdPartyData {
     private String typeSociety;
     private String thirdPartyId;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private ThirdParty thirdParty;
 
     @OneToOne (cascade = CascadeType.ALL)
