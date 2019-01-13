@@ -1,10 +1,12 @@
 package com.d4h.application.dao.request;
 
 import com.d4h.application.dao.DaoBase;
-import com.d4h.application.model.request.*;
+import com.d4h.application.model.request.AddressRange;
+import com.d4h.application.model.request.RequestAttributes;
+import com.d4h.application.model.request.RequestGroup;
+import com.d4h.application.model.request.RequestUser;
 
 import javax.ejb.Stateful;
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;

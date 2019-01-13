@@ -1,31 +1,23 @@
 package com.d4h.application.rest.impl;
 
-import com.d4h.application.dao.request.RequestUserDao;
+import com.d4h.application.dao.User.UsersDao;
 import com.d4h.application.model.request.RequestUser;
 import com.d4h.application.model.services.RequestService;
 import com.d4h.application.model.services.RequestUserService;
-import com.d4h.application.model.thirdParty.AcquiredUserDataSent;
 import com.d4h.application.model.user.*;
-import com.d4h.application.dao.User.UsersDao;
-
 import com.d4h.application.rest.UserService;
-import jdk.nashorn.internal.parser.JSONParser;
-import org.json.JSONObject;
 
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.Response;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static javax.ws.rs.core.Response.*;
+import static javax.ws.rs.core.Response.ok;
+import static javax.ws.rs.core.Response.status;
 
 public class UserServiceImpl implements UserService{
     @EJB
@@ -170,7 +162,10 @@ public class UserServiceImpl implements UserService{
             if(user != null){
                 Long day = new Long(86400000);
                 List<HealthParameters> healthParameters = RequestService.getService().getPastHealthParams(id, day, users);
-                return ok(RequestService.getService().getHealthParametersSent(healthParameters), "application/json").build();
+                HealthParametersSent healthParametersSent = RequestService.getService().getHealthParametersSent(healthParameters);
+                healthParametersSent.setHeight(user.getUserData().getHeight());
+                healthParametersSent.setWeight(user.getUserData().getWeight());
+                return ok(healthParametersSent, "application/json").build();
             }
         } catch (Exception e) {
             return status(Response.Status.UNAUTHORIZED).build();
@@ -275,6 +270,7 @@ public class UserServiceImpl implements UserService{
             if(user != null){
                 if(request != null) {
                     request.setWaiting(false);
+                    request.setPending(true);
                     request.setAccepted(requestUser.isAccepted());
                     users.updateDB();
                     return ok().build();

@@ -1,14 +1,11 @@
 package com.d4h.application.dao;
 
 
-import com.d4h.application.dao.User.HealthParametersDao;
 import com.d4h.application.dao.User.UsersDao;
 import com.d4h.application.model.user.HealthParameters;
-import com.d4h.application.model.user.User;
 import org.junit.jupiter.api.Test;
 
 import javax.naming.Context;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

@@ -6,6 +6,9 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Main class of a user, contains his credentials, data, health parameters and accepted requests.
+ */
 @Entity
 public class User {
 

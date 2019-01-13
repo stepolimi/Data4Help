@@ -8,6 +8,9 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Contains the health parameters and personal data of a user.
+ */
 @Entity
 public class AcquiredUserData {
 
@@ -17,7 +20,7 @@ public class AcquiredUserData {
     @OneToMany (cascade = CascadeType.ALL)
     private List<HealthParameters> healthParams = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private UserData userData;
 
     public UserData getUserData() {

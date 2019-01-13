@@ -1,9 +1,10 @@
 package com.d4h.application.model.user;
 
-import com.d4h.application.model.user.User;
-
 import javax.persistence.*;
 
+/**
+ * Credentials of a user, includes e-mail and password.
+ */
 @Entity
 public class UserCredential {
 

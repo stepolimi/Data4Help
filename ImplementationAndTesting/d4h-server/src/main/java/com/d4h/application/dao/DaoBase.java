@@ -12,8 +12,6 @@ public class DaoBase {
 
     private static DaoBase daoBase;
 
-    //private DaoBase(){}
-
     public static DaoBase getDaoBase() {
         if(daoBase == null)
             daoBase= new DaoBase();

@@ -1,16 +1,11 @@
 package com.d4h.application.dao;
 
-import com.d4h.application.dao.User.UserDataDao;
 import com.d4h.application.dao.User.UsersDao;
 import com.d4h.application.model.user.User;
 import com.d4h.application.model.user.UserData;
 import org.junit.jupiter.api.Test;
 
 import javax.naming.Context;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 

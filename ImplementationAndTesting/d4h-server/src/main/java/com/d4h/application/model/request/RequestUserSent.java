@@ -1,5 +1,8 @@
 package com.d4h.application.model.request;
 
+/**
+ * Information about a user request to be sent to the interested user.
+ */
 public class RequestUserSent {
     private String senderName;
     private String description;

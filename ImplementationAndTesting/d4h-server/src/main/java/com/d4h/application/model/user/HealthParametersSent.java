@@ -1,5 +1,9 @@
 package com.d4h.application.model.user;
 
+
+/**
+ * Representation of health parameters to be sent to users and third parties.
+ */
 public class HealthParametersSent {
     private int minHeartBeat;
     private int maxHeartBeat;
@@ -8,6 +12,24 @@ public class HealthParametersSent {
     private int maxMaxPressure;
     private double minTemperature;
     private double maxTemperature;
+    private int height;
+    private int weight;
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
 
     public int getMinHeartBeat() {
         return minHeartBeat;

@@ -2,6 +2,9 @@ package com.d4h.application.model.user;
 
 import javax.persistence.*;
 
+/**
+ * Representation of a smart-watch or smart-band associated to a user.
+ */
 @Entity
 public class Wearable {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)

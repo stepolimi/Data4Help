@@ -6,6 +6,9 @@ import com.d4h.application.model.user.Sex;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Contains the health parameters and personal data of a user to be sent to a third party due to a previous request.
+ */
 public class AcquiredUserDataSent {
     private List<HealthParametersSent> healthParametersSents = new ArrayList<>();
 

@@ -1,47 +1,32 @@
 package com.d4h.application.rest.impl;
 
-import com.d4h.application.dao.ThirdParty.ThirdPartyDao;
 import com.d4h.application.dao.User.UsersDao;
-import com.d4h.application.dao.request.RequestUserDao;
-import com.d4h.application.model.groupOfUsers.AnonymousUserData;
-import com.d4h.application.model.groupOfUsers.GroupOfUsers;
-import com.d4h.application.model.groupOfUsers.GroupUsersData;
-import com.d4h.application.model.request.RequestAttributes;
+import com.d4h.application.model.groupOfUsers.GroupUsersDataSent;
 import com.d4h.application.model.request.RequestGroup;
 import com.d4h.application.model.request.RequestUser;
+import com.d4h.application.model.request.RequestUserPending;
 import com.d4h.application.model.services.RequestGroupService;
 import com.d4h.application.model.services.RequestUserService;
 import com.d4h.application.model.services.SubscribeService;
 import com.d4h.application.model.thirdParty.ThirdParty;
 import com.d4h.application.model.thirdParty.ThirdPartyCredential;
 import com.d4h.application.model.thirdParty.ThirdPartyData;
-import com.d4h.application.model.user.User;
-import com.d4h.application.model.user.UserData;
 import com.d4h.application.rest.ThirdPartyService;
-import org.json.JSONObject;
 
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.StringReader;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.d4h.application.constants.Constants.REQUEST_THRESHOLD;
 import static javax.ws.rs.core.Response.*;
 
 public class ThirdPartyServiceImpl implements ThirdPartyService {
     @EJB
     UsersDao users;
 
-    private Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
 
     /**
      * Used to login an existing third party.
@@ -129,7 +114,6 @@ public class ThirdPartyServiceImpl implements ThirdPartyService {
                     users.addRequestUser(request);
                     return ok(request.getId(), "application/json").build();
                 }
-                return Response.status(Status.BAD_REQUEST).build();
             }
         } catch (Exception e) {
             return status(Response.Status.UNAUTHORIZED).build();
@@ -175,14 +159,14 @@ public class ThirdPartyServiceImpl implements ThirdPartyService {
         try {
             ThirdParty thirdParty = users.getThirdPartyById(requestGroup.getThirdPartyId());
             RequestGroup request = users.getRequestGroup(requestGroup.getId());
-            if (thirdParty != null && request != null)
-                if(request.isAccepted() ) {
-                    if(request.isPending()) {
-                        request.setPending(false);
-                        RequestGroupService.getService().setGroupUsersData(request,users);
-                        return ok(RequestGroupService.getService().getAcquiredGroupsData(request), "application/json").build();
-                    }
+
+            if (thirdParty != null && request != null) {
+                if (request.isAccepted() && request.isPending()) {
+                    request.setPending(false);
+                    RequestGroupService.getService().setGroupUsersData(request, users);
+                    return ok(RequestGroupService.getService().getAcquiredGroupsData(request), "application/json").build();
                 }
+            }
         } catch (Exception e) {
             return status(Response.Status.UNAUTHORIZED).build();
         }
@@ -199,14 +183,12 @@ public class ThirdPartyServiceImpl implements ThirdPartyService {
         try {
             ThirdParty thirdParty = users.getThirdPartyById(requestUser.getThirdPartyId());
             RequestUser request = users.getRequestUser(requestUser.getId());
+
             if (thirdParty != null && request != null)
-                if(!request.isWaiting()) {
-                    if (request.isPending())
-                        if (request.isAccepted()) {
-                            request.setPending(false);
-                            RequestUserService.getService().setAcquiredData(request, users);
-                            return ok(RequestUserService.getService().getAcquiredData(request), "application/json").build();
-                        }
+                if(!request.isWaiting() && request.isPending() && request.isAccepted()) {
+                    request.setPending(false);
+                    RequestUserService.getService().setAcquiredData(request, users);
+                    return ok(RequestUserService.getService().getAcquiredData(request), "application/json").build();
                 }
         } catch (Exception e) {
             return status(Response.Status.UNAUTHORIZED).build();
@@ -221,7 +203,7 @@ public class ThirdPartyServiceImpl implements ThirdPartyService {
      */
 
     @Override
-    public Response getAcquiredUserData(String thirdPartyId) {
+    public Response getSubscribedUserData(String thirdPartyId) {
         try {
             String id = getThirdPartyId(thirdPartyId);
             ThirdParty thirdParty = users.getThirdPartyById(id);
@@ -241,7 +223,7 @@ public class ThirdPartyServiceImpl implements ThirdPartyService {
      * @return the required data if the request has been successful.
      */
     @Override
-    public Response getAcquiredGroupData(String thirdPartyId) {
+    public Response getSubscribedGroupData(String thirdPartyId) {
         try {
             String id = getThirdPartyId(thirdPartyId);
             ThirdParty thirdParty = users.getThirdPartyById(id);
@@ -269,6 +251,7 @@ public class ThirdPartyServiceImpl implements ThirdPartyService {
             if (thirdParty != null && request != null)
                 if (request.isAccepted()) {
                     request.setSubscribed(true);
+                    request.setPending(false);
                     users.updateDB();
                     return ok().build();
                 }
@@ -312,7 +295,11 @@ public class ThirdPartyServiceImpl implements ThirdPartyService {
             String id = getThirdPartyId(thirdPartyId);
             ThirdParty thirdParty = users.getThirdPartyById(id);
             if (thirdParty != null) {
-                return ok(RequestUserService.getService().searchNewThirdPartyRequests(thirdParty), "application/json").build();
+                List<RequestUserPending> requestUserPendings = RequestUserService.getService().searchNewThirdPartyRequests(thirdParty);
+                System.out.println("Dim: "+ requestUserPendings);
+                for(RequestUserPending requestUserPending: requestUserPendings)
+                    System.out.println("Elemento: " + requestUserPending.getRequestId());
+                return ok(requestUserPendings, "application/json").build();
             }
         } catch (Exception e) {
             return status(Response.Status.UNAUTHORIZED).build();

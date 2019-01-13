@@ -1,12 +1,13 @@
 package com.d4h.application.model.user;
 
-import org.apache.openjpa.persistence.InverseLogical;
 import org.apache.openjpa.persistence.jdbc.Unique;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
 
+/**
+ * Personal data of a user.
+ */
 @Entity
 public class UserData {
 

@@ -2,11 +2,8 @@ package com.d4h.application.model.request;
 
 import com.d4h.application.model.groupOfUsers.GroupOfUsers;
 import com.d4h.application.model.thirdParty.ThirdParty;
-import com.d4h.application.model.user.User;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class RequestGroup implements Request {

@@ -4,6 +4,9 @@ import com.d4h.application.model.thirdParty.ThirdParty;
 
 import javax.persistence.*;
 
+/**
+ * Address of a user.
+ */
 @Entity
 public class Address {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)

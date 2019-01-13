@@ -1,9 +1,6 @@
 package com.d4h.application.model.services;
 
-import com.d4h.application.dao.GroupOfUsers.GroupOfUsersDao;
-import com.d4h.application.dao.ThirdParty.ThirdPartyDao;
 import com.d4h.application.dao.User.UsersDao;
-import com.d4h.application.dao.request.RequestUserDao;
 import com.d4h.application.model.groupOfUsers.GroupUsersData;
 import com.d4h.application.model.groupOfUsers.GroupUsersDataSent;
 import com.d4h.application.model.request.RequestGroup;
@@ -12,17 +9,16 @@ import com.d4h.application.model.thirdParty.AcquiredUserData;
 import com.d4h.application.model.thirdParty.AcquiredUserDataSent;
 import com.d4h.application.model.thirdParty.ThirdParty;
 
-import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service in charge of manage the subscribes.
+ */
 @Singleton
 public class SubscribeService {
     private static SubscribeService service;
-
- //   @EJB
- //   private UsersDao users;
 
     private SubscribeService(){}
 
@@ -43,7 +39,6 @@ public class SubscribeService {
             if(requestUser.isSubscribed()){
                 AcquiredUserData acquiredUserData = requestUser.getAcquiredUserData();
                 thirdParty.removeAcquiredUserData(acquiredUserData);
-                users.deleteAcquiredUserData(acquiredUserData);
                 RequestUserService.getService().setAcquiredData(requestUser, users);
             }
         }
@@ -60,7 +55,6 @@ public class SubscribeService {
             if(requestGroup.isSubscribed()){
                 GroupUsersData groupUsersData = requestGroup.getGroupOfUsers().getGroupUsersData();
                 thirdParty.removeGroupUsersData(groupUsersData);
-                users.deleteGroupUsersData(groupUsersData);
                 RequestGroupService.getService().setGroupUsersData(requestGroup, users);
             }
         }

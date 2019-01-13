@@ -4,6 +4,9 @@ import com.d4h.application.model.user.Address;
 
 import javax.persistence.*;
 
+/**
+ * Personal data of a third party.
+ */
 @Entity
 public class ThirdPartyData {
 

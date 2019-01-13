@@ -1,10 +1,11 @@
 package com.d4h.application.model.user;
 
-import com.d4h.application.model.user.User;
-
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * Health parameters of a user.
+ */
 @Entity
 public class HealthParameters {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)

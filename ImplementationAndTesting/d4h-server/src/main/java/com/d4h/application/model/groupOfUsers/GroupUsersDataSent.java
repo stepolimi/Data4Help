@@ -1,7 +1,6 @@
 package com.d4h.application.model.groupOfUsers;
 
-import com.d4h.application.model.request.RequestAttributes;
-import com.d4h.application.model.user.HealthParameters;
+import com.d4h.application.model.request.RequestAttributesSent;
 import com.d4h.application.model.user.HealthParametersSent;
 
 import java.util.ArrayList;
@@ -10,14 +9,14 @@ import java.util.List;
 public class GroupUsersDataSent {
     private List<HealthParametersSent> healthParametersSents = new ArrayList<>();
 
-    private RequestAttributes requestAttributes;
+    private RequestAttributesSent requestAttributesSent;
 
-    public RequestAttributes getRequestAttributes() {
-        return requestAttributes;
+    public RequestAttributesSent getRequestAttributesSent() {
+        return requestAttributesSent;
     }
 
-    public void setRequestAttributes(RequestAttributes requestAttributes) {
-        this.requestAttributes = requestAttributes;
+    public void setRequestAttributesSent(RequestAttributesSent requestAttributesSent) {
+        this.requestAttributesSent = requestAttributesSent;
     }
 
     public List<HealthParametersSent> getHealthParametersSents() {

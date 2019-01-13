@@ -4,7 +4,6 @@ import com.d4h.application.dao.DaoBase;
 import com.d4h.application.model.user.UserCredential;
 
 import javax.ejb.Stateful;
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;

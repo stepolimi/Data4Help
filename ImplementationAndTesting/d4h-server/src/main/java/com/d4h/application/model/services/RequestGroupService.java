@@ -1,22 +1,17 @@
 package com.d4h.application.model.services;
 
-import com.d4h.application.dao.GroupOfUsers.GroupOfUsersDao;
 import com.d4h.application.dao.User.UsersDao;
-import com.d4h.application.dao.request.RequestUserDao;
 import com.d4h.application.model.groupOfUsers.AnonymousUserData;
 import com.d4h.application.model.groupOfUsers.GroupOfUsers;
 import com.d4h.application.model.groupOfUsers.GroupUsersData;
 import com.d4h.application.model.groupOfUsers.GroupUsersDataSent;
 import com.d4h.application.model.request.RequestAttributes;
+import com.d4h.application.model.request.RequestAttributesSent;
 import com.d4h.application.model.request.RequestGroup;
-import com.d4h.application.model.request.RequestUser;
-import com.d4h.application.model.request.RequestUserSent;
-import com.d4h.application.model.thirdParty.ThirdParty;
 import com.d4h.application.model.user.HealthParameters;
 import com.d4h.application.model.user.User;
 import com.d4h.application.model.user.UserData;
 
-import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,6 +21,9 @@ import java.util.List;
 
 import static com.d4h.application.constants.Constants.REQUEST_THRESHOLD;
 
+/**
+ * Service in charge of manage the group of users requests.
+ */
 @Singleton
 public class RequestGroupService {
 
@@ -97,16 +95,16 @@ public class RequestGroupService {
         List<UserData> targetData = new ArrayList<>();
         List<UserData> data = users.getUserDatas();
         for(UserData userData: data)
-            if((attributes.getMinHeight() == attributes.getMaxHeight() && attributes.getMaxHeight() == 0) || (userData.getHeight() >= attributes.getMinHeight() && userData.getHeight() <= attributes.getMaxHeight()))
-                if((attributes.getMinWeight() == attributes.getMaxWeight() && attributes.getMaxWeight() == 0) || (userData.getWeight() >= attributes.getMinWeight() && userData.getWeight() <= attributes.getMaxWeight()))
+            if((attributes.getMinHeight() == 0 || userData.getHeight() >= attributes.getMinHeight()) && (attributes.getMaxHeight() == 0 || userData.getHeight() <= attributes.getMaxHeight()))
+                if((attributes.getMinWeight() == 0 || userData.getWeight() >= attributes.getMinWeight()) && (attributes.getMaxWeight() == 0 || userData.getWeight() <= attributes.getMaxWeight()))
                     if(attributes.getSex() == null || userData.getSex().equals(attributes.getSex())) {
                         Date todayDate = Calendar.getInstance().getTime();
                         SimpleDateFormat format = new SimpleDateFormat("yyyy");
                         int year = Integer.parseInt(format.format(todayDate));
-                        if ((attributes.getMinAge() == attributes.getMaxAge() && attributes.getMaxAge() == 0) || (year - userData.getYearOfBirth() <= attributes.getMaxAge() && year - userData.getYearOfBirth() >= attributes.getMinAge()))
+                        if ((attributes.getMinAge() == 0 || year - userData.getYearOfBirth() >= attributes.getMinAge()) && (attributes.getMaxAge() == 0 || year - userData.getYearOfBirth() <= attributes.getMaxAge()))
                             if((attributes.getAddressRange().getState().equals("")) || (userData.getAddress().getState().equals(attributes.getAddressRange().getState())))
                                 if((attributes.getAddressRange().getRegion().equals("")) || (userData.getAddress().getRegion().equals(attributes.getAddressRange().getRegion())))
-                                targetData.add(userData);
+                                    targetData.add(userData);
                     }
         return targetData;
     }
@@ -118,9 +116,19 @@ public class RequestGroupService {
      */
     public GroupUsersDataSent getAcquiredGroupsData(RequestGroup requestGroup){
         GroupUsersDataSent groupUsersDataSent = new GroupUsersDataSent();
+        RequestAttributesSent requestAttributesSent = new RequestAttributesSent();
         Long week = new Long(604800000);
         Long day = new Long(86400000);
-        groupUsersDataSent.setRequestAttributes(requestGroup.getAttributes());
+        requestAttributesSent.setState(requestGroup.getAttributes().getAddressRange().getState());
+        requestAttributesSent.setRegion(requestGroup.getAttributes().getAddressRange().getRegion());
+        requestAttributesSent.setMaxAge(requestGroup.getAttributes().getMaxAge());
+        requestAttributesSent.setMinAge(requestGroup.getAttributes().getMinAge());
+        requestAttributesSent.setMaxHeight(requestGroup.getAttributes().getMaxHeight());
+        requestAttributesSent.setMinHeight(requestGroup.getAttributes().getMinHeight());
+        requestAttributesSent.setMaxWeight(requestGroup.getAttributes().getMaxWeight());
+        requestAttributesSent.setMinWeight(requestGroup.getAttributes().getMinWeight());
+        requestAttributesSent.setSex(requestGroup.getAttributes().getSex());
+        groupUsersDataSent.setRequestAttributesSent(requestAttributesSent);
 
         for(Long days = day; days <= week; days = days + day) {
             List<HealthParameters> targetHealthParameters = new ArrayList<>();

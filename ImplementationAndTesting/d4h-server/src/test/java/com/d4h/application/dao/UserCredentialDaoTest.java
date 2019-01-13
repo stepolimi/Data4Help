@@ -1,6 +1,5 @@
 package com.d4h.application.dao;
 
-import com.d4h.application.dao.User.UserCredentialDao;
 import com.d4h.application.dao.User.UsersDao;
 import com.d4h.application.model.user.UserCredential;
 import org.junit.jupiter.api.Test;

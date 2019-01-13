@@ -6,7 +6,6 @@ import com.d4h.application.model.groupOfUsers.GroupOfUsers;
 import com.d4h.application.model.groupOfUsers.GroupUsersData;
 
 import javax.ejb.Stateful;
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;

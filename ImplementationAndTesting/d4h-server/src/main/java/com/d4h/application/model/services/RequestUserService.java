@@ -8,7 +8,6 @@ import com.d4h.application.model.thirdParty.AcquiredUserData;
 import com.d4h.application.model.thirdParty.AcquiredUserDataSent;
 import com.d4h.application.model.thirdParty.ThirdParty;
 import com.d4h.application.model.user.HealthParameters;
-import com.d4h.application.model.user.HealthParametersSent;
 import com.d4h.application.model.user.User;
 import com.d4h.application.model.user.UserData;
 
@@ -17,12 +16,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
+/**
+ * Service in charge of manage the user requests.
+ */
 @Singleton
 public class RequestUserService {
-   // @EJB
-   // private UsersDao users;
-
     private static RequestUserService service;
 
     private RequestUserService(){}
@@ -41,7 +39,7 @@ public class RequestUserService {
         User user = users.getUserByCode(request.getFiscalCode());
         if(user != null) {
             request.setUser(user);
-            request.setPending(true);
+            request.setPending(false);
             request.setWaiting(true);
             user.addRequest(request);
             return true;
@@ -128,12 +126,13 @@ public class RequestUserService {
     public List<RequestUserPending> searchNewThirdPartyRequests(ThirdParty thirdParty){
         List<RequestUserPending> waitingRequests = new ArrayList<>();
         for(RequestUser requestUser: thirdParty.getUserRequests())
-            if(requestUser.isPending()) {
-                RequestUserPending requestUserPending = new RequestUserPending();
-                requestUserPending.setFiscalCode(requestUser.getFiscalCode());
-                requestUserPending.setRequestId(requestUser.getId());
-                waitingRequests.add(requestUserPending);
-            }
+            if(requestUser.isAccepted())
+                if(requestUser.isPending()) {
+                    RequestUserPending requestUserPending = new RequestUserPending();
+                    requestUserPending.setFiscalCode(requestUser.getFiscalCode());
+                    requestUserPending.setRequestId(requestUser.getId());
+                    waitingRequests.add(requestUserPending);
+                }
         return waitingRequests;
     }
 

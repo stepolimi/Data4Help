@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Service with functionalities for both type of requests.
+ */
 @Singleton
 public class RequestService {
     private static RequestService service;
@@ -30,7 +33,7 @@ public class RequestService {
         HealthParametersSent healthParametersSent = new HealthParametersSent();
         int tot = 0;
 
-        if(targetHealthParam.get(0) != null) {
+        if(!targetHealthParam.isEmpty()) {
             healthParametersSent.setMaxHeartBeat(targetHealthParam.get(0).getHeartBeat());
             healthParametersSent.setMinHeartBeat(targetHealthParam.get(0).getHeartBeat());
             healthParametersSent.setMaxMaxPressure(targetHealthParam.get(0).getMaxPressure());

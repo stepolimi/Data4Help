@@ -1,14 +1,14 @@
 package com.d4h.application.rest;
 
-import com.d4h.application.model.request.RequestGroup;
 import com.d4h.application.model.request.RequestUser;
-import com.d4h.application.model.user.Address;
 import com.d4h.application.model.user.HealthParameters;
 import com.d4h.application.model.user.UserCredential;
 import com.d4h.application.model.user.UserData;
-import org.json.JSONObject;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 @Path("/users")

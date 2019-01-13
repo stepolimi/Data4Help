@@ -22,7 +22,6 @@ import com.d4h.application.rest.impl.UserServiceImpl;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 

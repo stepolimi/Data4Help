@@ -1,12 +1,14 @@
 package com.d4h.application.rest;
 
-import com.d4h.application.model.request.RequestAttributes;
 import com.d4h.application.model.request.RequestGroup;
 import com.d4h.application.model.request.RequestUser;
 import com.d4h.application.model.thirdParty.ThirdPartyCredential;
 import com.d4h.application.model.thirdParty.ThirdPartyData;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 @Path("thirdParties")
@@ -52,16 +54,16 @@ public interface ThirdPartyService {
     Response getUserData(RequestUser request);
 
     @POST
-    @Path("/getAcquiredUserData")
-    @Consumes("application/java")
-    @Produces("application/java")
-    Response getAcquiredUserData(String thirdPartyId);
+    @Path("/getSubscribedUserData")
+    @Consumes("application/json")
+    @Produces("application/json")
+    Response getSubscribedUserData(String thirdPartyId);
 
     @POST
-    @Path("/getAcquiredGroupData")
-    @Consumes("application/java")
-    @Produces("application/java")
-    Response getAcquiredGroupData(String thirdPartyId);
+    @Path("/getSubscribedGroupData")
+    @Consumes("application/json")
+    @Produces("application/json")
+    Response getSubscribedGroupData(String thirdPartyId);
 
     @POST
     @Path("/subscribeUser")

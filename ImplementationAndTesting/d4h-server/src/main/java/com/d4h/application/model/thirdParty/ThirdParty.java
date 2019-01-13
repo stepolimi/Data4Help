@@ -1,17 +1,16 @@
 package com.d4h.application.model.thirdParty;
 
-import com.d4h.application.model.groupOfUsers.GroupOfUsers;
 import com.d4h.application.model.groupOfUsers.GroupUsersData;
 import com.d4h.application.model.request.RequestGroup;
 import com.d4h.application.model.request.RequestUser;
-import com.d4h.application.model.user.User;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * Main class of a third party, contains his personal data, credentials, acquired health parameters and requests done.
+ */
 @Entity
 public class ThirdParty {
 

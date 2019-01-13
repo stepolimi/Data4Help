@@ -1,7 +1,6 @@
 package com.d4h.application.dao;
 
 import com.d4h.application.dao.User.UsersDao;
-import com.d4h.application.dao.User.WearableDao;
 import com.d4h.application.model.user.Wearable;
 import org.junit.jupiter.api.Test;
 

@@ -2,6 +2,9 @@ package com.d4h.application.model.thirdParty;
 
 import javax.persistence.*;
 
+/**
+ * Credentials of a third party, includes e-mail and password.
+ */
 @Entity
 public class ThirdPartyCredential {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)

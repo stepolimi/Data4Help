@@ -6,6 +6,9 @@ import com.d4h.application.model.user.User;
 
 import javax.persistence.*;
 
+/**
+ * Contains all the information about a user data request.
+ */
 @Entity
 public class RequestUser implements Request {
 

@@ -39,3 +39,16 @@ If it produces an error saying that the port is already allocated it is necessar
     docker volume ls
     docker volume rm name volume
 ```
+
+## Start server
+To start the server, execute the following commands from terminal:
+
+1.. Open to the d4h-server directory 
+
+2.. execute 
+```sh
+	sudo systemctl start docker 
+	mvn clean install -DskipTests
+	docker-compose up --build
+	
+```

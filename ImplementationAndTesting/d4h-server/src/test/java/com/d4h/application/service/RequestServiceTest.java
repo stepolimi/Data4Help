@@ -77,5 +77,9 @@ public class RequestServiceTest extends DaoTestBase {
         healthParametersList = RequestService.getService().getPastHealthParams(user.getId(),week + day,users);
 
         assertEquals(2, healthParametersList.size());
+
+        users.deleteHealthParameters(healthParameters);
+        users.deleteHealthParameters(healthParameters1);
+        users.deleteUser(user);
     }
 }

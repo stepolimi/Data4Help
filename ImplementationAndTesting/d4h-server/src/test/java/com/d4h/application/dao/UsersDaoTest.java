@@ -4,7 +4,9 @@ import com.d4h.application.dao.User.UsersDao;
 import com.d4h.application.model.user.User;
 import com.d4h.application.model.user.UserData;
 import org.junit.jupiter.api.Test;
+
 import javax.naming.Context;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UsersDaoTest extends DaoTestBase {
