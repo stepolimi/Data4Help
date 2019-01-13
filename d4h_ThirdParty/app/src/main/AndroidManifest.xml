@@ -50,5 +50,17 @@
                 <action android:name="android.intent.action.DEFAULT"/>
             </intent-filter>
         </activity>
+        <activity android:name=".activity.ShowSingleSubUserDataActivity">
+            <!-- Default Intent Filter -->
+            <intent-filter>
+                <action android:name="android.intent.action.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".activity.ShowGroupSubDataActivity">
+            <!-- Default Intent Filter -->
+            <intent-filter>
+                <action android:name="android.intent.action.DEFAULT"/>
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

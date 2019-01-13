@@ -5,14 +5,37 @@ This is one of the main functions of the third parties stackholder and, because 
 Require data of single users is the other fundamental function  with the one of requiring data of groups of users. The third party can ask for receiving  data of a single user by giving the fiscal code or the id number (depending on the country in which the user live) and by adding the reason why it wants to get the health parameters.
 
 \subsection{See data of single users}
-
+This function has been implemented in order to give the possibility to the third party to see the health paramters related to an accepted single user request. The third party has the possibility to see the minimum, average and maximum heart beat; the minimum and maximum vein pressure and the minimum and maximum temperature detected in that particular day and in the 6 days before.This function has been realized in this way in order to prototype a future behaviour in which the third party will have access to all health parameters present in the calendar.\\
+This function has two different behaviour depending on the third party choice to subscribe or to not subscribe for receiving more user's data:
+\begin{itemize}
+	\item If the third party has chosen to subscribe to a particular user, once data will be show they will also be periodically 				reloaded and it will be possibile to see the updated health parameters. It will also be possibile in this case to find a button in the 	\textit{Subscribed Data} fragment that will let the third party to get again the user data any time the stackholder will need to 			access to the user data.
+	\item If the third party has chosen to do not subscribe to a particular user it will just be able to see the user data at that precise 		moment and then won't have anymore the possibility to acced to them.
+\end{itemize}
 
 \subsection{See data of group of users}
+This function has been implemented in order to give the possibility to the third party to see the health paramters related to an accepted request of a group of users. The third party has the possibility to see the minimum, average and maximum heart beat; the minimum and maximum vein pressure and the minimum and maximum temperature detected in that particular day and in the 6 days before.This function has been realized in this way in order to prototype a future behaviour in which the third party will have access to all health parameters present in the calendar associated to a particular group of users.\\
+This function has two different behaviour depending on the third party choice to subscribe or to not subscribe for receiving more data:
+\begin{itemize}
+	\item If the third party has chosen to subscribe to a particular group of users, once data will be show they will also be 				periodically reloaded and it will be possibile to see the updated health parameters. It will also be possibile in this case to find a 			button in the \textit{Subscribed Data} fragment that will let the third party to get again the group data any time the 				stackholder will need to access to them.
+	\item If the third party has chosen to do not subscribe to a particular group it will just be able to see the data at that precise 			moment and then won't have anymore the possibility to acced to them.
+\end{itemize}
 
 
 \subsection{Subscribe or not for receiving new data of single users}
+In order to develop the subscribe function it has been given to the third party the possibility to choose to subscribe or not to the single user request. Because of the time that can pass between the sending of a request to a user and the user answer, it has been implemented a fragment \textit{Waiting Data} in which all  users' positive answers are saved in buttons. Once the third party clicks on one of those button, a subscribe pop up will be shown. \\
+There are two possibile behaviours:
+\begin{itemize}
+	\item if the third party clicks on the\textit{ Refuse Button} the health parameters will be shown in the not subscribed modality.
+	\item if the third party clicks on the \textit{Accept Button} the pupup will be delated and the stackholder will have to go the 			\textit{Subscribe Data} fragment and click on the associated button.
+\end{itemize}
 
 
 \subsection{Subscribe or not for receiving new data of group of users}
+In order to develop the subscribe function it has been given to the third party the possibility to choose to subscribe or not to the group request as soon as the server has stated that there are enough users which respected the constraints. \\
+There are two possibile behaviours:
+\begin{itemize}
+	\item if the third party clicks on the\textit{ Refuse Button} the health parameters will be shown in the not subscribed modality.
+	\item if the third party clicks on the \textit{Accept Button} the pupup will be delated and the stackholder will have to go the 			\textit{Subscribe Data} fragment and click on the associated button.
+\end{itemize}
 
 
