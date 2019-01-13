@@ -23,6 +23,8 @@ public class HomeFragment extends Fragment {
     private Button week;
     private Button month;
     private Button year;
+    private static TextView height;
+    private static TextView weight;
 
     private ViewPager viewPager;
 
@@ -41,10 +43,10 @@ public class HomeFragment extends Fragment {
         pagerAdapter.getItem(0);
 
 
-        setItem(day, 0);
+        /*setItem(day, 0);
         setItem(week, 1);
         setItem(month, 2);
-        setItem(year, 3);
+        setItem(year, 3);*/
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -120,16 +122,9 @@ public class HomeFragment extends Fragment {
         month = view.findViewById(R.id.monthButton);
         year = view.findViewById(R.id.yearButton);
 
-        TextView weight = view.findViewById(R.id.homeWeight);
-        TextView height = view.findViewById(R.id.homeHeight);
-        if(SettingsFragment.getSetHeight() != null) {
-            String text = "Height: " + SettingsFragment.getSetHeight() + " cm";
-            height.setText(text);
-        }
-        if(SettingsFragment.getSetWeight()!= null){
-            String text = "Weight: " + SettingsFragment.getSetWeight() + " kg";
-            weight.setText(text);
-        }
+        weight = view.findViewById(R.id.homeWeight);
+        height = view.findViewById(R.id.homeHeight);
+
         setDate(view);
     }
 
@@ -147,5 +142,17 @@ public class HomeFragment extends Fragment {
 
         date.setText(formatter.format(todayDate));
         hour.setText(formatter1.format(todayDate));
+    }
+
+
+    public static void setHeightWeight(String heightGiven, String weightGiven){
+        if (heightGiven != null) {
+            String text = "Height: " + heightGiven + " cm";
+            height.setText(text);
+        }
+        if (weightGiven != null) {
+            String text = "Weight: " + weightGiven + " kg";
+            weight.setText(text);
+        }
     }
 }

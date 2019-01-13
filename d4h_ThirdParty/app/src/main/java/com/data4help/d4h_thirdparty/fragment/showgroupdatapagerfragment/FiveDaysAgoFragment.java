@@ -1,4 +1,4 @@
-package com.data4help.d4h_thirdparty.fragment.showdatapagerfragment;
+package com.data4help.d4h_thirdparty.fragment.showgroupdatapagerfragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,14 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Objects;
 
 import com.data4help.d4h_thirdparty.R.*;
 
-import static com.data4help.d4h_thirdparty.Config.DAYTWO;
+import static com.data4help.d4h_thirdparty.Config.DAYFIVE;
 
-public class YesterdayFragment extends Fragment implements Runnable{
+public class FiveDaysAgoFragment extends Fragment implements Runnable{
 
     private TextView minDayBpm;
     private TextView averageDayBmp;
@@ -26,10 +27,10 @@ public class YesterdayFragment extends Fragment implements Runnable{
 
     private TextView minDayTemperature;
     private TextView maxDayTemperature;
-
     private View view;
 
-    public YesterdayFragment(){}
+    public FiveDaysAgoFragment(){}
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -39,13 +40,13 @@ public class YesterdayFragment extends Fragment implements Runnable{
         return view;
 
     }
-
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && isResumed()) { // fragment is visible and have created
-            System.out.println("ieri");
-            this.run();
+            Runnable runnable = this;
+            Thread thread = new Thread(runnable);
+            thread.start();
         }
     }
 
@@ -54,18 +55,41 @@ public class YesterdayFragment extends Fragment implements Runnable{
      * Sets all health parameters obtained from the response
      */
     private void setHealthParameters() {
-        HashMap<String,String> data = new HashMap<>(Objects.requireNonNull(TodayFragment.sevenDaysOfARequest.get(DAYTWO)));
+        HashMap<String,String> data = selectData();
         minDayBpm.setText(data.get("minHeartBeat"));
         averageDayBmp.setText(data.get("avgHeartBeat"));
         maxDayBmp.setText(data.get("maxHeartBeat"));
-        
+
         minDayPressure.setText(data.get("minMinPressure"));
         maxDayPressure.setText(data.get("maxMaxPressure"));
 
-        minDayTemperature.setText(data.get("minTemperature"));
-        maxDayTemperature.setText(data.get("maxTemperature"));
+        DecimalFormat df = new DecimalFormat("#.##");
+        if(!(Float.parseFloat(Objects.requireNonNull(data.get("minTemperature"))) == 0.0) || !(Float.parseFloat(Objects.requireNonNull(data.get("maxTemperature")))== 0.0)) {
+            minDayTemperature.setText(String.valueOf(df.format(Float.parseFloat(Objects.requireNonNull(data.get("minTemperature"))))));
+            maxDayTemperature.setText(String.valueOf(df.format(Float.parseFloat(Objects.requireNonNull(data.get("maxTemperature"))))));
+        }
+        else{
+            minDayTemperature.setText(data.get("minTemperature"));
+            maxDayTemperature.setText(data.get("maxTemperature"));
+        }
     }
 
+    /**
+     * @return the hashmap related tot he correct type of fragment which has been raised up from the third party
+     */
+    private HashMap<String, String> selectData() {
+        if(TodayGroupFragment.sevenDaysOfARequest != null)
+            return new HashMap<>(Objects.requireNonNull(TodayGroupFragment.sevenDaysOfARequest.get(DAYFIVE)));
+        else if(TodayGroupSubFragment.sevenDaysOfARequest != null)
+            return new HashMap<>(Objects.requireNonNull(TodayGroupSubFragment.sevenDaysOfARequest.get(DAYFIVE)));
+        else if(TodaySingleUserFragment.sevenDaysOfARequest != null)
+            return new HashMap<>(Objects.requireNonNull(TodaySingleUserFragment.sevenDaysOfARequest.get(DAYFIVE)));
+        else if(TodaySingleSubUserFragment.sevenDaysOfARequest != null)
+            return new HashMap<>(Objects.requireNonNull(TodaySingleSubUserFragment.sevenDaysOfARequest.get(DAYFIVE)));
+        else
+            return null;
+    }
+    
     /**
      * @param view is this
      *
@@ -86,6 +110,6 @@ public class YesterdayFragment extends Fragment implements Runnable{
     @Override
     public void run() {
         setAttributes(view);
-        //setHealthParameters();
+        setHealthParameters();
     }
 }

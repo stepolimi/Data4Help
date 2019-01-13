@@ -1,11 +1,8 @@
 package com.data4help.data4help1;
 
-import android.content.res.Resources;
-
 public class Config {
-    //url
-    private static final String domain = Resources.getSystem().getString(R.string.domain);
-    private static final String URL = "http://"+ domain + "/d4h-server-0.0.1-SNAPSHOT/";
+    //url;
+    private static final String URL = "http://192.168.1.110:8080/d4h-server-0.0.1-SNAPSHOT/";
     public static final String LOGINURL = URL +"api/users/login";
     public static final String REGISTRATIONURL = URL +"api/users/registration";
     public static final String PERSONALDATAURL = URL + "api/users/insertPersonalData";

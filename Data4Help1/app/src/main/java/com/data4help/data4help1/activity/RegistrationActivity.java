@@ -66,7 +66,9 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
         super.onCreate(savedInstanceState);
         setContentView(layout.registration);
 
-        run();
+        Runnable runnable = this;
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
 
     /**
@@ -88,9 +90,10 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
      */
     private void sendUserData(JSONObject personalDetails) {
         JsonObjectRequest userDataReq = new JsonObjectRequest(Request.Method.POST, PERSONALDATAURL, personalDetails,
-                response -> {
-                },
-                volleyError -> getVolleyError(volleyError.networkResponse.statusCode)) {
+                response -> {},
+                volleyError ->{
+            if(volleyError.networkResponse != null)
+            getVolleyError(volleyError.networkResponse.statusCode);}) {
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 if (response.statusCode == 200) {
@@ -424,7 +427,9 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
                 registrationReq = new JsonObjectRequest(Request.Method.POST, REGISTRATIONURL, credential,
                         response -> {
                         },
-                        volleyError -> getVolleyError(volleyError.networkResponse.statusCode)) {
+                        volleyError ->  {
+                            if(volleyError.networkResponse != null)
+                                getVolleyError(volleyError.networkResponse.statusCode);}) {
                     @Override
                     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                         if (response.statusCode == 200){

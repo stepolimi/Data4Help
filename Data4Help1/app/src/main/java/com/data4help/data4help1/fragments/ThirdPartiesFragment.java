@@ -45,7 +45,6 @@ public class ThirdPartiesFragment  extends Fragment {
     public static String description;
     
     private boolean incompleteRequest = false;
-    private final FragmentManager fm = getFragmentManager();
     private JsonObjectRequest groupUserRequest;
 
     @Override
@@ -57,7 +56,6 @@ public class ThirdPartiesFragment  extends Fragment {
         Button notificationButton = view.findViewById(id.notificationButton);
 
         setOnButtonCLick(notificationButton);
-
 
         return view;
     }
@@ -75,7 +73,9 @@ public class ThirdPartiesFragment  extends Fragment {
             RequestQueue queue = Volley.newRequestQueue(context);
             groupUserRequest = new JsonObjectRequest(Request.Method.POST, THIRDPARTYNOTIFICATIONURL,  authId,
                     response -> VolleyLog.v("Response:%n %s", response.toString()),
-                    volleyError -> getVolleyError(volleyError.networkResponse.statusCode)){
+                    volleyError ->{
+                        if(volleyError.networkResponse != null)
+                            getVolleyError(volleyError.networkResponse.statusCode);}){
                 @Override
                 protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                     if (response.statusCode == 200) {
@@ -111,6 +111,7 @@ public class ThirdPartiesFragment  extends Fragment {
      *             creates a new dialog fragment with the given text
      */
     private void raiseGeneralDialogFragment(String text) {
+        FragmentManager fm = getFragmentManager();
         GeneralDialogFragment dialogFragment = new GeneralDialogFragment();
         GeneralDialogFragment.setText(text);
         dialogFragment.show(Objects.requireNonNull(fm), "GeneralDialogFragment");
@@ -123,18 +124,24 @@ public class ThirdPartiesFragment  extends Fragment {
      *             from the server
      */
     private void createDialogFragment(String json) {
-        System.out.println(json);
+
         try {
-            if(json.isEmpty())
+            JSONArray thirdPartyRequest = new JSONArray(json);
+            if(thirdPartyRequest.length() == 0)
                 raiseGeneralDialogFragment(NOREQUESTS);
             else {
-                JSONArray thirdPartyRequest = new JSONArray(json);
                 for (int i = 0; i < thirdPartyRequest.length(); i++) {
                     JSONObject jsonObject = thirdPartyRequest.getJSONObject(i);
+
                     requestId = jsonObject.getString("requestId");
                     thirdPartyName = jsonObject.getString("senderName");
                     description = jsonObject.getString("description");
 
+                    System.out.println(requestId);
+                    System.out.println(thirdPartyName);
+                    System.out.println(description);
+                    System.out.println("ciao");
+                    FragmentManager fm = getFragmentManager();
                     ThirdPartiesRequestDialogFragment dialog = new ThirdPartiesRequestDialogFragment();
                     dialog.show(Objects.requireNonNull(fm), "ThirdPartiesRequestDialogFragment");
                 }
@@ -145,15 +152,6 @@ public class ThirdPartiesFragment  extends Fragment {
 
     }
 
-
-    /**
-     * @param thirdParty is the JSONObject
-     *
-     * Sets textView for ech third party related to the user
-     */
-    private void setTextViewThirdParty(JSONObject thirdParty) {
-        //TODO
-    }
 
     /**
      * @param statusCode is the code sent byt the server

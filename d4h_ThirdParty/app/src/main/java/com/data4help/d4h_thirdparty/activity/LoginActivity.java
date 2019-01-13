@@ -53,24 +53,28 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
                         setCredential();
                         RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
                         loginReq = new JsonObjectRequest(Request.Method.POST, LOGINURL, credential,
-                                jsonObject -> System.out.print("hi"),
-                                volleyError -> getVolleyError(volleyError.networkResponse.statusCode)) {
+                                jsonObject -> {},
+                                volleyError ->{
+                            if(volleyError.networkResponse != null)
+                                getVolleyError(volleyError.networkResponse.statusCode);
+                                }){
                             @Override
                             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                                if (response.statusCode == 200) {
-                                    try {
-                                        String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                                        new AuthToken(json);
-                                    } catch (UnsupportedEncodingException e) {
-                                        createDialog(SERVERERROR);
-                                    }
-                                    startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                                switch (response.statusCode) {
+                                    case 200:
+                                        try {
+                                            String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                                            new AuthToken(json);
+                                            System.out.println("ciao");
+                                        } catch (UnsupportedEncodingException e) {
+                                            createDialog(SERVERERROR);
+                                        }
+
+                                        startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                                        break;
                                 }
                                 finish();
                                 return super.parseNetworkResponse(response);
@@ -81,10 +85,9 @@ public class LoginActivity extends AppCompatActivity {
                         else
                             queue.add(loginReq);
                     }
-                });
-            }});
+            });
 
-        registerLink.setOnClickListener((v) -> startActivity(new Intent(LoginActivity.this, HomeActivity.class)));
+        registerLink.setOnClickListener((v) -> startActivity(new Intent(LoginActivity.this, RegistrationActivity.class)));
 
     }
 
@@ -182,7 +185,7 @@ public class LoginActivity extends AppCompatActivity {
      *                   Checks the code sent by the server and show a different error depending on it.
      */
     private void getVolleyError(int statusCode) {
-        switch (statusCode){
+        {switch (statusCode){
             case 400:
                 deleteEditText(BADREQUEST);
                 break;
@@ -197,7 +200,7 @@ public class LoginActivity extends AppCompatActivity {
                 break;
             default:
                 break;
-        }
+        }}
     }
 }
 

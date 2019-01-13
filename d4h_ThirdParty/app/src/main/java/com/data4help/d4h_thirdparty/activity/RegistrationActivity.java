@@ -87,7 +87,9 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
         dialog.dismiss();
         JsonObjectRequest thirdPartyDataReq = new JsonObjectRequest(Request.Method.POST, Config.PERSONALDATAURL, personalDetails,
                 response -> {},
-                volleyError -> getVolleyError(volleyError.networkResponse.statusCode)){
+                volleyError ->
+                { if(volleyError.networkResponse != null)
+                        getVolleyError(volleyError.networkResponse.statusCode);}){
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 if (response.statusCode == 200) {
@@ -319,11 +321,16 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
             queue = Volley.newRequestQueue(RegistrationActivity.this);
             registrationReq = new JsonObjectRequest(Request.Method.POST, REGISTRATIONURL, credential,
                     response -> VolleyLog.v("Response:%n %s", response.toString()),
-                    volleyError -> getVolleyError(volleyError.networkResponse.statusCode)){
+                    volleyError -> {
+                        if(volleyError.networkResponse != null)
+                            getVolleyError(volleyError.networkResponse.statusCode);
+                    }){
                 @Override
                 protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                    if (response.statusCode == 200) {
+                    switch (response.statusCode ) {
+                        case 200:
                         try {
+                            dialog.dismiss();
                             String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
                             new AuthToken(json);
                             personalDetails.put("thirdPartyId", AuthToken.getId());
@@ -331,6 +338,7 @@ public class RegistrationActivity extends AppCompatActivity implements Runnable 
                             createDialog(SERVERERROR);
                             }
                             sendUserData(personalDetails);
+                        break;
                     }
                     finish();
                     return super.parseNetworkResponse(response);

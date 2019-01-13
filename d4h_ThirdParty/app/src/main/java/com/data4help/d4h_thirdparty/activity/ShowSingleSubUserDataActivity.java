@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.data4help.d4h_thirdparty.R.*;
 
-public class ShowSingleDataActivity extends AppCompatActivity {
+public class ShowSingleSubUserDataActivity extends AppCompatActivity {
 
     private Button today;
     private Button yesterday;
@@ -165,5 +165,4 @@ public class ShowSingleDataActivity extends AppCompatActivity {
         userSex.setText(sex);
         userFiscalCode.setText(fiscalCode);
     }
-
 }

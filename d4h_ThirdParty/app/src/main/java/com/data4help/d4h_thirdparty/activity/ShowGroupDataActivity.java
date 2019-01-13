@@ -27,7 +27,6 @@ public class ShowGroupDataActivity extends AppCompatActivity {
     private static TextView weightRange;
     private static TextView sexRange;
     private static TextView addressRange;
-
     private ViewPager viewPager;
 
     @Override
@@ -39,16 +38,16 @@ public class ShowGroupDataActivity extends AppCompatActivity {
         setAttributes();
 
         viewPager = findViewById(id.dataPage);
-        ShowDataPagerViewAdapter pagerAdapter = new ShowDataPagerViewAdapter(getSupportFragmentManager());
+        ShowGroupDataPagerViewAdapter pagerAdapter = new ShowGroupDataPagerViewAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
 
-        setItem(today, 0);
+        /*setItem(today, 0);
         setItem(yesterday, 1);
         setItem(twoDaysAgo, 2);
         setItem(threeDaysAgo, 3);
         setItem(fourDaysAgo, 4);
         setItem(fiveDaysAgo, 5);
-        setItem(sixDaysAgo, 6);
+        setItem(sixDaysAgo, 6);*/
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -108,9 +107,6 @@ public class ShowGroupDataActivity extends AppCompatActivity {
             case 6:
                 setColor(sixDaysAgo, today, yesterday, twoDaysAgo, threeDaysAgo, fourDaysAgo, fiveDaysAgo);
                 break;
-            default:
-                setColor(sixDaysAgo, today, yesterday, twoDaysAgo, threeDaysAgo, fourDaysAgo, fiveDaysAgo);
-                break;
         }
     }
 
@@ -157,7 +153,7 @@ public class ShowGroupDataActivity extends AppCompatActivity {
      *
      * Sets all param associated to the request done
      */
-    public static void setRequestParam(JSONObject param) throws JSONException {
+    public static void setGroupRequestParam(JSONObject param) throws JSONException {
         String age = param.getString("minAge") + "-" + param.getString("maxAge");
         ageRange.setText(age);
 

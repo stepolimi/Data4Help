@@ -44,8 +44,6 @@ public class SettingsFragment extends Fragment {
     private boolean incompleteRequest;
     private JsonObjectRequest settingsReq;
 
-    private static String setHeight = null;
-    private static String setWeight = null;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -60,6 +58,7 @@ public class SettingsFragment extends Fragment {
 
 
         saveButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
 
@@ -78,13 +77,13 @@ public class SettingsFragment extends Fragment {
                 RequestQueue queue = Volley.newRequestQueue(context);
                 settingsReq = new JsonObjectRequest(Request.Method.POST, SETTINGSURL, size,
                         response -> {},
-                        volleyError -> getVolleyError(volleyError.networkResponse.statusCode)){
+                        volleyError ->{
+                    if(volleyError.networkResponse != null)
+                    getVolleyError(volleyError.networkResponse.statusCode);}){
                     @Override
                     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                         if (response.statusCode == 200) {
-                            setHeight = height.getText().toString();
-                            setWeight = weight.getText().toString();
-                            Objects.requireNonNull(getActivity()).getFragmentManager().findFragmentByTag("HomeFragment");
+                            //TODO mov from this to health param
                         }
 
                         return super.parseNetworkResponse(response);
@@ -122,13 +121,6 @@ public class SettingsFragment extends Fragment {
         settingsReq.cancel();
     }
 
-    public static String getSetHeight() {
-        return setHeight;
-    }
-
-    public static String getSetWeight() {
-        return setWeight;
-    }
 
     /**
      * @param statusCode is the status code sent from the server

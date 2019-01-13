@@ -4,17 +4,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.data4help.d4h_thirdparty.fragment.showdatapagerfragment.FiveDaysAgoFragment;
-import com.data4help.d4h_thirdparty.fragment.showdatapagerfragment.FourDaysAgoFragment;
-import com.data4help.d4h_thirdparty.fragment.showdatapagerfragment.SixDaysAgoFragment;
-import com.data4help.d4h_thirdparty.fragment.showdatapagerfragment.ThreeDaysAgoFragment;
-import com.data4help.d4h_thirdparty.fragment.showdatapagerfragment.TodayFragment;
-import com.data4help.d4h_thirdparty.fragment.showdatapagerfragment.TwoDaysAgoFragment;
-import com.data4help.d4h_thirdparty.fragment.showdatapagerfragment.YesterdayFragment;
+import com.data4help.d4h_thirdparty.fragment.showgroupdatapagerfragment.FiveDaysAgoFragment;
+import com.data4help.d4h_thirdparty.fragment.showgroupdatapagerfragment.FourDaysAgoFragment;
+import com.data4help.d4h_thirdparty.fragment.showgroupdatapagerfragment.SixDaysAgoFragment;
+import com.data4help.d4h_thirdparty.fragment.showgroupdatapagerfragment.ThreeDaysAgoFragment;
+import com.data4help.d4h_thirdparty.fragment.showgroupdatapagerfragment.TodaySingleUserFragment;
+import com.data4help.d4h_thirdparty.fragment.showgroupdatapagerfragment.TwoDaysAgoFragment;
+import com.data4help.d4h_thirdparty.fragment.showgroupdatapagerfragment.YesterdayFragment;
 
-public class ShowDataPagerViewAdapter extends FragmentPagerAdapter {
+public class ShowUserDataPagerViewAdapter extends FragmentPagerAdapter {
 
-    ShowDataPagerViewAdapter(FragmentManager fm) {
+    ShowUserDataPagerViewAdapter(FragmentManager fm) {
         super(fm);
     }
 
@@ -22,7 +22,7 @@ public class ShowDataPagerViewAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int i) {
         switch (i){
             case 0:
-                return new TodayFragment();
+                return new TodaySingleUserFragment();
             case 1:
                 return new YesterdayFragment();
             case 2:
@@ -47,3 +47,4 @@ public class ShowDataPagerViewAdapter extends FragmentPagerAdapter {
         return 7;
     }
 }
+

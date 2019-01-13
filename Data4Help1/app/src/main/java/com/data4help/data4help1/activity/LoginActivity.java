@@ -57,17 +57,15 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
                         JSONObject credential = new JSONObject();
                         setCredential(credential);
-                        System.out.println(credential.toString());
                         RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
                         loginReq = new JsonObjectRequest(Request.Method.POST, LOGINURL, credential,
                                 response -> {
                                 },
-                                volleyError -> getVolleyError(volleyError.networkResponse.statusCode)){
+                                volleyError -> {
+                            if(volleyError.networkResponse != null)
+                            getVolleyError(volleyError.networkResponse.statusCode);}){
                             @Override
                             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                                 if(response.statusCode == 200) {
@@ -88,11 +86,9 @@ public class LoginActivity extends AppCompatActivity {
                         else
                             queue.add(loginReq);
                     }
-                }).start();
-            }
         });
 
-        registerLink.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, MenuActivity.class)));
+        registerLink.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, RegistrationActivity.class)));
     }
 
     /**
