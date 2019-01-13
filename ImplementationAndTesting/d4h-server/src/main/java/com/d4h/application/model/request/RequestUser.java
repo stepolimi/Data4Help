@@ -15,13 +15,13 @@ public class RequestUser implements Request {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
-    @ManyToOne
+    @ManyToOne (cascade = CascadeType.ALL)
     private ThirdParty sender;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private User user;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private AcquiredUserData acquiredUserData;
 
     private String fiscalCode;

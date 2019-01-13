@@ -14,7 +14,7 @@ public class Wearable {
 
     private WearableType type;
 
-    @ManyToOne
+    @ManyToOne (cascade = CascadeType.ALL)
     private UserData userData;
 
     public String getId() {

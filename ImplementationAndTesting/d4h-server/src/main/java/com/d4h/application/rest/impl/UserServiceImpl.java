@@ -14,7 +14,6 @@ import javax.ws.rs.core.Response;
 import java.io.StringReader;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import static javax.ws.rs.core.Response.ok;
 import static javax.ws.rs.core.Response.status;
@@ -22,8 +21,6 @@ import static javax.ws.rs.core.Response.status;
 public class UserServiceImpl implements UserService{
     @EJB
     UsersDao users;
-
-    private Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
 
     /**
      * Used to login an existing user.

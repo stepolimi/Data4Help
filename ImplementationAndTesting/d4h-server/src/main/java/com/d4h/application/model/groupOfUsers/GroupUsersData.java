@@ -4,13 +4,16 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Contains the group of users data.
+ */
 @Entity
 public class GroupUsersData {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private GroupOfUsers group;
 
     @OneToMany (cascade = CascadeType.ALL)

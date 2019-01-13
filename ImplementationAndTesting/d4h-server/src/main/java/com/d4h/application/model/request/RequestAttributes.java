@@ -4,6 +4,9 @@ import com.d4h.application.model.user.Sex;
 
 import javax.persistence.*;
 
+/**
+ * contains the restrictions of a group of users data request.
+ */
 @Entity
 public class RequestAttributes {
 
@@ -13,7 +16,7 @@ public class RequestAttributes {
     @OneToOne (cascade = CascadeType.ALL)
     private AddressRange addressRange;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private RequestGroup requestGroup;
 
     private int minHeight;

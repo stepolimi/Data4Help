@@ -48,7 +48,7 @@ public class RequestGroupService {
         RequestAttributes attributes = request.getAttributes();
         List<UserData> data = getUsers(attributes, users);
         List<User> targetUsers = new ArrayList<>();
-        if (data.size() == REQUEST_THRESHOLD) {
+        if (data.size() >= REQUEST_THRESHOLD) {
             GroupOfUsers groupOfUsers = new GroupOfUsers();
             request.setAccepted(true);
             request.setPending(true);
@@ -102,8 +102,8 @@ public class RequestGroupService {
                         SimpleDateFormat format = new SimpleDateFormat("yyyy");
                         int year = Integer.parseInt(format.format(todayDate));
                         if ((attributes.getMinAge() == 0 || year - userData.getYearOfBirth() >= attributes.getMinAge()) && (attributes.getMaxAge() == 0 || year - userData.getYearOfBirth() <= attributes.getMaxAge()))
-                            if((attributes.getAddressRange().getState().equals("")) || (userData.getAddress().getState().equals(attributes.getAddressRange().getState())))
-                                if((attributes.getAddressRange().getRegion().equals("")) || (userData.getAddress().getRegion().equals(attributes.getAddressRange().getRegion())))
+                            if((attributes.getAddressRange().getState() == null || attributes.getAddressRange().getState().equals("")) || (userData.getAddress().getState().equals(attributes.getAddressRange().getState())))
+                                if((attributes.getAddressRange().getRegion() == null || attributes.getAddressRange().getRegion().equals("")) || (userData.getAddress().getRegion().equals(attributes.getAddressRange().getRegion())))
                                     targetData.add(userData);
                     }
         return targetData;

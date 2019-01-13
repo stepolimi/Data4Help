@@ -5,12 +5,15 @@ import com.d4h.application.model.thirdParty.ThirdParty;
 
 import javax.persistence.*;
 
+/**
+ * Contains all the information about a group of users data request.
+ */
 @Entity
 public class RequestGroup implements Request {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
-    @ManyToOne
+    @ManyToOne (cascade = CascadeType.ALL)
     private ThirdParty sender;
 
     @OneToOne (cascade = CascadeType.ALL)

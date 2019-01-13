@@ -6,6 +6,9 @@ import com.d4h.application.model.user.HealthParametersSent;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Contains the group of users data to be sent to the third parties.
+ */
 public class GroupUsersDataSent {
     private List<HealthParametersSent> healthParametersSents = new ArrayList<>();
 

@@ -5,6 +5,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+/**
+ * Contains the restrictions about the location of users of a group of users data request.
+ */
 @Entity
 public class AddressRange {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
