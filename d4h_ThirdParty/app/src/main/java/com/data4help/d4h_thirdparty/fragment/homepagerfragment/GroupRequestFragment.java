@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.TextView;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -33,8 +32,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
 import static com.data4help.d4h_thirdparty.Config.GROUPREQUESTURL;
+import static com.data4help.d4h_thirdparty.Config.INTERNALSERVERERROR;
+import static com.data4help.d4h_thirdparty.Config.NOTFOUND;
 import static com.data4help.d4h_thirdparty.Config.NOTIMPLEMENTED;
 import static com.data4help.d4h_thirdparty.Config.SERVERERROR;
+import static com.data4help.d4h_thirdparty.Config.UNAUTHORIZED;
 import static com.data4help.d4h_thirdparty.R.*;
 
 
@@ -62,19 +64,16 @@ public class GroupRequestFragment extends Fragment implements Runnable {
 
     private Button saveGroupRequestButton;
 
-    private TextView errorGroupRequest;
-
     private JsonObjectRequest groupUserRequest;
     public static RequestQueue queue;
 
     private GroupPositiveRequestDialogFragment positiveDialog;
-    private GroupNegativeRequestDialogFragment negativeDialog;
 
     private String error;
     private boolean incompleteRequest = false;
     private View view;
 
-    public static String groupRequestID;
+    public static String groupRequestId;
 
     public GroupRequestFragment() {
         // Required empty public constructor
@@ -87,16 +86,12 @@ public class GroupRequestFragment extends Fragment implements Runnable {
         // Inflate the layout for this fragment
         view = inflater.inflate(layout.fragment_group_request, container, false);
 
+        Runnable runnable = this;
+        Thread thread = new Thread(runnable);
+        thread.start();
         return view;
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && isResumed()) { // fragment is visible and have created
-            this.run();
-        }
-    }
 
     /**
      * @param groupRequest is the JSONObject that must be filled
@@ -196,7 +191,6 @@ public class GroupRequestFragment extends Fragment implements Runnable {
         female = view.findViewById(id.femaleButton);
 
         saveGroupRequestButton = view.findViewById(id.saveGroupRequestButton);
-        errorGroupRequest = view.findViewById(id.errorGroupRequest);
     }
 
 
@@ -204,7 +198,7 @@ public class GroupRequestFragment extends Fragment implements Runnable {
      * set text in the error label and cancel the request
      */
     private void cancelReq(String errorText, JsonObjectRequest request) {
-        errorGroupRequest.setText(errorText);
+        setAlertDialog(errorText);
         incompleteRequest= false;
         request.cancel();
     }
@@ -213,7 +207,6 @@ public class GroupRequestFragment extends Fragment implements Runnable {
     public void run() {
         setAttributes(view);
         saveGroupRequestButton.setOnClickListener(v -> {
-            //setProgressDialog();
             JSONObject groupRequest = new JSONObject();
 
             try {
@@ -226,34 +219,20 @@ public class GroupRequestFragment extends Fragment implements Runnable {
             queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()).getApplicationContext());
             groupUserRequest = new JsonObjectRequest(Request.Method.POST, GROUPREQUESTURL, groupRequest,
                     response -> {},
-                    volleyError -> {
-                        //if(volleyError.networkResponse.statusCode == 400)
-                        //System.out.println("ehi");
-                        //negativeDialog = new GroupNegativeRequestDialogFragment();
-                        /*negativeDialog.show(Objects.requireNonNull(getFragmentManager()), "GroupNegativeRequestDialogFragment");*/}){
+                    volleyError ->  {
+                        if(volleyError.networkResponse != null)
+                            getVolleyError(volleyError.networkResponse.statusCode);
+                    }){
                 @Override
                 protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-
-                    switch(response.statusCode){
-                        case 200:
-                            try {
-                                groupRequestID = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                            } catch (UnsupportedEncodingException e) {
-                                e.printStackTrace();
-                            }
-                            positiveDialog = new GroupPositiveRequestDialogFragment();
-                            positiveDialog.show(Objects.requireNonNull(getFragmentManager()), "GroupPositiveRequestDialogFragment");
-                            break;
-                        //TODO : non entra nei codici sbagliati
-                        case 400:
-
-                            break;
-                        case 401:
-                            errorGroupRequest.setText(SERVERERROR);
-                            break;
-                        case 500:
-                            errorGroupRequest.setText(SERVERERROR);
-                            break;
+                    if (response.statusCode == 200) {
+                        try {
+                            groupRequestId = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                        positiveDialog = new GroupPositiveRequestDialogFragment();
+                        positiveDialog.show(Objects.requireNonNull(getFragmentManager()), "GroupPositiveRequestDialogFragment");
                     }
                     return super.parseNetworkResponse(response);
                 }
@@ -264,21 +243,48 @@ public class GroupRequestFragment extends Fragment implements Runnable {
             queue.add(groupUserRequest);
         });
 
-        street.setOnClickListener(v -> setAlertDialog());
-        cap.setOnClickListener(v -> setAlertDialog());
-        number.setOnClickListener(v -> setAlertDialog());
-        city.setOnClickListener(v -> setAlertDialog());
+        street.setOnClickListener(v -> setAlertDialog(NOTIMPLEMENTED));
+        cap.setOnClickListener(v -> setAlertDialog(NOTIMPLEMENTED));
+        number.setOnClickListener(v -> setAlertDialog(NOTIMPLEMENTED));
+        city.setOnClickListener(v -> setAlertDialog(NOTIMPLEMENTED));
     }
 
     /**
      * Creates an alert dialog on all TextEdit which are not available yet
      */
-    private void setAlertDialog() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
-        alertDialogBuilder.setMessage(NOTIMPLEMENTED);
-        alertDialogBuilder.setIcon(drawable.ic_exit);
-        alertDialogBuilder.setCancelable(true);
-        alertDialogBuilder.create().show();
+    private void setAlertDialog(String text) {
+        Objects.requireNonNull(getActivity()).runOnUiThread(()-> {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+            alertDialogBuilder.setMessage(text);
+            alertDialogBuilder.setIcon(drawable.ic_exit);
+            alertDialogBuilder.setCancelable(true);
+            alertDialogBuilder.create().show();
+        });
     }
 
+
+    /**
+     * @param statusCode is the code sent byt the server
+     *
+     *                   Checks the code sent by the server and show a different error depending on it.
+     */
+    private void getVolleyError(int statusCode) {
+        switch (statusCode){
+            case 400:
+                GroupNegativeRequestDialogFragment negativeDialog = new GroupNegativeRequestDialogFragment();
+                negativeDialog.show(Objects.requireNonNull(getFragmentManager()), "GroupNegativeRequestDialogFragment");
+                break;
+            case 401:
+                setAlertDialog(UNAUTHORIZED);
+                break;
+            case 404:
+                setAlertDialog(NOTFOUND);
+                break;
+            case 500:
+                setAlertDialog(INTERNALSERVERERROR);
+                break;
+            default:
+                break;
+        }
+    }
 }

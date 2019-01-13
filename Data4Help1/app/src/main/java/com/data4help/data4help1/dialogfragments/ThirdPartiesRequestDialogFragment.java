@@ -74,7 +74,7 @@ public class ThirdPartiesRequestDialogFragment extends DialogFragment{
         button.setOnClickListener(v -> {
             this.subscribed = subscribed;
             sendResponse();
-            this.dismiss();
+            getDialog().dismiss();
         });
     }
 
@@ -92,12 +92,15 @@ public class ThirdPartiesRequestDialogFragment extends DialogFragment{
         }
         groupUserRequest = new JsonObjectRequest(Request.Method.POST, ACCEPTORDENIEURL,  acceptOrNot,
                 response -> VolleyLog.v("Response:%n %s", response.toString()),
-                volleyError -> getVolleyError(volleyError.networkResponse.statusCode)){
+                volleyError -> {
+                    if(volleyError.networkResponse != null)
+                        getVolleyError(volleyError.networkResponse.statusCode);}){
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-               if (response.statusCode== 200) 
-                   getDialog().dismiss();
-              
+                switch (response.statusCode){
+                    case 200:
+                        break;
+                }
                 return super.parseNetworkResponse(response);
             }
         };

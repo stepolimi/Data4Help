@@ -22,10 +22,7 @@ public class GroupNegativeRequestDialogFragment extends DialogFragment {
 
         ImageView exitGroupIcon = dialogFragment.findViewById(R.id.exitGroupIcon);
 
-        exitGroupIcon.setOnClickListener(v -> {
-            getDialog().dismiss();
-            Objects.requireNonNull(getActivity()).getFragmentManager().findFragmentByTag("SingleRequestFragment");
-        });
+        exitGroupIcon.setOnClickListener(v -> getDialog().dismiss());
 
         return dialogFragment;
     }

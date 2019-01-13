@@ -44,7 +44,7 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="10dp"
                 android:textAlignment="center"
-                android:text="@string/alert"
+                android:text="@string/alert_title"
                 android:textStyle="bold"
                 android:textSize="20dp"/>
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +27,12 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
+import static com.data4help.d4h_thirdparty.Config.BADREQUEST;
+import static com.data4help.d4h_thirdparty.Config.INTERNALSERVERERROR;
+import static com.data4help.d4h_thirdparty.Config.NOTFOUND;
 import static com.data4help.d4h_thirdparty.Config.POSITIVEGROUPREQUEST;
 import static com.data4help.d4h_thirdparty.Config.SUBSCRIBEGROUPURL;
+import static com.data4help.d4h_thirdparty.Config.UNAUTHORIZED;
 
 public class GroupPositiveRequestDialogFragment extends DialogFragment{
     private boolean subscribed = false;
@@ -69,29 +74,64 @@ public class GroupPositiveRequestDialogFragment extends DialogFragment{
         try {
             subscribeRequest.put("thirdPartyId", AuthToken.getId());
             subscribeRequest.put("subscribed", subscribed);
-            subscribeRequest.put("id", GroupRequestFragment.groupRequestID);
+            subscribeRequest.put("id", GroupRequestFragment.groupRequestId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         JsonObjectRequest subscribeGroupReq = new JsonObjectRequest(Request.Method.POST, SUBSCRIBEGROUPURL, subscribeRequest,
                 response -> VolleyLog.v("Response:%n %s", response.toString()),
-                volleyError -> VolleyLog.e("Error: " + volleyError.getMessage())){
+                volleyError ->
+                { if(volleyError.networkResponse != null)
+                    getVolleyError(volleyError.networkResponse.statusCode);}){
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 switch(response.statusCode){
                     case 200:
-                        Objects.requireNonNull(getActivity()).getFragmentManager().findFragmentByTag("GroupRequestFragment");
-                        break;
-                    //TODO: codici d'errore
-                    case 401:
-                        break;
-                    case 500:
+                        Objects.requireNonNull(getActivity()).getFragmentManager().findFragmentByTag("HomeSubscribedRequestFragment");
                         break;
                 }
                 return super.parseNetworkResponse(response);
             }
         };
         GroupRequestFragment.queue.add(subscribeGroupReq);
+    }
+
+    /**
+     * @param statusCode is the code sent byt the server
+     *
+     *                   Checks the code sent by the server and show a different error depending on it.
+     */
+    private void getVolleyError(int statusCode) {
+        {switch (statusCode){
+            case 400:
+                createDialog(BADREQUEST);
+                break;
+            case 401:
+                createDialog(UNAUTHORIZED);
+                break;
+            case 404:
+                createDialog(NOTFOUND);
+                break;
+            case 500:
+                createDialog(INTERNALSERVERERROR);
+                break;
+            default:
+                break;
+        }}
+    }
+
+
+    /**
+     * @param errorString is the error that must be shown in the dialog
+     *
+     * Shows a dialog with the occurred error
+     */
+    private void createDialog(String errorString) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+        alertDialogBuilder.setMessage(errorString);
+        alertDialogBuilder.setIcon(drawable.ic_exit);
+        alertDialogBuilder.setCancelable(true);
+        alertDialogBuilder.create().show();
     }
 
 }

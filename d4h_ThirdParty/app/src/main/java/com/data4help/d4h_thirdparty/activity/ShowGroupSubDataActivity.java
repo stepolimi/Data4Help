@@ -7,9 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.data4help.d4h_thirdparty.R.*;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class ShowSingleDataActivity extends AppCompatActivity {
+public class ShowGroupSubDataActivity  extends AppCompatActivity {
 
     private Button today;
     private Button yesterday;
@@ -19,35 +20,25 @@ public class ShowSingleDataActivity extends AppCompatActivity {
     private Button fiveDaysAgo;
     private Button sixDaysAgo;
 
+    private static TextView ageRange;
+    private static TextView heightRange;
+    private static TextView weightRange;
+    private static TextView sexRange;
+    private static TextView addressRange;
     private ViewPager viewPager;
-
-
-    private TextView userName;
-    private TextView userAge;
-    private TextView userWeight;
-    private TextView userHeight;
-    private TextView userSex;
-    private TextView userFiscalCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(layout.show_single_data);
+        setContentView(com.data4help.d4h_thirdparty.R.layout.show_group_data);
 
         runOnUiThread(() -> {
             setAttributes();
 
-            viewPager = findViewById(id.dataPage);
-            ShowUserDataPagerViewAdapter pagerAdapter = new ShowUserDataPagerViewAdapter(getSupportFragmentManager());
+            viewPager = findViewById(com.data4help.d4h_thirdparty.R.id.dataPage);
+            ShowGroupSubDataPagerViewAdapter pagerAdapter = new ShowGroupSubDataPagerViewAdapter(getSupportFragmentManager());
             viewPager.setAdapter(pagerAdapter);
 
-            setItem(today, 0);
-            setItem(yesterday, 1);
-            setItem(twoDaysAgo, 2);
-            setItem(threeDaysAgo, 3);
-            setItem(fourDaysAgo, 4);
-            setItem(fiveDaysAgo, 5);
-            setItem(sixDaysAgo, 6);
 
             viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override
@@ -66,18 +57,6 @@ public class ShowSingleDataActivity extends AppCompatActivity {
         });
     }
 
-
-    /**
-     * @param button is the selected textVIew
-     * @param position is the fragment position associated to the selected text view
-     *
-     * Changes the fragment depending on the selected textView
-     */
-    private void setItem(Button button, int position) {
-        button.setOnClickListener(v -> {
-            changeTab(position);
-            viewPager.setCurrentItem(position);});
-    }
 
     /**
      * @param position is the int related to the chosen fragment
@@ -107,9 +86,6 @@ public class ShowSingleDataActivity extends AppCompatActivity {
             case 6:
                 setColor(sixDaysAgo, today, yesterday, twoDaysAgo, threeDaysAgo, fourDaysAgo, fiveDaysAgo);
                 break;
-            default:
-                setColor(sixDaysAgo, today, yesterday, twoDaysAgo, threeDaysAgo, fourDaysAgo, fiveDaysAgo);
-                break;
         }
     }
 
@@ -122,13 +98,13 @@ public class ShowSingleDataActivity extends AppCompatActivity {
     @SuppressLint("ResourceAsColor")
     private void setColor(Button selected, Button unselected1, Button unselected2, Button unselected3,
                           Button unselected4, Button unselected5, Button unselected6){
-        selected.setTextColor(getResources().getColor(color.colorAccent));
-        unselected1.setTextColor(getResources().getColor(color.black));
-        unselected2.setTextColor(getResources().getColor(color.black));
-        unselected3.setTextColor(getResources().getColor(color.black));
-        unselected4.setTextColor(getResources().getColor(color.black));
-        unselected5.setTextColor(getResources().getColor(color.black));
-        unselected6.setTextColor(getResources().getColor(color.black));
+        selected.setTextColor(getResources().getColor(com.data4help.d4h_thirdparty.R.color.colorAccent));
+        unselected1.setTextColor(getResources().getColor(com.data4help.d4h_thirdparty.R.color.black));
+        unselected2.setTextColor(getResources().getColor(com.data4help.d4h_thirdparty.R.color.black));
+        unselected3.setTextColor(getResources().getColor(com.data4help.d4h_thirdparty.R.color.black));
+        unselected4.setTextColor(getResources().getColor(com.data4help.d4h_thirdparty.R.color.black));
+        unselected5.setTextColor(getResources().getColor(com.data4help.d4h_thirdparty.R.color.black));
+        unselected6.setTextColor(getResources().getColor(com.data4help.d4h_thirdparty.R.color.black));
     }
 
 
@@ -136,34 +112,44 @@ public class ShowSingleDataActivity extends AppCompatActivity {
      * Associates attributes to registration.xml elements
      */
     private void setAttributes() {
-        today = findViewById(id.todayButton);
-        yesterday = findViewById(id.yesterdayButton);
-        twoDaysAgo = findViewById(id.twoDaysAgoButton);
-        threeDaysAgo = findViewById(id.threeDaysButton);
-        fourDaysAgo = findViewById(id.fourDaysButton);
-        fiveDaysAgo = findViewById(id.fiveDaysButton);
-        sixDaysAgo = findViewById(id.sixDaysButton);
-        userName = (findViewById(id.userName));
-        userAge = (findViewById(id.userAge));
-        userWeight = findViewById(id.userWeight);
-        userHeight = (findViewById(id.userHeight));
-        userSex = (findViewById(id.userSex));
-        userFiscalCode = findViewById(id.userFiscalCode);
+        today = findViewById(com.data4help.d4h_thirdparty.R.id.todayButton);
+        yesterday = findViewById(com.data4help.d4h_thirdparty.R.id.yesterdayButton);
+        twoDaysAgo = findViewById(com.data4help.d4h_thirdparty.R.id.twoDaysAgoButton);
+        threeDaysAgo = findViewById(com.data4help.d4h_thirdparty.R.id.threeDaysButton);
+        fourDaysAgo = findViewById(com.data4help.d4h_thirdparty.R.id.fourDaysButton);
+        fiveDaysAgo = findViewById(com.data4help.d4h_thirdparty.R.id.fiveDaysButton);
+        sixDaysAgo = findViewById(com.data4help.d4h_thirdparty.R.id.sixDaysButton);
+        ageRange = findViewById(com.data4help.d4h_thirdparty.R.id.ageRange);
+        heightRange = findViewById(com.data4help.d4h_thirdparty.R.id.heightRange);
+        weightRange = findViewById(com.data4help.d4h_thirdparty.R.id.weightRange);
+        sexRange = findViewById(com.data4help.d4h_thirdparty.R.id.sexRange);
+        addressRange = findViewById(com.data4help.d4h_thirdparty.R.id.addressRange);
 
     }
 
     /**
+     * @param param is the JSONObject that must be filled
      *
      * Sets all param associated to the request done
      */
-    public void setRequestParam(String name, String surname,int yearOfBirth, int height, int weight, String sex, String fiscalCode) {
-        String fullName = name + " " +surname;
-        userName.setText(fullName);
-        userAge.setText(String.valueOf(yearOfBirth));
-        userHeight.setText(String.valueOf(height));
-        userWeight.setText(String.valueOf(weight));
-        userSex.setText(sex);
-        userFiscalCode.setText(fiscalCode);
-    }
+    public static void setGroupRequestParam(JSONObject param) throws JSONException {
+        String age = param.getString("minAge") + "-" + param.getString("maxAge");
+        ageRange.setText(age);
 
+        String weight = param.getString("minWeight") + "-" + param.getString("maxWeight");
+        weightRange.setText(weight);
+
+        String height = param.getString("minHeight") + "-" + param.getString("maxHeight");
+        heightRange.setText(height);
+
+        String sex = param.getString("sex");
+        if(sex.equals("male") || sex.equals("female"))
+            sex = "male - female";
+        sexRange.setText(sex);
+
+        String address = param.getString("state") + "-" + param.getString("region");
+        addressRange.setText(address);
+
+
+    }
 }

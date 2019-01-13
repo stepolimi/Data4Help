@@ -54,7 +54,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:textAlignment="center"
-                android:text="@string/single_negative_response"
+                android:text="@string/group_negative_response"
                 android:textSize="18dp"/>
 
         </LinearLayout>

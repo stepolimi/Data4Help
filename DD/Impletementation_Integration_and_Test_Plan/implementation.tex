@@ -3,18 +3,15 @@ Considering some factors, such as the possible dependencies between different co
 Starting from the points written above and considering that the implementation plan has also the aim to highlight and modify as early as possible all mistakes and progettual problems found, a track for the order of the components' development is presented in this section.
 
 \begin{itemize}
-	\item The database must be developed as first because it will determine the model structure and the way data will be send and used.
-	\item The model, which corresponds to the application logic component and directly manages data, logic and rules of the application.
+	\item The model, which corresponds to the application logic component and directly manages data, logic and rules of the 			application.
 	\item The persistence unit, which will map each DB's tables and relations to the corresponding objects of the model. 
 	\item The controller, which will receive users' inputs and will act accordingly to them on the model.
 	\item The view, which will show a representation of the model to the users.
 \end{itemize}
-\subsection{Database}
-	The structure that the database will have, is given in the section 2.2.3 of this document. As already said, the choice of giving to this component the priority in the implementation list comes 		from the primary goal of \textit{D4H} and \textit{ASOS}: the storage and the reuse of users' data. In addiction to that, it has been planed a bottom-up development for the software which 		sees the data structure implementation at first.
 \subsection{Model}
 	The structure of the model is presented in the 2.2.2 section of this document; note that the UserService and the ThirdPartyService classes in the class diagram in that section won't be part 		of the model but those will be part of the controller. This part of the software will be developed immediatly after the database because it contains the objects that will be mapped to the			DB's tables and relations via JPA and also all the logic and rules of the application, thing that makes this component a very critical one.
 \subsection{Persistence unit}
-	Via the scope of this unit, it is sensible to develop it after the completition of the database and the model or even in parallel with this last one. It is not presented in this document a link map 	beetween the database and the model but it should be simple to deduce it by the model's class diagram in the section 2.2.2 and the database's entity relationship diagram in the section 			2.2.3.
+	Via the scope of this unit, it is sensible to develop it after the completition of the model or even in parallel with this one. It is not presented in this document a link map 	beetween the database and the model but it should be simple to deduce it by the model's class diagram in the section 2.2.2 and the database's entity relationship diagram in the section 			2.2.3. The use of OpenJPA gives the possibility to do not implement a real DB because it will be created by the API particular tags.
 \subsection{Controller}
 	The structure and the interactions of the controller with the model are presented in the section 2.2.2  of this document; as already said, note that the controller's classes in the class 			diagram in that section are the UserService and the ThirdPartyService classes. This part will be implemented after the model because it's scope is to act on it to perform the user's actions, 		so it's the most sensible decision according to the projectual choices made for this software.
 \subsection{View}

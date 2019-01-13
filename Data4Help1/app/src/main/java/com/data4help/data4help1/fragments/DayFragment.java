@@ -3,6 +3,7 @@ package com.data4help.data4help1.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +21,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
+import java.util.Objects;
 
+import static com.data4help.data4help1.Config.BADREQUEST;
 import static com.data4help.data4help1.Config.DAILYHEALTHPARAMURL;
+import static com.data4help.data4help1.Config.INTERNALSERVERERROR;
+import static com.data4help.data4help1.Config.NOTFOUND;
+import static com.data4help.data4help1.Config.UNAUTHORIZED;
 import static com.data4help.data4help1.R.*;
 
 
@@ -51,16 +58,14 @@ public class DayFragment extends Fragment implements Runnable{
         // Inflate the layout for this fragment
         view = inflater.inflate(layout.fragment_day, container, false);
 
+
+        Runnable runnable = this;
+        Thread thread = new Thread(runnable);
+        thread.start();
+
         return view;
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && isResumed()) { // fragment is visible and have created
-            this.run();
-        }
-    }
 
     /**
      * Asks the daily health parameters of the user
@@ -71,7 +76,9 @@ public class DayFragment extends Fragment implements Runnable{
 
         JsonObjectRequest dailyHealthParamReq = new JsonObjectRequest(Request.Method.POST, DAILYHEALTHPARAMURL, authUser ,
                 jsonObject -> {},
-                volleyError -> {}){
+                volleyError -> {
+                    if(volleyError.networkResponse != null)
+                        getVolleyError(volleyError.networkResponse.statusCode);}){
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 switch (response.statusCode) {
@@ -83,14 +90,6 @@ public class DayFragment extends Fragment implements Runnable{
                             e.printStackTrace();
                         }
                         break;
-                        //TODO
-                    case 403:
-                        System.out.println("The access has been denied. Try again.");
-                        break;
-                    case 401:
-                        System.out.println("The given email is already in the DB. Change it or login.");
-                        break;
-
                 }
                 return super.parseNetworkResponse(response);
             }
@@ -116,26 +115,32 @@ public class DayFragment extends Fragment implements Runnable{
      * Sets all health parameters obtained from the response
      */
     private void setHealthParameters(String json) {
+        Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
+            try {
+                JSONObject jsonObj = new JSONObject(json);
 
-        try {
-            JSONObject jsonObj = new JSONObject(json);
-            minDayBpm.setText(jsonObj.getString("minHeartBeat"));
-            averageDayBmp.setText( jsonObj.getString("avgHeartBeat"));
-            maxDayBmp.setText(jsonObj.getString("maxHeartBeat"));
+                minDayBpm.setText(jsonObj.getString("minHeartBeat"));
+                averageDayBmp.setText(jsonObj.getString("avgHeartBeat"));
+                maxDayBmp.setText(jsonObj.getString("maxHeartBeat"));
 
-            minDayPressure.setText(jsonObj.getString("minMinPressure"));
-            maxDayPressure.setText(jsonObj.getString("maxMaxPressure"));
+                minDayPressure.setText(jsonObj.getString("minMinPressure"));
+                maxDayPressure.setText(jsonObj.getString("maxMaxPressure"));
 
-            minDayTemperature.setText(jsonObj.getString("minTemperature"));
-            maxDayTemperature.setText(jsonObj.getString("maxTemperature"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+                DecimalFormat df = new DecimalFormat("#.##");
+                if(!(Float.parseFloat(jsonObj.getString("minTemperature")) == 0.0) || !(Float.parseFloat(jsonObj.getString("maxTemperature"))== 0.0)) {
+                    minDayTemperature.setText(String.valueOf(df.format(Float.parseFloat(jsonObj.getString("minTemperature")))));
+                    maxDayTemperature.setText(String.valueOf(df.format(Float.parseFloat(jsonObj.getString("maxTemperature")))));
+                }
+                else{
+                    minDayTemperature.setText(jsonObj.getString("minTemperature"));
+                    maxDayTemperature.setText(jsonObj.getString("maxTemperature"));
+                }
 
-
-
-
-
+                HomeFragment.setHeightWeight(jsonObj.getString("height"), jsonObj.getString("weight"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     /**
@@ -159,5 +164,43 @@ public class DayFragment extends Fragment implements Runnable{
     public void run() {
         setAttributes(view);
         getParameters();
+    }
+
+
+    /**
+     * @param errorString is the error that must be shown in the dialog
+     *
+     * Shows a dialog with the occurred error
+     */
+    private void createDialog(String errorString) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+        alertDialogBuilder.setMessage(errorString);
+        alertDialogBuilder.setIcon(drawable.ic_exit);
+        alertDialogBuilder.setCancelable(true);
+        alertDialogBuilder.create().show();
+    }
+
+    /**
+     * @param statusCode is the code sent byt the server
+     *
+     *                   Checks the code sent by the server and show a different error depending on it.
+     */
+    private void getVolleyError(int statusCode) {
+        switch (statusCode){
+            case 400:
+                createDialog(BADREQUEST);
+                break;
+            case 401:
+                createDialog(UNAUTHORIZED);
+                break;
+            case 404:
+                createDialog(NOTFOUND);
+                break;
+            case 500:
+                createDialog(INTERNALSERVERERROR);
+                break;
+            default:
+                break;
+        }
     }
 }
