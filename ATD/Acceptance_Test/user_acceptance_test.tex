@@ -17,7 +17,7 @@ Check if the registration is stopped if all fields are empty. This test has been
 \\
 \textbf{Given: } all fileds in the registration form are empty\\
 \textbf{When: } the guest wants to register\\
-\textbf{Expected then: } the app doesn't have to allow the guest to register\\
+\textbf{Expected then: } the app doesn't allow the guest to register\\
 \\
 The output is equal to the expected then, it appears a popup saying that all fields must be filled in order to register.
 
@@ -26,7 +26,7 @@ Check if the registration is stopped if some fields are empty. This test has bee
 \\
 \textbf{Given: } some fields in the registration form are empty, some other have been filled\\
 \textbf{When: } the guest wants to register\\
-\textbf{Expected then: } the app doesn't have to allow the guest to register\\
+\textbf{Expected then: } the app doesn't allow the guest to register\\
 \\
 The output is equal to the expected then, it appears a popup saying that all fields must be filled in order to register. This test has been done lots of times in order to evaluate if all fields are necessary for the registration or if some of them can be omitted. It has resulted that all fields are necessary in order to obtain a personal area.
 
@@ -36,7 +36,7 @@ Check if the registration is stopped if the SSN is written in a wrong way. This 
 \textbf{Given1: } SSN != from format xxx-xx-xxxx \\
 \textbf{Given2: } SSN with a correct format but with numbers and letters\\
 \textbf{When: } the guest wants to register\\
-\textbf{Expected then: } the app doesn't have to allow the guest to register\\
+\textbf{Expected then: } the app doesn't allow the guest to register\\
 \\
 In both cases the output is equal to the expected then, it appears a popup saying that the SSN is not correct.
 
@@ -45,7 +45,7 @@ Check if the registration is stopped if the written SSN is already associated to
 \\
 \textbf{Given: } SSN = one SSN already in DB\\
 \textbf{When: } the guest wants to register\\
-\textbf{Expected then: } the app doesn't have to allow the guest to register\\
+\textbf{Expected then: } the app doesn't allow the guest to register\\
 \\
 The output is equal to the expected then, it appears a popup saying that the SSN has already been registered.
 
@@ -63,7 +63,7 @@ The IP hasn't been set in a correct way. This Test has been done to check if the
 \\
 \textbf{Given: } The ip is wrong\\
 \textbf{When: } the guest wants to register\\
-\textbf{Expected then: } the app doesn't have to allow the guest to register\\
+\textbf{Expected then: } the app doesn't allow the guest to register\\
 \\
 The output is equal to the expected then, it appears a popup saying that there is no active connection between the client and the server.
 
@@ -74,7 +74,7 @@ Check if the login is stopped if all fields are empty. This test has been done b
 \\
 \textbf{Given: } all fileds in the login form are empty\\
 \textbf{When: } the guest wants to login\\
-\textbf{Expected then: } the app doesn't have to allow the guest to login\\
+\textbf{Expected then: } the app doesn't allow the guest to login\\
 \\
 The output is equal to the expected then, it appears a popup saying that all fields must be filled in order to login.
 
@@ -83,7 +83,7 @@ Check if the login is stopped if some fields are empty. This test has been done 
 \\
 \textbf{Given: } some fields in the login form are empty, some other have been filled\\
 \textbf{When: } the guest wants to login\\
-\textbf{Expected then: } the app doesn't have to allow the guest to login\\
+\textbf{Expected then: } the app doesn't allow the guest to login\\
 \\
 The output is equal to the expected then, it appears a popup saying that all fields must be filled in order to login. 
 
@@ -94,7 +94,7 @@ Check if the login is stopped if the SSN is written in a wrong way or is differe
 \textbf{Given2: } SSN with a correct format but with numbers and letters\\
 \textbf{Given3: } SSN != from any SSN stored in DB\\
 \textbf{When: } the guest wants to login\\
-\textbf{Expected then: } the app doesn't have to allow the guest to login\\
+\textbf{Expected then: } the app doesn't allow the guest to login\\
 \\
 In all cases the output is equal to the expected then, it appears a popup saying that the SSN format is not correct or that it is not in DB.
 
@@ -103,7 +103,7 @@ Check if the login is stopped if the password is different from the one associat
 \\
 \textbf{Given: } password != stored password realted to correct SSN\\
 \textbf{When: } the guest wants to login\\
-\textbf{Expected then: } the app doesn't have to allow the guest to login\\
+\textbf{Expected then: } the app doesn't allow the guest to login\\
 \\
 The output is equal to the expected then, it appears a popup saying that the password is not correct.
 
@@ -112,7 +112,7 @@ The IP hasn't been set in a correct way. This Test has been done to check if the
 \\
 \textbf{Given: } wrong IP\\
 \textbf{When: } the guest wants to login\\
-\textbf{Expected then: } the app doesn't have to allow the guest to login\\
+\textbf{Expected then: } the app doesn't allow the guest to login\\
 \\
 The output is equal to the expected then, it appears a popup saying that there is no active connection between the client and the server.
 
@@ -132,10 +132,10 @@ Check if a third party pending request appears in the Pending request scene. Thi
 \\
 \textbf{Given: } third party request without subscription\\
 \textbf{When: } the user is in the pending request area\\
-\textbf{Expected then1: } the request appears correctly in the scene and gives the possibility to be accepted or to be denied if a subscribed request hasn't been accepted before \\
-\textbf{Expected then2: } the request doesn't appear if a subscribed request has been alreay accepted \\
+\textbf{Expected then1: } the request appears correctly in the scene and gives the possibility to be accepted or to be denied if no subscribed request has been accepted before \\
+\textbf{Expected then2: } the request doesn't appear if a subscribed request has been accepted before\\
 \\
-The output is equal to the expected one when the request is the first one from that specific third party. If the user has already accepted an other request from this third party this request doesn't appear and it's automatically accepted. This behavior is partially different from the expected one in fact it should happen only when a subscribed request has been accepted.\\
+The output is equal to the expected one when the request is the first one from that specific third party. If the user has already accepted an other request from this third party, the request doesn't appear and it's automatically accepted. This behavior is partially different from the expected one: a request should be automatically accepted only when a subscribed request has been accepted before.\\
 Reference to \textit{[R5.1.4]}.
 
 \subsubsection{\Large{Test 2}}
@@ -143,10 +143,10 @@ Check if a third party pending subscribed request appears in the Pending request
 \\
 \textbf{Given: } third party request with subscription\\
 \textbf{When: } the user is in the pending request area\\
-\textbf{Expected then1: } the request appears correctly in the scene and gives the possibility to be accepted or to be denied if an other subscribed request hasn't been accepted before \\
-\textbf{Expected then2: } the request doesn't appear if a subscribed request has been alreay accepted \\
+\textbf{Expected then1: }  the request appears correctly in the scene and gives the possibility to be accepted or to be denied if no subscribed request has been accepted before \\
+\textbf{Expected then2: } the request doesn't appear if a subscribed request has been accepted before \\
 \\
-The output is equal to the expected one when the request is the first one from that specific third party. If the user has already accepted an other request from this third party this request doesn't appear and it's automatically accepted. This behavior is partially different from the expected one in fact it should happen only when a subscribed request has already been accepted.\\
+The output is equal to the expected one when the request is the first one from that specific third party. If the user has already accepted an other request from this third party, the request doesn't appear and it's automatically accepted. This behavior is partially different from the expected one: a request should be automatically accepted only when a subscribed request has been accepted before.\\
 Reference to \textit{[R5.1.4]}.
 
 \subsubsection{\Large{Test 3}}
@@ -154,7 +154,7 @@ Check if a third party pending request can be accepted. This is a crucial aspect
 \\
 \textbf{Given: }  third party request without subscription in the pending request area\\
 \textbf{When: } the user wants to accept the request\\
-\textbf{Expected then: } the request disappears from the pending request scene and the Third Party can see the data obtained till that moment \\
+\textbf{Expected then: } the request disappears from the pending request scene and the Third Party can see the data of the user obtained till that moment \\
 \\
 The output is equal to the expected one.
 
@@ -163,7 +163,7 @@ Check if a third party pending request can be refused. This is a crucial aspect 
 \\
 \textbf{Given: }  third party request without subscription in the pending request area\\
 \textbf{When: } the user wants to refuse the request\\
-\textbf{Expected then: } the request disappears from the pending request scene and the Third Party can see the data obtained till that moment  \\
+\textbf{Expected then: } the request disappears from the pending request scene and the Third Party can't see the data of the user  \\
 \\
 The output is equal to the expected one.
 
@@ -181,16 +181,16 @@ Check if a third party subscribed pending request can be accepted. This is a cru
 \\
 \textbf{Given: }  third party request with subscription in the pending request area\\
 \textbf{When: } the user wants to accept the request\\
-\textbf{Expected then: } the request disappears from the pending request scene and appears in the subscriber scene and the Third Party can see the data obtained till that moment and new data depending on the chosen frequency \\
+\textbf{Expected then: } the request disappears from the pending request scene and appears in the subscribers scene and the Third Party can see the data obtained till that moment and new data will be sent to it with the chosen frequency \\
 \\
 The output is equal to the expected one.
 
 \subsubsection{\Large{Test 7}}
-Check if a third party subscribed request in the subscriber scene can be removed. This is a crucial aspect because it is foundamental for the correct working of the web application.\\
+Check if a third party subscribed request in the subscribers scene can be removed. This is a crucial aspect because it is foundamental for the correct working of the web application.\\
 \\
-\textbf{Given: }  third party request with subscription in the subscriber scene\\
-\textbf{When: } the user wants to remove the request\\
-\textbf{Expected then: } the request disappears from the subscriber scene \\
+\textbf{Given: }  third party request with subscription in the subscribers scene\\
+\textbf{When: } the user wants to stop the current subscription\\
+\textbf{Expected then: } the request disappears from the subscriber scene and no more data is sent to the Third Party \\
 \\
 The output is equal to the expected one.
 
@@ -201,6 +201,6 @@ Check if the logout is done in a correct way. This test is done in order to chec
 \\
 \textbf{Given: }  user logged in his/her personal area\\
 \textbf{When: } the user wants to logout\\
-\textbf{Expected then: } the personal area is closed and it will be necessary to login again in order to access again \\
+\textbf{Expected then: } the personal area is closed and it will be necessary to login again in order to access again to the personal area \\
 \\
 The output is equal to the expected one.
