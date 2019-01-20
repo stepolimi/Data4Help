@@ -22,11 +22,42 @@ The following steps are necessary to correctely run our software on Fedora:
 			\item \textbf{sudo dnf install docker docker-compose}: to install the docker compose package;
 			\item \textbf{sudo groupadd docker \&\& sudo gpasswd -a \${USER} docker}
 			\item \textbf{newgrp docker}
-			\item \textbf{docker run}
 			\item \textbf{ mvn clean install -DskipTests} : to correctly build the maven project;
 			\item \textbf{ sudo systemctl start docker} : because of the sudo command it will be necessary to confirm the 					command by inserting the password. This command is fundamental to start up the docker deamon,	
 			\item \textbf{ docker-compose up - -build} : to build the docker which will contain the container for both server 					and DB.\\N:B The space between - - is incorrect, here it has been added jsut to show the presence of two - -.
 		\end{itemize}
+
+	\item Before starting the client it is necessary to create the DataSource in server by folowing the next fw steps:
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=1.0\textwidth]{./pictures/first_step.png}\par
+		\caption{Click on the database button in the right side of IntellJ Ultimate}
+	\end{figure}
+	\FloatBarrier
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=1.0\textwidth]{./pictures/second_step.png}\par
+		\caption{Click on the plus button to add a new DataSource. Select DataSource, click on MariaDB. }
+	\end{figure}
+	\FloatBarrier
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=1.0\textwidth]{./pictures/third_step.png}\par
+		\caption{Fill the properties.}
+	\end{figure}
+	\FloatBarrier
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=1.0\textwidth]{./pictures/fourth_step.png}\par
+		\caption{Once all properties are added verify if the connection has been established in a correct way. The test should be successful because the docker has already been built up.}
+	\end{figure}
+	\FloatBarrier
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=1.0\textwidth]{./pictures/fifth_step.png}\par
+		\caption{Click okey to build the DataSource.}
+	\end{figure}
+	\FloatBarrier
 
 	\item To run the client code it is necessary to:
 		\begin{itemize}

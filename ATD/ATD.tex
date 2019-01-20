@@ -1,0 +1,99 @@
+\documentclass[a4paper,12pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+
+%Figure progressive enumeration
+\usepackage{chngcntr}
+\counterwithin{figure}{chapter}
+\counterwithin{table}{chapter}
+
+
+%package used to enumerate figures
+\usepackage[labelfont=bf]{caption}
+
+%hyperref for interactive PDF index
+\usepackage[bookmarks, colorlinks, breaklinks]{hyperref}
+\hypersetup{linkcolor=black, citecolor=black, filecolor=black, urlcolor=black}
+
+%Package required to use special symbols
+\usepackage{amsmath, amssymb}
+
+%Package required to use figures
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{placeins}
+
+%Include the bibliography in the table of contents
+\usepackage{tocbibind}
+
+%Package used to insert figures at the specified position
+\usepackage{float}
+\usepackage{longtable}
+
+%Our chapters must be called sections
+\addto\captionsenglish{\renewcommand{\chaptername}{Section}}
+
+\begin{document}
+
+	%Code for title page
+	\begin{titlepage}
+		\centering
+		\includegraphics[width=0.20\textwidth]{./pictures/logo_polimi.png}\par
+
+		{Politecnico di Milano \\ AA 2018-2019} \par
+		\vspace{1.5cm}
+
+		{Computer Science and Engineering}\par
+		\Large{Software Engineering II}\par
+		\vspace{1.0cm}
+
+		\includegraphics[width=1.00\textwidth]{./pictures/logo_trackme.png}\par
+		{\LARGE \textbf{Acceptance Test Document} \par}
+		\vspace{1.0cm}
+		{\Large Stefano Bagarin\\ Alessandra Pasini\par}
+		\vspace{2cm}
+		\vfill
+
+		% Bottom of the page
+		{\large Document version: 1.0\par}
+		{\large \today \par}
+	\end{titlepage}
+
+	%Make the table of contents
+	\tableofcontents
+
+	%INTRODUCTION
+	\chapter{Introduction}
+	\label{ch:Introduction}
+
+	\section{Scope}
+	\input{./introduction.tex}
+
+	%Installation Setup
+	\chapter{Installation Setup}
+	\label{ch:Installation_Setup}
+	\input{./installation_setup.tex}
+
+	%Acceptance Tests
+	\chapter{Acceptance Tests}
+	\label{ch: Acceptance Tests}
+
+	\section{Mobile App Acceptance Test}
+	\input{./Acceptance_Test/user_acceptance_test.tex}
+
+	\section{Web Client Acceptance Test}
+	\input{./Acceptance_Test/web_client_acceptance_test.tex}
+
+	%Observation
+	\chapter{Observation}
+	\input{./observation.tex}
+
+	%Appendix
+	\appendix
+	\chapter{Effort Spend}
+	\input{./appendix.tex}
+
+
+\end{document}

@@ -1,0 +1,56 @@
+We have first cloned the whole project and saved it in a chosen folder.
+\section{Server Installation}
+To install the server we have tried on Windows and we have followed the next steps:
+\begin{itemize}
+	\item installation of MySQL 5.7, in particular, on this platform, we have used the workbanch and not the shell:
+		\begin{itemize}
+			\item run the script data4help\_db.sql;
+			\item create the user;
+			\item give all prermission to the user just created;
+		\end{itemize}
+	\item download of WildFly-15.0.1- Final.zip:
+		\begin{itemize}
+			\item unzip the package;
+			\item insertion of the new absolute path in which is it possible to find the WildFly files in the \textit{default.config} 				file. This file can be found in \textit{./DeliveryFolder/server};
+		\end{itemize}
+	\item installation of Python 3.7;
+	\item installation of Apache Maven:
+		\begin{itemize}
+			\item the chosen JDK version has been the 8th because, from the 9th, JAXB and other functionalities have been 					transformed in APIs and it would has been necessary to download them apart ;
+			\item the JAVA\_HOME evironment variable has been changed with the chosen JDK version;
+			\item the MAVEN\_HOME environment variable has been added;
+		\end{itemize}
+	\item execution of the three commands to build up the server.
+	\item check on browser if the server and the DB has been correctly started and connected.
+\end{itemize}Unfortunately we had some troubles in the MySQL user registration, by checking on browser we have seen that both the DB and the server were correctly working. The user was correctly created, we have tried to modify the way username and password where enclosed, but no changes has been seen. After lots of try we haven't been able to solve this problem.\\
+Because of the fact that the group has worked on Linux we have tried on this platform. To install the server on Linux we have followed the next steps:
+\begin{itemize}
+	\item installation of JDK-8 and Maven packages;
+	\item installation of MySQL 5.7, in this case we have used the shell:
+		\begin{itemize}
+			\item run the script data4help\_db.sql by adding to the given command the whole path in which it was possible 				to find the file;
+			\item change the variables for password requirements;
+			\item create the user;
+			\item give all permission to the user just created; 
+		\end{itemize}
+	\item download of WildFly-15.0.1- Final.zip:
+		\begin{itemize}
+			\item unzip the package;
+			\item insertion of the new absolute path in which is it possible to find the WildFly files in the \textit{default.config} 				file. This file can be found in \textit{./DeliveryFolder/server};
+		\end{itemize}
+	\item execution of the three commands to build up the server.
+	\item check on browser if the server and the DB has been correctly started and connected.
+\end{itemize}This time the server worked in a correct way. \\
+
+The group members of the project we had to analyze have been really helpful and fast in answering to our questions. They tried in every way to solve the problem we have found in the server installation.\\ 
+
+\section{Client Installation}
+To install theusers' client we have followed the next steps:
+\begin{itemize}
+	\item connect the smartphone to the computer;
+	\item add the APK in a reachable smartphone's folder;
+	\item install it.
+\end{itemize}Everything worked immediately.\\
+\\
+\\
+For what concern the Thrid Party client the link at which could be found the web page was missing in the installation instructions. We have received it as soon as we asked it to the group members.\\ Everything worked correctly.

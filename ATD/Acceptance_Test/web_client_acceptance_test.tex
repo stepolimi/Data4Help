@@ -1,0 +1,195 @@
+This section has the aim to explain all acceptance tests done on the web client, the reasons why those tests have been chosen and the obtained output.
+
+%REGISTRATION
+\subsection{Registration}
+
+\subsubsection{\Large{Test 1}}
+Check if the registration is stopped if some fields are empty. This test has been done because the Third Party must complete the registration form in order to obtain a personal area.\\
+\\
+\textbf{Given: } some fileds in the registration form are empty\\
+\textbf{When: } the guest wants to register\\
+\textbf{Expected then: } the web page doesn't have to allow the guest to register\\
+\\
+The output is equal to the expected then.
+
+\subsubsection{\Large{Test 2}}
+Check if the registration is stopped if the VVT is already associated to an existing profile. This test has been done because the third party must provide a possible real VVT and it must be unique inside the DB.\\
+\\
+\textbf{Given: } VVT = one VVT already in DB\\
+\textbf{When: } the guest wants to register\\
+\textbf{Expected then: } the app doesn't have to allow the guest to register\\
+\\
+The output is equal to the expected then. It seems to be that there are no particular requirements for the VVT.
+
+\subsubsection{\Large{Test 3}}
+The user fills all fields with correct values. This is necessary in order to create a new personal area.\\
+\\
+\textbf{Given: } All fields have been correctly filled\\
+\textbf{When: } the guest wants to register\\
+\textbf{Expected then: } the web page register the Third Party.\\
+\\
+The output is equal to the expected then, the Third Party can now register.
+
+%LOGIN
+\subsection{Login}
+\subsubsection{\Large{Test 1}}
+Check if the login is stopped if some fields are empty. This test has been done because the Third Party must complete the login form in order to access to its personal area.\\
+\\
+\textbf{Given: } some fileds in the login form are empty\\
+\textbf{When: } the guest wants to login\\
+\textbf{Expected then: } the app doesn't have to allow the guest to login\\
+\\
+The output is equal to the expected then.
+
+subsubsection{\Large{Test 2}}
+Check if the login is stopped if the VVT is different from any stored in DB. This test has been done because the Third Party has provided a possible real VVT during the registration and the one insert in the login must be equal to any stored in DB.\\
+\\
+\textbf{Given3: } VVT != from any VVT stored in DB\\
+\textbf{When: } the guest wants to login\\
+\textbf{Expected then: } the app doesn't have to allow the guest to login\\
+\\
+The output is equal to the expected then.
+
+\subsubsection{\Large{Test 3}}
+Check if the login is stopped if the password is different from the one associated to the given correct VVT. This test has been done in order to verify if the authentication works in a correct way.\\
+\\
+\textbf{Given: } password != stored password realted to correct SSN\\
+\textbf{When: } the guest wants to login\\
+\textbf{Expected then: } the app doesn't have to allow the guest to login\\
+\\
+The output is equal to the expected then.
+
+subsubsection{\Large{Test 4}}
+The Third Party fills all fields with correct values. This is necessary in order to acces to the personal area.\\
+\\
+\textbf{Given: } All fields have been correctly filled\\
+\textbf{When: } the guest wants to login\\
+\textbf{Expected then: } the app login the user\\
+\\
+The output is equal to the expected then, the scene changes and the Third Party access to its personal area.
+
+%REQUEST WITHOUT SUBSCRIPTION MANAGER
+\subsection{Request Without Subscription Manager}
+
+\subsubsection{\Large{Test 1}}
+Check if a personal request without or with subscription to a wrong SSN is stopped. This test has been done in order to see if the software does some checks on the SSN before creating the request.\\
+\\
+\textbf{Given: } SSN format != xxxxxxxxx format\\
+\textbf{When: } the Third Party wants to send a personal request\\
+\textbf{Expected then: } the web page doesn't allow it\\
+\\
+The output is equal to the expected then, the web page shows a popup saying that the request is malformed.
+
+\subsubsection{\Large{Test 2}}
+Check if a personal request without or with subscription to a not existing SSN is stopped. This test has been done in order to see if the request isn't created when there is any SSN equal to the given one in the DB.\\
+\\
+\textbf{Given: } SSN format = xxxxxxxxx format \\
+\textbf{When: } the Third Party wants to send a personal request and the SSN ins't in the DB\\
+\textbf{Expected then: } the web page doesn't allow it\\
+\\
+The output is equal to the expected then.
+
+\subsubsection{\Large{Test 3}}
+Check if a personal request without subscription to an existing and corret SSN goes well. This test has been done in order to see if the request is created when everything is correct.\\
+\\
+\textbf{Given: } SSN format = xxxxxxxxx format \\
+\textbf{When: } the Third Party wants to send a personal request without subscription and the SSN is in the DB \\
+\textbf{Expected then1: } if there isn't any request with subscription related to this specific SSN, this request should appear in the main page with the pending attributed on until the user answer\\
+\textbf{Expected then2: } if there is a request with subscription related to this specific SSN, this request should appear in the main page with the pending attributed off and the accepted  attribute on. The request should be ready to let the Third Party download the data collected till that moment.\\
+\\
+The output is equal to the expected then in the first case, but partially to the second one because of what already said in the first and second tests of Request Manager in user's acceptance test section.\\ 
+Reference to \textit{[R5.1.4]}.\\
+Data are retrieved and showed to the Third Party.
+
+\subsubsection{\Large{Test 4}}
+Check if a personal request with subscription to an existing and corret SSN is stopped if the frequency isn't set. This test has been done in order to see if it is necessary to set a frequency in obtaining new data.\\
+\\
+\textbf{Given: } correct request  \\
+\textbf{When: } the Third Party wants to send a correct personal request with subscription\\
+\textbf{Expected then1: } the web page allows it and a new line should appear in the subscribed page. If there isn't any request with subscription related to this specific SSN, this request should appear in the main page with the pending attributed on until the user answer.\\
+\textbf{Expected then2: } the web page allows it and a new line should appear in the subscribed page. If there is a request with subscription related to this specific SSN, this request should appear in the main page with the pending attributed off and the accepted  attribute on . Data should start to arrive at the desidered frequency.\\
+\\
+The output is equal to the expected then in the first case, but partially to the second one because of what already said in the first and second tests of Request Manager in user's acceptance test section.\\ 
+Reference to \textit{[R5.1.4]}.\\
+Data are retrieved and showed to the Third Party.
+
+\subsubsection{\Large{Test 5}}
+Check if it is possible to unsubscribe to a personal request with subscription.\\
+\\
+\textbf{Given: } a personal request subscribed in the Subscribe page \\
+\textbf{When: } the Third Party wants to unsubscribe\\
+\textbf{Expected then: } the web page allows it and the request disappear from the Subscribe page\\
+\\
+The output is equal to the expected then.
+
+%REQUEST WITHOUT SUBSCRIPTION MANAGER
+\subsection{Request With Subscription Manager}
+
+\subsubsection{\Large{Test 1}}
+Check if an anonymous request without subscription and without filters is stopped. This test has been done in order to check if an anonymous request without filters can't be created and showed in the main page as  said in the ITD.\\
+\\
+\textbf{Given: } anonymous request without subscription and without filters\\
+\textbf{When: } the Third Party wants to send an anonymous request\\
+\textbf{Expected then: } the web page doesn't allow it and do not create the request\\
+\\
+The output is equal to the expected then, the request isn't created and doesn't appear in the main page.
+
+\subsubsection{\Large{Test 2}}
+Check if an anonymous request with subscription and without filters is stopped.\\
+\\
+\textbf{Given: } anonymous request with subscription and without filters\\
+\textbf{When: } the Third Party wants to send an anonymous request\\
+\textbf{Expected then: } the web page doesn't allow it, the request is created but it doesn't require data.\\
+\\
+The output is equal to the expected then, the request is created, put in both main and subscribed page, but data aren't retrieved.
+
+\subsubsection{\Large{Test 3}}
+Check if an anonymous request without subscription and with some wrong filters is stopped.\\
+\\
+\textbf{Given: } anonymous request without subscription and wrong filters\\
+\textbf{When: } the Third Party wants to send an anonymous request\\
+\textbf{Expected then: } the web page doesn't allow it, the request isn't created.\\
+\\
+The output is equal to the expected then, the request isn't created and doesn't appear in the main page.
+
+
+\subsubsection{\Large{Test 4}}
+Check if an anonymous request with subscription and with some wrong filters is stopped.\\
+\\
+\textbf{Given: } anonymous request with subscription and wrong filters\\
+\textbf{When: } the Third Party wants to send an anonymous request\\
+\textbf{Expected then: } the web page doesn't allow it, the request is created but it doesn't get data.\\
+\\
+The output is equal to the expected then, the request is created, put in both main and subscribed page, but data aren't retrieved.
+
+\subsubsection{\Large{Test 5}}
+Check if an anonymous request without subscription and with correct filters works.\\
+\\
+\textbf{Given: } anonymous request without subscription and correct filters\\
+\textbf{When: } the Third Party wants to send an anonymous request\\
+\textbf{Expected then1: }the web page allows it ; the request is created and sends all data obtained till that moment if the number of the individuals is higher than 1000.\\
+\textbf{Expected then2: }the web page allows it ; the request is created, but it doesn't send data if the number of the individuals is less than 1000.\\
+\\
+The output is always equal to the expected then2; it hasn't been possible to test if data are correctly send in case the number of individual is higher than the threshold bacause it is to high for testing.
+Refears to \textit{[R5.2.1]}.
+
+
+\subsubsection{\Large{Test 6}}
+Check if an anonymous request with subscription and with correct filters works.\\
+\\
+\textbf{Given: } anonymous request with subscription and correct filters\\
+\textbf{When: } the Third Party wants to send an anonymous request\\
+\textbf{Expected then1: }the web page allows it ; the request is created and start sending data at the chosen frequency if the number of the individuals is higher than 1000.\\
+\textbf{Expected then2: }the web page allows it ; the request is created, but it doesn't send data if the number of the individuals is less than 1000.\\
+\\
+The output is always equal to the expected then2; it hasn't been possible to test if data are correctly send in case the number of individual is higher than the threshold bacause it is to high for testing.\\
+Refears to \textit{[R5.2.2]}.
+
+\subsubsection{\Large{Test 7}}
+Check if it is possible to unsubscribe to an anonymous subscribed request.\\
+\\
+\textbf{Given: } a anonymous request subscribed in the Subscribe page \\
+\textbf{When: } the Third Party wants to unsubscribe\\
+\textbf{Expected then: } the web page allows it and the request disappear from the Subscribe page\\
+The output is equal to the expected then.
+
